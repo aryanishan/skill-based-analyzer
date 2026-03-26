@@ -126,7 +126,12 @@ export default function CareerSelectPage() {
 
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {domainPaths.map(path => (
-                    <PathCard key={path._id} path={path} onSelect={() => navigate(`/roadmap/${path._id}`, { state: { careerPath: path } })} />
+                    <PathCard
+                      key={path._id}
+                      path={path}
+                      onRoadmap={() => navigate(`/roadmap/${path._id}`, { state: { careerPath: path } })}
+                      onOpenPath={() => navigate(`/skills/${path._id}`, { state: { careerPath: path } })}
+                    />
                   ))}
                 </div>
               </section>
@@ -148,7 +153,15 @@ export default function CareerSelectPage() {
   );
 }
 
-function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }) {
+function PathCard({
+  path,
+  onRoadmap,
+  onOpenPath,
+}: {
+  path: CareerPath;
+  onRoadmap: () => void;
+  onOpenPath: () => void;
+}) {
   const style = DOMAIN_STYLES[path.domain] || DOMAIN_STYLES.General;
 
   return (
@@ -173,13 +186,22 @@ function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }
 
       <div className="mt-6 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-4 text-sm">
         <span className="text-[color:var(--text-muted)]">{path.estimatedMonths ? `ETA ${path.estimatedMonths} months` : 'Flexible timeline'}</span>
-        <button
-          type="button"
-          onClick={onSelect}
-          className="font-semibold text-indigo-500 transition hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
-        >
-          Open Path
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onRoadmap}
+            className="font-semibold text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]"
+          >
+            Roadmap
+          </button>
+          <button
+            type="button"
+            onClick={onOpenPath}
+            className="font-semibold text-indigo-500 transition hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+          >
+            Open Path
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -37,6 +37,59 @@ const CATEGORY_META: Record<'Foundation' | 'Core' | 'Advanced', { tone: string; 
   Advanced: { tone: 'from-violet-200 to-white', icon: 'AD' },
 };
 
+const CATEGORY_ORDER: Record<'Foundation' | 'Core' | 'Advanced', number> = {
+  Foundation: 0,
+  Core: 1,
+  Advanced: 2,
+};
+
+function buildLearningSequence(skills: Skill[]) {
+  const skillMap = new Map(skills.map(skill => [skill._id, skill]));
+  const indegree = new Map<string, number>();
+  const edges = new Map<string, string[]>();
+
+  skills.forEach(skill => {
+    const deps = (skill.dependencies || []).filter(dep => skillMap.has(dep._id));
+    indegree.set(skill._id, deps.length);
+    deps.forEach(dep => {
+      const next = edges.get(dep._id) || [];
+      next.push(skill._id);
+      edges.set(dep._id, next);
+    });
+  });
+
+  const queue = skills
+    .filter(skill => (indegree.get(skill._id) || 0) === 0)
+    .sort((a, b) => CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category] || a.name.localeCompare(b.name));
+
+  const ordered: Array<Skill & { stage: number }> = [];
+  const depthMap = new Map<string, number>();
+
+  while (queue.length) {
+    const current = queue.shift()!;
+    const deps = (current.dependencies || []).filter(dep => skillMap.has(dep._id));
+    const stage = deps.length ? Math.max(...deps.map(dep => depthMap.get(dep._id) || 0)) + 1 : 1;
+    depthMap.set(current._id, stage);
+    ordered.push({ ...current, stage });
+
+    (edges.get(current._id) || []).forEach(nextId => {
+      const nextCount = (indegree.get(nextId) || 0) - 1;
+      indegree.set(nextId, nextCount);
+      if (nextCount === 0) {
+        const nextSkill = skillMap.get(nextId);
+        if (nextSkill) {
+          queue.push(nextSkill);
+          queue.sort((a, b) => CATEGORY_ORDER[a.category] - CATEGORY_ORDER[b.category] || a.name.localeCompare(b.name));
+        }
+      }
+    });
+  }
+
+  return ordered.length === skills.length
+    ? ordered
+    : skills.map((skill, index) => ({ ...skill, stage: index + 1 }));
+}
+
 export default function RoadmapPage() {
   const { pathId } = useParams<{ pathId: string }>();
   const location = useLocation();
@@ -96,14 +149,7 @@ export default function RoadmapPage() {
     });
   };
 
-  const groupedSkills = useMemo(
-    () =>
-      (['Foundation', 'Core', 'Advanced'] as const).map(category => ({
-        category,
-        skills: skills.filter(skill => skill.category === category),
-      })),
-    [skills]
-  );
+  const orderedSkills = useMemo(() => buildLearningSequence(skills), [skills]);
 
   const completedCount = Array.from(progress.values()).filter(value => value === 'advanced').length;
   const progressPercent = skills.length ? Math.round((completedCount / skills.length) * 100) : 0;
@@ -171,79 +217,80 @@ export default function RoadmapPage() {
         </div>
       </section>
 
-      <section className="mt-6 space-y-8">
-        {groupedSkills.map(group => {
-          if (group.skills.length === 0) return null;
-          const categoryMeta = CATEGORY_META[group.category];
+      <section className="mt-6 card overflow-hidden">
+        <div className="flex items-center gap-3">
+          <LogoBadge label="MP" className="h-10 w-10 text-[9px]" />
+          <div>
+            <h2 className="text-xl font-semibold text-[color:var(--text-main)]">Step-by-Step Learning Map</h2>
+            <p className="text-sm text-[color:var(--text-muted)]">Follow this order to learn the path in the right sequence.</p>
+          </div>
+        </div>
 
-          return (
-            <section key={group.category} className="card overflow-hidden">
-              <div className="flex items-center gap-3">
-                <LogoBadge label={categoryMeta.icon} className={`h-10 w-10 text-[9px] bg-gradient-to-br ${categoryMeta.tone}`} />
-                <div>
-                  <h2 className="text-xl font-semibold text-[color:var(--text-main)]">{group.category}</h2>
-                  <p className="text-sm text-[color:var(--text-muted)]">{group.skills.length} skills on this route</p>
-                </div>
-              </div>
+        <div className="relative mt-6">
+          <div className="absolute left-5 top-0 hidden h-full w-[3px] bg-[color:var(--border-soft)] md:block" />
 
-              <div className="relative mt-6">
-                <div className="absolute left-4 top-0 hidden h-full w-[3px] bg-[color:var(--border-soft)] md:block" />
+          <div className="space-y-5">
+            {orderedSkills.map((skill, index) => {
+              const currentLevel = progress.get(skill._id);
+              const meta = STATUS_META[currentLevel || 'not_started'];
+              const categoryMeta = CATEGORY_META[skill.category];
+              const isRight = index % 2 === 1;
+              const deps = (skill.dependencies || []).map(dep => dep.name).filter(Boolean);
 
-                <div className="space-y-5">
-                  {group.skills.map((skill, index) => {
-                    const currentLevel = progress.get(skill._id);
-                    const meta = STATUS_META[currentLevel || 'not_started'];
-                    const isRight = index % 2 === 1;
+              return (
+                <div
+                  key={skill._id}
+                  className={`relative md:flex ${isRight ? 'md:justify-end' : 'md:justify-start'}`}
+                >
+                  <div className="absolute left-[13px] top-6 hidden h-[calc(100%+1.25rem)] w-[16px] md:block">
+                    {index < orderedSkills.length - 1 && <div className={`ml-[5px] h-full w-[3px] ${meta.line}`} />}
+                  </div>
 
-                    return (
-                      <div
-                        key={skill._id}
-                        className={`relative md:flex ${isRight ? 'md:justify-end' : 'md:justify-start'}`}
-                      >
-                        <div className="absolute left-[9px] top-5 hidden h-[calc(100%+1.25rem)] w-[14px] md:block">
-                          {index < group.skills.length - 1 && <div className={`ml-[5px] h-full w-[3px] ${meta.line}`} />}
+                  <button
+                    type="button"
+                    onClick={() => toggleSkillStatus(skill._id)}
+                    className="relative w-full rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 text-left shadow-sm transition hover:border-[color:var(--border-strong)] md:w-[calc(50%-32px)]"
+                  >
+                    <div className="absolute -left-[42px] top-5 hidden h-6 w-6 items-center justify-center rounded-full border-4 border-[color:var(--surface-strong)] md:flex">
+                      <div className={`h-3 w-3 rounded-full ${meta.line}`} />
+                    </div>
+
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-[10px] bg-[color:var(--surface-card)] text-sm font-semibold text-[color:var(--text-main)]">
+                          {skill.stage}
                         </div>
-
-                        <button
-                          type="button"
-                          onClick={() => toggleSkillStatus(skill._id)}
-                          className="relative w-full rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 text-left shadow-sm transition hover:border-[color:var(--border-strong)] md:w-[calc(50%-28px)]"
-                        >
-                          <div className="absolute -left-[38px] top-4 hidden h-5 w-5 items-center justify-center rounded-full border-4 border-[color:var(--surface-strong)] md:flex">
-                            <div className={`h-3 w-3 rounded-full ${meta.line}`} />
+                        <div>
+                          <div className="text-lg font-semibold text-[color:var(--text-main)]">{skill.name}</div>
+                          <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
+                            {skill.category} • {skill.type} • {skill.importanceLevel}
                           </div>
-
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                              <div className="text-lg font-semibold text-[color:var(--text-main)]">{skill.name}</div>
-                              <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
-                                {skill.type} • {skill.importanceLevel}
-                              </div>
-                            </div>
-                            <span className={`badge ${meta.chip}`}>{meta.label}</span>
-                          </div>
-
-                          <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">
-                            {skill.tooltip?.whyItMatters || `Track your progress in ${skill.name} and move this node toward completion.`}
-                          </p>
-
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] px-3 py-1 text-xs text-[color:var(--text-muted)]">
-                              Category: {skill.category}
-                            </span>
-                            <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] px-3 py-1 text-xs text-[color:var(--text-muted)]">
-                              Weight: {skill.weight}/10
-                            </span>
-                          </div>
-                        </button>
+                        </div>
                       </div>
-                    );
-                  })}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <LogoBadge label={categoryMeta.icon} className={`h-8 w-8 text-[7px] bg-gradient-to-br ${categoryMeta.tone}`} />
+                        <span className={`badge ${meta.chip}`}>{meta.label}</span>
+                      </div>
+                    </div>
+
+                    <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">
+                      {skill.tooltip?.whyItMatters || `Learn ${skill.name} as part of your ${careerPath?.name} roadmap.`}
+                    </p>
+
+                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                      <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] px-3 py-2 text-xs text-[color:var(--text-muted)]">
+                        Step {skill.stage}: Focus on this after completing the earlier dependencies.
+                      </div>
+                      <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] px-3 py-2 text-xs text-[color:var(--text-muted)]">
+                        {deps.length ? `Prerequisites: ${deps.join(', ')}` : 'Prerequisites: Start here first'}
+                      </div>
+                    </div>
+                  </button>
                 </div>
-              </div>
-            </section>
-          );
-        })}
+              );
+            })}
+          </div>
+        </div>
       </section>
 
       <section className="mt-6 grid gap-4 lg:grid-cols-[1fr_280px]">
@@ -251,9 +298,9 @@ export default function RoadmapPage() {
           <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Roadmap Meaning</div>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {[
-              { title: 'Red path', text: 'Skills are not started yet and still waiting to be learned.' },
-              { title: 'Amber / Indigo path', text: 'Skills are in progress at basic or intermediate stage.' },
-              { title: 'Green path', text: 'Skills are fully completed at advanced level.' },
+              { title: 'Red path', text: 'These are future steps you still need to start learning.' },
+              { title: 'Amber / Indigo path', text: 'These are active learning steps currently in progress.' },
+              { title: 'Green path', text: 'These learning steps are completed and unlocked.' },
             ].map(item => (
               <div key={item.title} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
                 <div className="text-sm font-semibold text-[color:var(--text-main)]">{item.title}</div>
