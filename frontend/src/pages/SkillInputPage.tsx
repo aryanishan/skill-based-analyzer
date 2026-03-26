@@ -13,25 +13,25 @@ const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
 };
 
 const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
-  basic: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300',
-  intermediate: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300',
-  advanced: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
+  basic: 'border-zinc-400/30 bg-zinc-400/10 text-zinc-700 dark:text-zinc-300',
+  intermediate: 'border-lime-400/30 bg-lime-400/10 text-lime-700 dark:text-lime-300',
+  advanced: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-700 dark:text-emerald-300',
 };
 
 const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; bar: string; icon: string }> = {
   Foundation: {
-    pill: 'bg-amber-500/14 text-amber-700 dark:text-amber-300 border border-amber-500/20',
-    bar: 'from-amber-500 to-orange-500',
+    pill: 'bg-zinc-500/14 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20',
+    bar: 'from-zinc-200 to-zinc-400',
     icon: 'FD',
   },
   Core: {
-    pill: 'bg-sky-500/14 text-sky-700 dark:text-sky-300 border border-sky-500/20',
-    bar: 'from-sky-500 to-cyan-500',
+    pill: 'bg-lime-400/14 text-lime-700 dark:text-lime-300 border border-lime-400/20',
+    bar: 'from-lime-300 to-lime-500',
     icon: 'CR',
   },
   Advanced: {
-    pill: 'bg-emerald-500/14 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20',
-    bar: 'from-emerald-500 to-teal-500',
+    pill: 'bg-emerald-400/14 text-emerald-700 dark:text-emerald-300 border border-emerald-400/20',
+    bar: 'from-lime-200 to-emerald-300',
     icon: 'AD',
   },
 };
@@ -121,7 +121,7 @@ export default function SkillInputPage() {
               {'<-'} Back to Career Paths
             </button>
             <div className="flex items-start gap-4">
-              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 text-sm shadow-lg shadow-sky-500/15" />
+              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 text-sm shadow-lg shadow-lime-500/15" />
               <div>
                 <div className="theme-chip">Skill Selection</div>
                 <h1 className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{careerPath?.name}</h1>
@@ -135,7 +135,7 @@ export default function SkillInputPage() {
               <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Selected Skills</div>
               <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{selectedCount} / {totalCount}</div>
               <div className="progress-bar mt-4">
-                <div className="progress-fill bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500" style={{ width: `${completionPct}%` }} />
+                <div className="progress-fill bg-gradient-to-r from-lime-300 via-lime-400 to-emerald-400" style={{ width: `${completionPct}%` }} />
               </div>
             </div>
             <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
@@ -160,7 +160,7 @@ export default function SkillInputPage() {
                 onClick={() => setFilter(item)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                   filter === item
-                    ? 'bg-[color:var(--text-main)] text-[color:var(--bg-main)]'
+                    ? 'bg-lime-300 text-[#11170f]'
                     : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)]'
                 }`}
               >
@@ -211,7 +211,7 @@ export default function SkillInputPage() {
                             <div className="text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
                             {skill.tooltip.whyItMatters && (
                               <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
-                                <span className="font-semibold text-sky-500">Why:</span> {skill.tooltip.whyItMatters}
+                                <span className="font-semibold text-lime-500">Why:</span> {skill.tooltip.whyItMatters}
                               </p>
                             )}
                             {skill.tooltip.whereUsed && (
