@@ -129,7 +129,6 @@ export default function CareerSelectPage() {
                     <PathCard
                       key={path._id}
                       path={path}
-                      onRoadmap={() => navigate(`/roadmap/${path._id}`, { state: { careerPath: path } })}
                       onOpenPath={() => navigate(`/skills/${path._id}`, { state: { careerPath: path } })}
                     />
                   ))}
@@ -155,11 +154,9 @@ export default function CareerSelectPage() {
 
 function PathCard({
   path,
-  onRoadmap,
   onOpenPath,
 }: {
   path: CareerPath;
-  onRoadmap: () => void;
   onOpenPath: () => void;
 }) {
   const style = DOMAIN_STYLES[path.domain] || DOMAIN_STYLES.General;
@@ -186,22 +183,13 @@ function PathCard({
 
       <div className="mt-6 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-4 text-sm">
         <span className="text-[color:var(--text-muted)]">{path.estimatedMonths ? `ETA ${path.estimatedMonths} months` : 'Flexible timeline'}</span>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onRoadmap}
-            className="font-semibold text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]"
-          >
-            Roadmap
-          </button>
-          <button
-            type="button"
-            onClick={onOpenPath}
-            className="font-semibold text-indigo-500 transition hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
-          >
-            Open Path
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onOpenPath}
+          className="font-semibold text-indigo-500 transition hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+        >
+          Open Path
+        </button>
       </div>
     </div>
   );

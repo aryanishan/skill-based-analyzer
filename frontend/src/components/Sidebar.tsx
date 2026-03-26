@@ -7,6 +7,7 @@ import LogoBadge from './LogoBadge';
 const navItems = [
   { label: 'Home', path: '/', icon: 'home' },
   { label: 'Career Paths', path: '/career-paths', icon: 'grid' },
+  { label: 'Roadmap', path: '/roadmaps', icon: 'tree' },
   { label: 'Dashboard', path: '/dashboard', icon: 'chart' },
 ];
 
@@ -40,6 +41,21 @@ function SidebarIcon({ type }: { type: string }) {
         <path d="M7 15V9" />
         <path d="M12 15V5" />
         <path d="M17 15v-3" />
+      </svg>
+    );
+  }
+
+  if (type === 'tree') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.8">
+        <path d="M12 4v6" />
+        <path d="M6 10h12" />
+        <path d="M6 10v8" />
+        <path d="M12 10v4" />
+        <path d="M18 10v8" />
+        <rect x="4" y="18" width="4" height="2" rx="1" />
+        <rect x="10" y="14" width="4" height="2" rx="1" />
+        <rect x="16" y="18" width="4" height="2" rx="1" />
       </svg>
     );
   }
@@ -96,6 +112,7 @@ export default function Sidebar() {
 
   const currentSkillPath = useMemo(() => {
     if (location.pathname.startsWith('/skills')) return '/skills';
+    if (location.pathname.startsWith('/roadmap')) return '/roadmaps';
     return location.pathname;
   }, [location.pathname]);
 
