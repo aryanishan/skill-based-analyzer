@@ -14,8 +14,8 @@ const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
 
 const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
   basic: 'border-zinc-400/30 bg-zinc-400/10 text-zinc-700 dark:text-zinc-300',
-  intermediate: 'border-lime-400/30 bg-lime-400/10 text-lime-700 dark:text-lime-300',
-  advanced: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-700 dark:text-emerald-300',
+  intermediate: 'border-indigo-400/30 bg-indigo-400/10 text-indigo-700 dark:text-indigo-300',
+  advanced: 'border-violet-400/30 bg-violet-400/10 text-violet-700 dark:text-violet-300',
 };
 
 const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; bar: string; icon: string }> = {
@@ -25,13 +25,13 @@ const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string;
     icon: 'FD',
   },
   Core: {
-    pill: 'bg-lime-400/14 text-lime-700 dark:text-lime-300 border border-lime-400/20',
-    bar: 'from-lime-300 to-lime-500',
+    pill: 'bg-indigo-500/14 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20',
+    bar: 'from-indigo-200 to-indigo-400',
     icon: 'CR',
   },
   Advanced: {
-    pill: 'bg-emerald-400/14 text-emerald-700 dark:text-emerald-300 border border-emerald-400/20',
-    bar: 'from-lime-200 to-emerald-300',
+    pill: 'bg-violet-500/14 text-violet-700 dark:text-violet-300 border border-violet-500/20',
+    bar: 'from-violet-200 to-violet-400',
     icon: 'AD',
   },
 };
@@ -121,7 +121,7 @@ export default function SkillInputPage() {
               {'<-'} Back to Career Paths
             </button>
             <div className="flex items-start gap-4">
-              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 text-sm shadow-lg shadow-lime-500/15" />
+              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 text-sm shadow-lg shadow-indigo-500/10" />
               <div>
                 <div className="theme-chip">Skill Selection</div>
                 <h1 className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{careerPath?.name}</h1>
@@ -135,7 +135,7 @@ export default function SkillInputPage() {
               <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Selected Skills</div>
               <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{selectedCount} / {totalCount}</div>
               <div className="progress-bar mt-4">
-                <div className="progress-fill bg-gradient-to-r from-lime-300 via-lime-400 to-emerald-400" style={{ width: `${completionPct}%` }} />
+                <div className="progress-fill bg-gradient-to-r from-slate-300 via-indigo-300 to-violet-300" style={{ width: `${completionPct}%` }} />
               </div>
             </div>
             <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
@@ -160,7 +160,7 @@ export default function SkillInputPage() {
                 onClick={() => setFilter(item)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                   filter === item
-                    ? 'bg-lime-300 text-[#11170f]'
+                    ? 'bg-[#25283b] text-white'
                     : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)]'
                 }`}
               >
@@ -211,7 +211,7 @@ export default function SkillInputPage() {
                             <div className="text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
                             {skill.tooltip.whyItMatters && (
                               <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
-                                <span className="font-semibold text-lime-500">Why:</span> {skill.tooltip.whyItMatters}
+                                <span className="font-semibold text-indigo-500">Why:</span> {skill.tooltip.whyItMatters}
                               </p>
                             )}
                             {skill.tooltip.whereUsed && (

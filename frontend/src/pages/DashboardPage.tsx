@@ -21,19 +21,19 @@ import { EvaluationResult, KnownSkill } from '../types';
 const LEVEL_BG: Record<string, string> = {
   Beginner: 'border-zinc-500/20 bg-zinc-500/10',
   Developing: 'border-amber-500/20 bg-amber-500/10',
-  Competitive: 'border-lime-400/20 bg-lime-400/10',
-  'Fully Ready': 'border-lime-400/20 bg-lime-400/12',
+  Competitive: 'border-indigo-400/20 bg-indigo-400/10',
+  'Fully Ready': 'border-violet-400/20 bg-violet-400/12',
 };
 
 const CATEGORY_COLORS = {
   Foundation: '#d4d4d8',
-  Core: '#84cc16',
-  Advanced: '#bef264',
+  Core: '#818cf8',
+  Advanced: '#c4b5fd',
 };
 
 const IMPORTANCE_COLOR: Record<string, string> = {
   critical: 'bg-zinc-500/12 text-zinc-700 dark:text-zinc-200 border border-zinc-500/20',
-  recommended: 'bg-lime-400/12 text-lime-700 dark:text-lime-300 border border-lime-400/20',
+  recommended: 'bg-indigo-400/12 text-indigo-700 dark:text-indigo-300 border border-indigo-400/20',
   optional: 'bg-slate-500/12 text-slate-700 dark:text-slate-300 border border-slate-500/20',
 };
 
@@ -193,10 +193,10 @@ export default function DashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
           {[ 
-            { label: 'Known Skills', value: result.knownCount, icon: 'KS', tone: 'from-lime-300 to-emerald-400' },
+            { label: 'Known Skills', value: result.knownCount, icon: 'KS', tone: 'from-indigo-300 to-white' },
             { label: 'Critical Gaps', value: result.missingSkills.filter(skill => skill.importanceLevel === 'critical').length, icon: 'CG', tone: 'from-zinc-200 to-zinc-400' },
-            { label: 'Estimated Time', value: `${result.estimatedWeeks} weeks`, icon: 'ET', tone: 'from-lime-200 to-lime-400' },
-            { label: 'Next Steps', value: result.recommendations.length, icon: 'NS', tone: 'from-slate-200 to-lime-300' },
+            { label: 'Estimated Time', value: `${result.estimatedWeeks} weeks`, icon: 'ET', tone: 'from-slate-200 to-indigo-300' },
+            { label: 'Next Steps', value: result.recommendations.length, icon: 'NS', tone: 'from-violet-200 to-white' },
           ].map(item => (
             <div key={item.label} className="card">
               <div className="flex items-center justify-between">
@@ -215,7 +215,7 @@ export default function DashboardPage() {
           {result.warnings.length > 0 && (
             <div className="card">
               <div className="flex items-center gap-3">
-                <LogoBadge label="WR" className="h-10 w-10 text-[10px] bg-gradient-to-br from-zinc-200 to-lime-300" />
+                <LogoBadge label="WR" className="h-10 w-10 text-[10px] bg-gradient-to-br from-zinc-200 to-white" />
                 <div>
                   <div className="text-lg font-semibold text-[color:var(--text-main)]">Prerequisite Warnings</div>
                   <div className="text-sm text-[color:var(--text-muted)]">Some selected skills depend on earlier concepts.</div>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
                 onClick={() => setActiveTab(tab.id)}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                   activeTab === tab.id
-                    ? 'bg-lime-300 text-[#11170f] shadow-[0_12px_28px_rgba(183,255,52,0.18)]'
+                    ? 'bg-[#25283b] text-white shadow-[0_12px_28px_rgba(20,29,58,0.18)]'
                     : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)] hover:bg-white/10'
                 }`}
               >
@@ -286,8 +286,8 @@ export default function DashboardPage() {
               <div className="grid gap-4 md:grid-cols-3">
                 {[
                   { label: 'Foundation', pct: result.categoryProfile.foundationalPct, tone: 'from-zinc-300 to-zinc-400' },
-                  { label: 'Core', pct: result.categoryProfile.corePct, tone: 'from-lime-300 to-lime-400' },
-                  { label: 'Advanced', pct: result.categoryProfile.advancedPct, tone: 'from-lime-200 to-emerald-300' },
+                  { label: 'Core', pct: result.categoryProfile.corePct, tone: 'from-indigo-300 to-indigo-400' },
+                  { label: 'Advanced', pct: result.categoryProfile.advancedPct, tone: 'from-violet-200 to-violet-400' },
                 ].map(item => (
                   <div key={item.label} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
                     <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">{item.label}</div>
@@ -350,7 +350,7 @@ export default function DashboardPage() {
                 {result.recommendations.map((rec, index) => (
                   <div key={rec._id} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-lime-300 to-emerald-400 text-sm font-semibold text-[#11170f]">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-200 to-white text-sm font-semibold text-[#171925]">
                         {index + 1}
                       </div>
                       <div className="flex-1">

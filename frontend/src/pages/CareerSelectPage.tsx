@@ -9,23 +9,23 @@ const DOMAINS = ['All', 'Software/IT', 'Core Engineering', 'Government Exams', '
 
 const DOMAIN_STYLES: Record<string, { band: string; badge: string; icon: string }> = {
   'Software/IT': {
-    band: 'from-lime-300 via-lime-400 to-emerald-400',
-    badge: 'bg-lime-400/12 text-lime-700 dark:text-lime-300 border border-lime-400/20',
+    band: 'from-indigo-300 via-violet-300 to-slate-100',
+    badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/15',
     icon: 'IT',
   },
   'Core Engineering': {
-    band: 'from-zinc-200 via-zinc-300 to-lime-300',
-    badge: 'bg-zinc-500/12 text-zinc-700 dark:text-zinc-300 border border-zinc-400/20',
+    band: 'from-slate-300 via-slate-200 to-white',
+    badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-500/15',
     icon: 'CE',
   },
   'Government Exams': {
-    band: 'from-lime-300 via-yellow-300 to-lime-400',
-    badge: 'bg-lime-400/12 text-lime-700 dark:text-lime-300 border border-lime-400/20',
+    band: 'from-violet-300 via-indigo-200 to-white',
+    badge: 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/15',
     icon: 'GX',
   },
   General: {
-    band: 'from-slate-200 via-zinc-300 to-lime-300',
-    badge: 'bg-slate-500/12 text-slate-700 dark:text-slate-300 border border-slate-400/20',
+    band: 'from-zinc-200 via-slate-200 to-white',
+    badge: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/15',
     icon: 'GN',
   },
 };
@@ -90,10 +90,10 @@ export default function CareerSelectPage() {
 
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Career Paths', value: paths.length, icon: 'CP', tone: 'from-lime-300 to-emerald-400' },
-              { label: 'Domains', value: 4, icon: 'DM', tone: 'from-zinc-200 to-lime-300' },
-              { label: 'Skills Tracked', value: '100+', icon: 'SK', tone: 'from-lime-300 to-lime-500' },
-              { label: 'Insights', value: 'Live', icon: 'IN', tone: 'from-slate-200 to-lime-300' },
+              { label: 'Career Paths', value: paths.length, icon: 'CP', tone: 'from-indigo-300 to-white' },
+              { label: 'Domains', value: 4, icon: 'DM', tone: 'from-slate-300 to-white' },
+              { label: 'Skills Tracked', value: '100+', icon: 'SK', tone: 'from-violet-200 to-white' },
+              { label: 'Insights', value: 'Live', icon: 'IN', tone: 'from-slate-200 to-indigo-200' },
             ].map(item => (
               <div key={item.label} className="metric-tile rounded-[16px] p-4">
                 <div className="flex items-center justify-between">
@@ -132,7 +132,7 @@ export default function CareerSelectPage() {
                 onClick={() => setSelectedDomain(domain)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                   active
-                    ? 'bg-lime-300 text-[#11170f] shadow-[0_12px_28px_rgba(183,255,52,0.18)]'
+                    ? 'bg-[#25283b] text-white shadow-[0_12px_28px_rgba(20,29,58,0.18)]'
                     : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)] hover:bg-white/10'
                 }`}
               >
@@ -212,7 +212,7 @@ function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }
 
       <div className="mt-6 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-4 text-sm">
         <span className="text-[color:var(--text-muted)]">{path.estimatedMonths ? `ETA ${path.estimatedMonths} months` : 'Flexible timeline'}</span>
-        <span className="font-semibold text-lime-300 dark:text-lime-300">Open Path</span>
+        <span className="font-semibold text-indigo-500 dark:text-indigo-300">Open Path</span>
       </div>
     </button>
   );

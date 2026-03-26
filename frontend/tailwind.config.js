@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Manrope', 'Outfit', 'Segoe UI', 'system-ui', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Space Grotesk', 'Segoe UI', 'system-ui', 'sans-serif'],
       },
       colors: {
         primary: {
