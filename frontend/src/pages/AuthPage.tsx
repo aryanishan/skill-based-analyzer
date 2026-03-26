@@ -91,12 +91,12 @@ export default function AuthPage() {
           <LogoBadge label={mode === 'login' ? 'IN' : 'UP'} className="h-11 w-11 text-[11px]" />
         </div>
 
-        <div className="mb-6 grid grid-cols-2 rounded-2xl bg-[color:var(--surface-strong)] p-1">
+        <div className="mb-6 grid grid-cols-2 rounded-xl bg-[color:var(--surface-strong)] p-1">
           {(['login', 'register'] as const).map((item) => (
             <button
               key={item}
               onClick={() => setMode(item)}
-              className={`rounded-2xl px-4 py-3 text-sm font-semibold transition-all ${
+              className={`rounded-lg px-4 py-3 text-sm font-semibold transition-all ${
                 mode === item
                   ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg shadow-sky-500/20'
                   : 'text-[color:var(--text-muted)]'

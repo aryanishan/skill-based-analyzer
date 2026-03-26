@@ -95,7 +95,7 @@ export default function CareerSelectPage() {
               { label: 'Skills Tracked', value: '100+', icon: 'SK', tone: 'from-emerald-400 to-cyan-500' },
               { label: 'Insights', value: 'Live', icon: 'IN', tone: 'from-fuchsia-500 to-orange-400' },
             ].map(item => (
-              <div key={item.label} className="rounded-[24px] border border-white/10 bg-black/20 p-4 backdrop-blur-xl">
+              <div key={item.label} className="rounded-[16px] border border-white/10 bg-black/20 p-4 backdrop-blur-xl">
                 <div className="flex items-center justify-between">
                   <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
                   <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
@@ -130,7 +130,7 @@ export default function CareerSelectPage() {
               <button
                 key={domain}
                 onClick={() => setSelectedDomain(domain)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                   active
                     ? 'bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 text-white shadow-[0_12px_28px_rgba(168,85,247,0.28)]'
                     : 'bg-black/20 text-[color:var(--text-muted)] hover:bg-white/10'
@@ -205,7 +205,7 @@ function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }
 
       <div className="mt-5 flex flex-wrap gap-2">
         {path.tags.slice(0, 4).map(tag => (
-          <span key={tag} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
+          <span key={tag} className="rounded-lg border border-white/10 bg-black/20 px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
             {tag}
           </span>
         ))}

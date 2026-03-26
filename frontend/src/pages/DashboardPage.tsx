@@ -120,7 +120,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className={`rounded-[28px] border p-6 shadow-[0_18px_40px_rgba(8,8,18,0.25)] ${LEVEL_BG[result.level.label]}`}>
+          <div className={`rounded-[18px] border p-6 shadow-[0_18px_40px_rgba(8,8,18,0.25)] ${LEVEL_BG[result.level.label]}`}>
             <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Current Level</div>
             <div className="mt-3 flex items-center gap-4">
               <LogoBadge label="LV" className="h-12 w-12 text-[11px] bg-gradient-to-br from-fuchsia-500 via-violet-500 to-cyan-400" />
@@ -223,7 +223,7 @@ export default function DashboardPage() {
               </div>
               <div className="mt-5 space-y-3">
                 {result.warnings.map((warning, index) => (
-                  <div key={index} className="rounded-[20px] border border-amber-500/20 bg-black/20 p-4 text-sm text-[color:var(--text-soft)]">
+                  <div key={index} className="rounded-[14px] border border-amber-500/20 bg-black/20 p-4 text-sm text-[color:var(--text-soft)]">
                     {warning.message}
                   </div>
                 ))}
@@ -242,11 +242,11 @@ export default function DashboardPage() {
               </div>
               <div className="mt-5 space-y-3">
                 {result.crossDomainHints.map((hint, index) => (
-                  <div key={index} className="rounded-[20px] border border-cyan-500/20 bg-black/20 p-4">
+                  <div key={index} className="rounded-[14px] border border-cyan-500/20 bg-black/20 p-4">
                     <p className="text-sm text-[color:var(--text-soft)]">{hint.message}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {hint.targetDomains.map(domain => (
-                        <span key={domain} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
+                        <span key={domain} className="rounded-lg border border-white/10 bg-black/20 px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
                           {domain}
                         </span>
                       ))}
@@ -269,7 +269,7 @@ export default function DashboardPage() {
             <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 text-white shadow-[0_12px_28px_rgba(168,85,247,0.28)]'
                     : 'bg-black/20 text-[color:var(--text-muted)] hover:bg-white/10'
@@ -289,7 +289,7 @@ export default function DashboardPage() {
                   { label: 'Core', pct: result.categoryProfile.corePct, tone: 'from-sky-500 to-cyan-500' },
                   { label: 'Advanced', pct: result.categoryProfile.advancedPct, tone: 'from-emerald-500 to-teal-500' },
                 ].map(item => (
-                  <div key={item.label} className="rounded-[22px] border border-white/10 bg-black/20 p-5">
+                  <div key={item.label} className="rounded-[16px] border border-white/10 bg-black/20 p-5">
                     <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">{item.label}</div>
                     <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{item.pct}%</div>
                     <div className="progress-bar mt-4">
@@ -300,12 +300,12 @@ export default function DashboardPage() {
               </div>
 
               {result.insights.length === 0 ? (
-                <div className="rounded-[22px] border border-white/10 bg-black/20 p-6 text-[color:var(--text-muted)]">
+                <div className="rounded-[16px] border border-white/10 bg-black/20 p-6 text-[color:var(--text-muted)]">
                   No insights generated yet. Select more skills for deeper analysis.
                 </div>
               ) : (
                 result.insights.map((insight, index) => (
-                  <div key={index} className="rounded-[22px] border border-white/10 bg-black/20 p-5">
+                  <div key={index} className="rounded-[16px] border border-white/10 bg-black/20 p-5">
                     <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--text-muted)]">{insight.type}</div>
                     <p className="mt-3 leading-7 text-[color:var(--text-soft)]">{insight.message}</p>
                   </div>
@@ -324,7 +324,7 @@ export default function DashboardPage() {
             ) : (
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {result.missingSkills.map(skill => (
-                  <div key={skill._id} className="rounded-[22px] border border-white/10 bg-black/20 p-5">
+                  <div key={skill._id} className="rounded-[16px] border border-white/10 bg-black/20 p-5">
                     <div className="flex items-start justify-between gap-3">
                       <span className={`badge ${IMPORTANCE_COLOR[skill.importanceLevel]}`}>{skill.importanceLevel}</span>
                       <span className="text-xs text-[color:var(--text-muted)]">{skill.category}</span>
@@ -342,15 +342,15 @@ export default function DashboardPage() {
 
           {activeTab === 'recommendations' && (
             result.recommendations.length === 0 ? (
-              <div className="rounded-[22px] border border-white/10 bg-black/20 p-6 text-center text-[color:var(--text-muted)]">
+              <div className="rounded-[16px] border border-white/10 bg-black/20 p-6 text-center text-[color:var(--text-muted)]">
                 All prerequisites are covered. Keep practicing and refining depth.
               </div>
             ) : (
               <div className="space-y-4">
                 {result.recommendations.map((rec, index) => (
-                  <div key={rec._id} className="rounded-[22px] border border-white/10 bg-black/20 p-5">
+                  <div key={rec._id} className="rounded-[16px] border border-white/10 bg-black/20 p-5">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 via-violet-500 to-cyan-400 text-sm font-semibold text-white">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500 via-violet-500 to-cyan-400 text-sm font-semibold text-white">
                         {index + 1}
                       </div>
                       <div className="flex-1">
