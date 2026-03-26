@@ -70,39 +70,19 @@ export default function CareerSelectPage() {
   return (
     <div className="section-shell">
       <section className="card radial-panel overflow-hidden">
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <div className="space-y-4">
-            <div className="theme-chip">Career Discovery</div>
-            <h1 className="max-w-3xl text-balance text-3xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-4xl">
-              Compare career tracks in a cleaner workspace built for faster decisions.
-            </h1>
-            <p className="max-w-2xl text-base leading-7 text-[color:var(--text-soft)]">
-              Search, filter, and open a roadmap with less noise on screen. The layout now favors compact analytics styling, clearer grouping, and stronger contrast for the important actions.
-            </p>
-            <div className="flex flex-wrap gap-2.5 pt-1">
-              {['Guided selection', 'Live skill mapping', 'Domain-based colors'].map(label => (
-                <span key={label} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
-                  {label}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: 'Career Paths', value: paths.length, icon: 'CP', tone: 'from-indigo-300 to-white' },
-              { label: 'Domains', value: 4, icon: 'DM', tone: 'from-slate-300 to-white' },
-              { label: 'Skills Tracked', value: '100+', icon: 'SK', tone: 'from-violet-200 to-white' },
-              { label: 'Insights', value: 'Live', icon: 'IN', tone: 'from-slate-200 to-indigo-200' },
-            ].map(item => (
-              <div key={item.label} className="metric-tile rounded-[14px] p-3.5">
-                <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] bg-gradient-to-br ${item.tone}`} />
-                  <div className={`h-2 w-12 rounded-full bg-gradient-to-r ${item.tone}`} />
-                </div>
-                <div className="mt-5 text-xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
-                <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
-              </div>
+        <div className="space-y-4">
+          <div className="theme-chip">Career Discovery</div>
+          <h1 className="max-w-3xl text-balance text-3xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-4xl">
+            Compare career tracks in a cleaner workspace built for faster decisions.
+          </h1>
+          <p className="max-w-2xl text-base leading-7 text-[color:var(--text-soft)]">
+            Search, filter, and open a roadmap with less noise on screen. The layout now favors compact analytics styling, clearer grouping, and stronger contrast for the important actions.
+          </p>
+          <div className="flex flex-wrap gap-2.5 pt-1">
+            {['Guided selection', 'Live skill mapping', 'Domain-based colors'].map(label => (
+              <span key={label} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
+                {label}
+              </span>
             ))}
           </div>
         </div>
