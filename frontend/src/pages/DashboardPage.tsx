@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
-  PolarAngleAxis,
-  RadialBar,
-  RadialBarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,29 +14,74 @@ import {
 } from 'recharts';
 import toast from 'react-hot-toast';
 import { evaluate } from '../api';
+import { useAuth } from '../context/AuthContext';
 import LogoBadge from '../components/LogoBadge';
 import { EvaluationResult, KnownSkill } from '../types';
 
-const LEVEL_BG: Record<string, string> = {
+const STORAGE_KEY = 'career_dashboard_history';
+
+type SavedAssessment = {
+  careerPathId: string;
+  careerPathName: string;
+  domain: string;
+  score: number;
+  levelLabel: string;
+  knownCount: number;
+  totalSkills: number;
+  estimatedWeeks: number;
+  missingSkillsCount: number;
+  recommendationsCount: number;
+  categoryProfile: EvaluationResult['categoryProfile'];
+  createdAt: string;
+};
+
+const CATEGORY_COLORS = {
+  Foundation: '#cbd5e1',
+  Core: '#818cf8',
+  Advanced: '#c4b5fd',
+};
+
+const LEVEL_STYLES: Record<string, string> = {
   Beginner: 'border-zinc-500/20 bg-zinc-500/10',
   Developing: 'border-amber-500/20 bg-amber-500/10',
   Competitive: 'border-indigo-400/20 bg-indigo-400/10',
   'Fully Ready': 'border-violet-400/20 bg-violet-400/12',
 };
 
-const CATEGORY_COLORS = {
-  Foundation: '#d4d4d8',
-  Core: '#818cf8',
-  Advanced: '#c4b5fd',
-};
+function loadSavedAssessments(): SavedAssessment[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
-const IMPORTANCE_COLOR: Record<string, string> = {
-  critical: 'bg-zinc-500/12 text-zinc-700 dark:text-zinc-200 border border-zinc-500/20',
-  recommended: 'bg-indigo-400/12 text-indigo-700 dark:text-indigo-300 border border-indigo-400/20',
-  optional: 'bg-slate-500/12 text-slate-700 dark:text-slate-300 border border-slate-500/20',
-};
+function saveAssessment(result: EvaluationResult) {
+  const nextEntry: SavedAssessment = {
+    careerPathId: result.careerPath._id,
+    careerPathName: result.careerPath.name,
+    domain: result.careerPath.domain,
+    score: result.score,
+    levelLabel: result.level.label,
+    knownCount: result.knownCount,
+    totalSkills: result.totalSkills,
+    estimatedWeeks: result.estimatedWeeks,
+    missingSkillsCount: result.missingSkills.length,
+    recommendationsCount: result.recommendations.length,
+    categoryProfile: result.categoryProfile,
+    createdAt: new Date().toISOString(),
+  };
+
+  const previous = loadSavedAssessments().filter(entry => !(entry.careerPathId === nextEntry.careerPathId && entry.createdAt === nextEntry.createdAt));
+  const updated = [nextEntry, ...previous].slice(0, 12);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+}
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as {
@@ -47,12 +91,12 @@ export default function DashboardPage() {
   } | null;
 
   const [result, setResult] = useState<EvaluationResult | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'gaps' | 'recommendations' | 'insights'>('insights');
+  const [history, setHistory] = useState<SavedAssessment[]>(() => loadSavedAssessments());
+  const [loading, setLoading] = useState(!!state);
 
   useEffect(() => {
     if (!state) {
-      navigate('/');
+      setHistory(loadSavedAssessments());
       return;
     }
     runEvaluation();
@@ -62,313 +106,309 @@ export default function DashboardPage() {
     try {
       const res = await evaluate(state!.careerPathId, state!.knownSkills);
       setResult(res.data);
+      saveAssessment(res.data);
+      setHistory(loadSavedAssessments());
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Evaluation failed');
-      navigate('/');
     } finally {
       setLoading(false);
     }
   };
 
+  const latest = result
+    ? {
+        careerPathId: result.careerPath._id,
+        careerPathName: result.careerPath.name,
+        domain: result.careerPath.domain,
+        score: result.score,
+        levelLabel: result.level.label,
+        knownCount: result.knownCount,
+        totalSkills: result.totalSkills,
+        estimatedWeeks: result.estimatedWeeks,
+        missingSkillsCount: result.missingSkills.length,
+        recommendationsCount: result.recommendations.length,
+        categoryProfile: result.categoryProfile,
+        createdAt: new Date().toISOString(),
+      }
+    : history[0];
+
+  const totalAssessments = history.length;
+  const averageScore = totalAssessments ? Math.round(history.reduce((sum, item) => sum + item.score, 0) / totalAssessments) : 0;
+  const topScore = totalAssessments ? Math.max(...history.map(item => item.score)) : 0;
+  const domainsExplored = new Set(history.map(item => item.domain)).size;
+
+  const categoryData = latest
+    ? [
+        { name: 'Foundation', score: latest.categoryProfile.foundationalPct, fill: CATEGORY_COLORS.Foundation },
+        { name: 'Core', score: latest.categoryProfile.corePct, fill: CATEGORY_COLORS.Core },
+        { name: 'Advanced', score: latest.categoryProfile.advancedPct, fill: CATEGORY_COLORS.Advanced },
+      ]
+    : [];
+
+  const progressTrend = history
+    .slice()
+    .reverse()
+    .map((item, index) => ({
+      name: `Run ${index + 1}`,
+      score: item.score,
+    }));
+
+  const recentPaths = history.slice(0, 4);
+
+  const profileStats = useMemo(
+    () => [
+      { label: 'Known Skills', value: latest ? `${latest.knownCount}/${latest.totalSkills}` : '0/0', icon: 'KS', tone: 'from-indigo-200 to-white' },
+      { label: 'Learning Progress', value: latest ? `${latest.score}%` : '0%', icon: 'LP', tone: 'from-violet-200 to-white' },
+      { label: 'Assessments', value: totalAssessments, icon: 'AS', tone: 'from-slate-200 to-white' },
+      { label: 'Domains', value: domainsExplored, icon: 'DM', tone: 'from-indigo-100 to-slate-100' },
+    ],
+    [latest, totalAssessments, domainsExplored]
+  );
+
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="card flex items-center gap-4">
-          <LogoBadge label="AI" className="h-10 w-10 text-[10px]" />
-          <div className="text-[color:var(--text-soft)]">Building your readiness report...</div>
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        <div className="card flex min-h-[60vh] items-center justify-center gap-4">
+          <LogoBadge label="PR" className="h-10 w-10 text-[10px]" />
+          <div className="text-[color:var(--text-soft)]">Preparing your profile dashboard...</div>
         </div>
       </div>
     );
   }
 
-  if (!result) return null;
-
-  const gaugeData = [{ value: result.score, fill: result.level.color }];
-  const categoryData = Object.entries(result.categoryBreakdown).map(([name, values]) => ({
-    name,
-    score: values.score,
-    fill: CATEGORY_COLORS[name as keyof typeof CATEGORY_COLORS] || '#64748b',
-  }));
-
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <button
-        onClick={() => navigate(`/skills/${state?.careerPathId}`, { state: { careerPath: state?.careerPath } })}
-        className="text-sm font-medium text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]"
-      >
-        {'<-'} Adjust Skills
-      </button>
+      <section className="card radial-panel overflow-hidden">
+        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="space-y-5">
+            <div className="theme-chip">User Profile</div>
+            <div className="flex items-start gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-[18px] bg-[#25283b] text-xl font-semibold text-white shadow-[0_14px_28px_rgba(20,29,58,0.18)]">
+                {user?.name?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              <div>
+                <h1 className="font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-[color:var(--text-main)]">
+                  {user?.name || 'Your Dashboard'}
+                </h1>
+                <p className="mt-2 text-lg text-[color:var(--text-soft)]">{user?.email}</p>
+                <p className="mt-3 max-w-2xl text-[color:var(--text-soft)]">
+                  Track how much you know, how strong your current learning percentage is, and how your readiness is changing across assessments.
+                </p>
+              </div>
+            </div>
 
-      <section className="card radial-panel mt-4 overflow-hidden">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-4">
-            <div className="theme-chip">Readiness Report</div>
-            <h1 className="text-4xl font-semibold text-[color:var(--text-main)]">{result.careerPath.name}</h1>
-            <p className="max-w-2xl text-lg leading-8 text-[color:var(--text-soft)]">
-              {result.knownCount} of {result.totalSkills} skills were assessed for this path. Use the breakdown below to understand strengths, gaps, and immediate next steps.
-            </p>
-            <div className="flex flex-wrap gap-3 pt-1">
+            <div className="flex flex-wrap gap-3">
               <span className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
-                {result.knownCount} mapped skills
+                Average score: {averageScore}%
               </span>
               <span className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
-                {result.estimatedWeeks} week roadmap
+                Best result: {topScore}%
               </span>
               <span className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
-                {result.missingSkills.length} gaps detected
+                Last path: {latest?.careerPathName || 'No assessment yet'}
               </span>
             </div>
           </div>
 
-          <div className={`rounded-[18px] border p-6 shadow-[0_18px_40px_rgba(8,8,18,0.25)] ${LEVEL_BG[result.level.label]}`}>
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Current Level</div>
-            <div className="mt-3 flex items-center gap-4">
-              <LogoBadge label="LV" className="h-12 w-12 text-[11px]" />
-              <div>
-                <div className="text-3xl font-semibold text-[color:var(--text-main)]">{result.score}%</div>
-                <div className="text-sm text-[color:var(--text-soft)]">{result.level.label}</div>
+          <div className="grid grid-cols-2 gap-4">
+            {profileStats.map(item => (
+              <div key={item.label} className="metric-tile rounded-[16px] p-4">
+                <div className="flex items-center justify-between">
+                  <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
+                  <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
+                </div>
+                <div className="mt-5 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+                <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="mt-8 grid gap-5 xl:grid-cols-[360px_1fr_320px]">
-        <div className="card text-center">
-          <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Overall Readiness</div>
-          <div className="mt-4 flex justify-center">
-            <div className="relative h-52 w-52">
-              <RadialBarChart
-                cx="50%"
-                cy="50%"
-                innerRadius="72%"
-                outerRadius="100%"
-                startAngle={90}
-                endAngle={-270}
-                data={gaugeData}
-                width={208}
-                height={208}
-              >
-                <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
-                <RadialBar background={{ fill: 'rgba(148, 163, 184, 0.15)' }} dataKey="value" cornerRadius={10} angleAxisId={0} />
-              </RadialBarChart>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-4xl font-semibold text-[color:var(--text-main)]">{result.score}%</div>
-                <div className="mt-2 text-sm text-[color:var(--text-muted)]">{result.level.label}</div>
-              </div>
+      <section className="mt-8 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="card">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Learning Trend</div>
+              <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Profile progress across assessments</div>
             </div>
+            <LogoBadge label="TR" className="h-10 w-10 text-[10px]" />
           </div>
-          <div className="accent-divider mt-3" />
+
+          {progressTrend.length > 0 ? (
+            <div className="mt-6 h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={progressTrend} margin={{ left: 0, right: 10 }}>
+                  <defs>
+                    <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#818cf8" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#818cf8" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.18)" />
+                  <XAxis dataKey="name" tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--surface-card)',
+                      border: '1px solid var(--border-soft)',
+                      borderRadius: 16,
+                      color: 'var(--text-main)',
+                    }}
+                    formatter={(value: number) => [`${value}%`, 'Readiness']}
+                  />
+                  <Area type="monotone" dataKey="score" stroke="#818cf8" strokeWidth={3} fill="url(#trendFill)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="mt-6 rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+              No profile data yet. Open a career path, select your skills, and run an analysis to populate this page.
+            </div>
+          )}
         </div>
 
         <div className="card">
-          <div>
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Category Breakdown</div>
-            <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Performance by learning layer</div>
-          </div>
-          <div className="mt-4 h-60">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={categoryData} layout="vertical" margin={{ left: 0, right: 12 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.08)" />
-                <XAxis type="number" domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                <YAxis type="category" dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} width={90} />
-                <Tooltip
-                  contentStyle={{
-                    background: 'var(--surface-card)',
-                    border: '1px solid var(--border-soft)',
-                    borderRadius: 16,
-                    color: 'var(--text-main)',
-                  }}
-                  formatter={(value: number) => [`${value}%`, 'Score']}
-                />
-                <Bar dataKey="score" radius={8}>
-                  {categoryData.map((entry, index) => (
-                    <Cell key={index} fill={entry.fill} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-          {[ 
-            { label: 'Known Skills', value: result.knownCount, icon: 'KS', tone: 'from-indigo-300 to-white' },
-            { label: 'Critical Gaps', value: result.missingSkills.filter(skill => skill.importanceLevel === 'critical').length, icon: 'CG', tone: 'from-zinc-200 to-zinc-400' },
-            { label: 'Estimated Time', value: `${result.estimatedWeeks} weeks`, icon: 'ET', tone: 'from-slate-200 to-indigo-300' },
-            { label: 'Next Steps', value: result.recommendations.length, icon: 'NS', tone: 'from-violet-200 to-white' },
-          ].map(item => (
-            <div key={item.label} className="card">
-              <div className="flex items-center justify-between">
-                <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
-                <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
-              </div>
-              <div className="mt-5 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
-              <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Current Breakdown</div>
+              <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Where your learning stands now</div>
             </div>
-          ))}
+            {latest?.levelLabel && (
+              <div className={`rounded-[16px] border px-4 py-3 text-sm font-semibold ${LEVEL_STYLES[latest.levelLabel] || LEVEL_STYLES.Beginner}`}>
+                {latest.levelLabel}
+              </div>
+            )}
+          </div>
+
+          {latest ? (
+            <>
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {[
+                  { label: 'Readiness', value: `${latest.score}%` },
+                  { label: 'Gap Count', value: latest.missingSkillsCount },
+                  { label: 'Roadmap Time', value: `${latest.estimatedWeeks}w` },
+                ].map(item => (
+                  <div key={item.label} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                    <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
+                    <div className="mt-3 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={categoryData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.18)" />
+                    <XAxis dataKey="name" tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                    <Tooltip
+                      contentStyle={{
+                        background: 'var(--surface-card)',
+                        border: '1px solid var(--border-soft)',
+                        borderRadius: 16,
+                        color: 'var(--text-main)',
+                      }}
+                      formatter={(value: number) => [`${value}%`, 'Coverage']}
+                    />
+                    <Bar dataKey="score" radius={8}>
+                      {categoryData.map((entry, index) => (
+                        <Cell key={index} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </>
+          ) : (
+            <div className="mt-6 rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+              Your category view will appear here after the first assessment.
+            </div>
+          )}
         </div>
       </section>
 
-      {(result.warnings.length > 0 || result.crossDomainHints.length > 0) && (
-        <section className="mt-8 grid gap-5 lg:grid-cols-2">
-          {result.warnings.length > 0 && (
-            <div className="card">
-              <div className="flex items-center gap-3">
-                <LogoBadge label="WR" className="h-10 w-10 text-[10px] bg-gradient-to-br from-zinc-200 to-white" />
-                <div>
-                  <div className="text-lg font-semibold text-[color:var(--text-main)]">Prerequisite Warnings</div>
-                  <div className="text-sm text-[color:var(--text-muted)]">Some selected skills depend on earlier concepts.</div>
-                </div>
-              </div>
-              <div className="mt-5 space-y-3">
-                {result.warnings.map((warning, index) => (
-                  <div key={index} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 text-sm text-[color:var(--text-soft)]">
-                    {warning.message}
-                  </div>
-                ))}
-              </div>
+      <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="card">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Recent Activity</div>
+              <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Latest paths you assessed</div>
             </div>
-          )}
+            <LogoBadge label="RC" className="h-10 w-10 text-[10px]" />
+          </div>
 
-          {result.crossDomainHints.length > 0 && (
-            <div className="card">
-              <div className="flex items-center gap-3">
-                <LogoBadge label="XD" className="h-10 w-10 text-[10px]" />
-                <div>
-                  <div className="text-lg font-semibold text-[color:var(--text-main)]">Cross-Domain Opportunities</div>
-                  <div className="text-sm text-[color:var(--text-muted)]">Your current strengths may transfer into adjacent paths.</div>
-                </div>
-              </div>
-              <div className="mt-5 space-y-3">
-                {result.crossDomainHints.map((hint, index) => (
-                  <div key={index} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
-                    <p className="text-sm text-[color:var(--text-soft)]">{hint.message}</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {hint.targetDomains.map(domain => (
-                        <span key={domain} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
-                          {domain}
-                        </span>
-                      ))}
+          <div className="mt-6 space-y-3">
+            {recentPaths.length > 0 ? (
+              recentPaths.map((entry, index) => (
+                <div key={`${entry.careerPathId}-${entry.createdAt}`} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="text-lg font-semibold text-[color:var(--text-main)]">{entry.careerPathName}</div>
+                      <div className="mt-1 text-sm text-[color:var(--text-muted)]">
+                        {entry.domain} • {new Date(entry.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div className="rounded-lg bg-[#25283b] px-3 py-1.5 text-sm font-semibold text-white">
+                      {entry.score}%
                     </div>
                   </div>
-                ))}
+                  <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                    <div className="rounded-lg bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Known: {entry.knownCount}/{entry.totalSkills}</div>
+                    <div className="rounded-lg bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Gaps: {entry.missingSkillsCount}</div>
+                    <div className="rounded-lg bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Plan: {entry.estimatedWeeks} weeks</div>
+                  </div>
+                  {index === 0 && (
+                    <button
+                      type="button"
+                      onClick={() => navigate('/')}
+                      className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#25283b] px-4 py-2 text-sm font-medium text-white"
+                    >
+                      Update your skills
+                    </button>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+                No assessments saved yet.
               </div>
-            </div>
-          )}
-        </section>
-      )}
-
-      <section className="mt-8 card">
-        <div className="flex flex-wrap gap-3 border-b border-[color:var(--border-soft)] pb-4">
-          {([
-            { id: 'insights', label: 'Insights', count: result.insights.length },
-            { id: 'gaps', label: 'Skill Gaps', count: result.missingSkills.length },
-            { id: 'recommendations', label: 'Next Steps', count: result.recommendations.length },
-          ] as const).map(tab => (
-            <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-                  activeTab === tab.id
-                    ? 'bg-[#25283b] text-white shadow-[0_12px_28px_rgba(20,29,58,0.18)]'
-                    : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)] hover:bg-white/10'
-                }`}
-              >
-                {tab.label} <span className="ml-2 text-xs opacity-70">{tab.count}</span>
-            </button>
-          ))}
+            )}
+          </div>
         </div>
 
-        <div className="mt-6">
-          {activeTab === 'insights' && (
-            <div className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
-                {[
-                  { label: 'Foundation', pct: result.categoryProfile.foundationalPct, tone: 'from-zinc-300 to-zinc-400' },
-                  { label: 'Core', pct: result.categoryProfile.corePct, tone: 'from-indigo-300 to-indigo-400' },
-                  { label: 'Advanced', pct: result.categoryProfile.advancedPct, tone: 'from-violet-200 to-violet-400' },
-                ].map(item => (
-                  <div key={item.label} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-                    <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">{item.label}</div>
-                    <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{item.pct}%</div>
-                    <div className="progress-bar mt-4">
-                      <div className={`progress-fill bg-gradient-to-r ${item.tone}`} style={{ width: `${item.pct}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {result.insights.length === 0 ? (
-                <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
-                  No insights generated yet. Select more skills for deeper analysis.
+        <div className="space-y-5">
+          <div className="card">
+            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Profile Snapshot</div>
+            <div className="mt-4 space-y-3">
+              {[
+                { label: 'Current path', value: latest?.careerPathName || 'Not assessed yet' },
+                { label: 'Recommendations', value: latest ? String(latest.recommendationsCount) : '0' },
+                { label: 'Best readiness', value: `${topScore}%` },
+                { label: 'Explored domains', value: String(domainsExplored) },
+              ].map(item => (
+                <div key={item.label} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3">
+                  <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
+                  <div className="mt-2 text-base font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 </div>
-              ) : (
-                result.insights.map((insight, index) => (
-                  <div key={index} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-                    <div className="text-sm font-semibold uppercase tracking-[0.22em] text-[color:var(--text-muted)]">{insight.type}</div>
-                    <p className="mt-3 leading-7 text-[color:var(--text-soft)]">{insight.message}</p>
-                  </div>
-                ))
-              )}
+              ))}
             </div>
-          )}
+          </div>
 
-          {activeTab === 'gaps' && (
-            result.missingSkills.length === 0 ? (
-              <div className="text-center">
-                <LogoBadge label="OK" className="mx-auto h-14 w-14 text-sm bg-gradient-to-br from-emerald-500 to-teal-500" />
-                <p className="mt-4 text-xl font-semibold text-[color:var(--text-main)]">No skill gaps found</p>
-                <p className="mt-2 text-[color:var(--text-muted)]">You have already covered the skills tracked for this path.</p>
-              </div>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {result.missingSkills.map(skill => (
-                  <div key={skill._id} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <span className={`badge ${IMPORTANCE_COLOR[skill.importanceLevel]}`}>{skill.importanceLevel}</span>
-                      <span className="text-xs text-[color:var(--text-muted)]">{skill.category}</span>
-                    </div>
-                    <div className="mt-4 text-lg font-semibold text-[color:var(--text-main)]">{skill.name}</div>
-                    {skill.tooltip?.whyItMatters && (
-                      <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">{skill.tooltip.whyItMatters}</p>
-                    )}
-                    <div className="mt-4 text-xs text-[color:var(--text-muted)]">Weight {skill.weight}/10</div>
-                  </div>
-                ))}
-              </div>
-            )
-          )}
-
-          {activeTab === 'recommendations' && (
-            result.recommendations.length === 0 ? (
-              <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-center text-[color:var(--text-muted)]">
-                All prerequisites are covered. Keep practicing and refining depth.
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {result.recommendations.map((rec, index) => (
-                  <div key={rec._id} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-200 to-white text-sm font-semibold text-[#171925]">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <div className="text-lg font-semibold text-[color:var(--text-main)]">{rec.name}</div>
-                          <span className={`badge ${IMPORTANCE_COLOR[rec.importanceLevel]}`}>{rec.importanceLevel}</span>
-                        </div>
-                        <p className="mt-2 text-sm leading-7 text-[color:var(--text-soft)]">{rec.reason}</p>
-                        {rec.tooltip?.whereUsed && (
-                          <p className="mt-2 text-xs text-[color:var(--text-muted)]">Used in: {rec.tooltip.whereUsed}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )
-          )}
+          <div className="card">
+            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Next Action</div>
+            <div className="mt-3 text-xl font-semibold text-[color:var(--text-main)]">
+              {latest ? 'Continue improving your latest path' : 'Start your first assessment'}
+            </div>
+            <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">
+              {latest
+                ? `You currently know ${latest.knownCount} out of ${latest.totalSkills} tracked skills for ${latest.careerPathName}.`
+                : 'Choose a career path, mark the skills you already know, and this profile page will begin tracking your learning progress.'}
+            </p>
+            <button type="button" onClick={() => navigate('/')} className="btn-primary mt-5 w-full">
+              {latest ? 'Open Career Paths' : 'Start Assessment'}
+            </button>
+          </div>
         </div>
       </section>
     </div>
