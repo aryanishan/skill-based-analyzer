@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AuthPage from './pages/AuthPage';
+import HomePage from './pages/HomePage';
 import CareerSelectPage from './pages/CareerSelectPage';
 import SkillInputPage from './pages/SkillInputPage';
 import DashboardPage from './pages/DashboardPage';
@@ -28,7 +29,8 @@ export default function App() {
       <main className={showSidebar ? 'min-h-screen pt-16 md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
+          <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+          <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
           <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
           <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />

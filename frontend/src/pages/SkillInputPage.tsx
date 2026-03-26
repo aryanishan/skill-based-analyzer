@@ -117,7 +117,7 @@ export default function SkillInputPage() {
       <section className="card radial-panel">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-4">
-            <button onClick={() => navigate('/')} className="text-sm font-medium text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]">
+            <button onClick={() => navigate('/career-paths')} className="text-sm font-medium text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]">
               {'<-'} Back to Career Paths
             </button>
             <div className="flex items-start gap-4">

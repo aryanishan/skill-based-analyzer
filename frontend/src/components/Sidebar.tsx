@@ -5,9 +5,9 @@ import { useTheme } from '../context/ThemeContext';
 import LogoBadge from './LogoBadge';
 
 const navItems = [
-  { label: 'Career Paths', path: '/', icon: 'grid' },
+  { label: 'Home', path: '/', icon: 'home' },
+  { label: 'Career Paths', path: '/career-paths', icon: 'grid' },
   { label: 'Dashboard', path: '/dashboard', icon: 'chart' },
-  { label: 'Skill Input', path: '/skills', icon: 'layers' },
 ];
 
 function SidebarIcon({ type }: { type: string }) {
@@ -20,6 +20,15 @@ function SidebarIcon({ type }: { type: string }) {
         <rect x="14" y="4" width="6" height="6" rx="1.5" />
         <rect x="4" y="14" width="6" height="6" rx="1.5" />
         <rect x="14" y="14" width="6" height="6" rx="1.5" />
+      </svg>
+    );
+  }
+
+  if (type === 'home') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.8">
+        <path d="M4 10.5 12 4l8 6.5" />
+        <path d="M6 9.5V20h12V9.5" />
       </svg>
     );
   }
@@ -136,7 +145,7 @@ export default function Sidebar() {
           return (
             <Link
               key={item.path}
-              to={item.path === '/skills' ? (location.pathname.startsWith('/skills') ? location.pathname : '/') : item.path}
+              to={item.path}
               onClick={() => setOpen(false)}
               className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`}
               title={item.label}

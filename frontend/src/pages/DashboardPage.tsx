@@ -361,7 +361,7 @@ export default function DashboardPage() {
                   {index === 0 && (
                     <button
                       type="button"
-                      onClick={() => navigate('/')}
+                      onClick={() => navigate('/career-paths')}
                       className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#25283b] px-4 py-2 text-sm font-medium text-white"
                     >
                       Update your skills
@@ -405,7 +405,7 @@ export default function DashboardPage() {
                 ? `You currently know ${latest.knownCount} out of ${latest.totalSkills} tracked skills for ${latest.careerPathName}.`
                 : 'Choose a career path, mark the skills you already know, and this profile page will begin tracking your learning progress.'}
             </p>
-            <button type="button" onClick={() => navigate('/')} className="btn-primary mt-5 w-full">
+            <button type="button" onClick={() => navigate('/career-paths')} className="btn-primary mt-5 w-full">
               {latest ? 'Open Career Paths' : 'Start Assessment'}
             </button>
           </div>
