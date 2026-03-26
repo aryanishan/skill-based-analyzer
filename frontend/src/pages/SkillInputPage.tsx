@@ -131,14 +131,14 @@ export default function SkillInputPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:w-[320px] lg:grid-cols-1">
-            <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
+            <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
               <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Selected Skills</div>
               <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{selectedCount} / {totalCount}</div>
               <div className="progress-bar mt-4">
                 <div className="progress-fill bg-gradient-to-r from-slate-300 via-indigo-300 to-violet-300" style={{ width: `${completionPct}%` }} />
               </div>
             </div>
-            <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
+            <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
               <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">How it works</div>
               <div className="mt-3 space-y-2 text-sm leading-6 text-[color:var(--text-soft)]">
                 <p>1 click: basic</p>
@@ -158,7 +158,7 @@ export default function SkillInputPage() {
               <button
                 key={item}
                 onClick={() => setFilter(item)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                className={`rounded-[10px] px-4 py-2 text-sm font-medium transition ${
                   filter === item
                     ? 'bg-[#25283b] text-white'
                     : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)]'
@@ -207,7 +207,7 @@ export default function SkillInputPage() {
                         </button>
 
                         {tooltip?._id === skill._id && skill.tooltip && (
-                          <div className="absolute bottom-full left-0 z-20 mb-3 w-72 rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 shadow-2xl">
+                          <div className="absolute bottom-full left-0 z-20 mb-3 w-72 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 shadow-2xl">
                             <div className="text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
                             {skill.tooltip.whyItMatters && (
                               <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
@@ -235,7 +235,7 @@ export default function SkillInputPage() {
             <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Proficiency Key</div>
             <div className="mt-4 space-y-3">
               {Object.entries(PROFICIENCY_LABEL).map(([key, label]) => (
-                <div key={key} className={`rounded-lg border px-4 py-3 text-sm font-medium ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
+                <div key={key} className={`rounded-[10px] border px-4 py-3 text-sm font-medium ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
                   {label}
                 </div>
               ))}

@@ -91,7 +91,7 @@ export default function CareerSelectPage() {
               <button
                 key={domain}
                 onClick={() => setSelectedDomain(domain)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                className={`rounded-[10px] px-4 py-2 text-sm font-medium transition-all ${
                   active
                     ? 'bg-[#25283b] text-white shadow-[0_12px_28px_rgba(20,29,58,0.18)]'
                     : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)] hover:bg-white/10'
@@ -165,7 +165,7 @@ function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }
 
       <div className="mt-5 flex flex-wrap gap-2">
         {path.tags.slice(0, 4).map(tag => (
-          <span key={tag} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
+          <span key={tag} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
             {tag}
           </span>
         ))}

@@ -183,7 +183,7 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div className="theme-chip">User Profile</div>
             <div className="flex items-start gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-[18px] bg-[#25283b] text-xl font-semibold text-white shadow-[0_14px_28px_rgba(20,29,58,0.18)]">
+              <div className="flex h-16 w-16 items-center justify-center rounded-[10px] bg-[#25283b] text-xl font-semibold text-white shadow-[0_14px_28px_rgba(20,29,58,0.18)]">
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div>
@@ -198,13 +198,13 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <span className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
+              <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
                 Average score: {averageScore}%
               </span>
-              <span className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
+              <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
                 Best result: {topScore}%
               </span>
-              <span className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
+              <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
                 Last path: {latest?.careerPathName || 'No assessment yet'}
               </span>
             </div>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-2 gap-4">
             {profileStats.map(item => (
-              <div key={item.label} className="metric-tile rounded-[16px] p-4">
+              <div key={item.label} className="metric-tile rounded-[10px] p-4">
                 <div className="flex items-center justify-between">
                   <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
                   <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
@@ -252,7 +252,7 @@ export default function DashboardPage() {
                     contentStyle={{
                       background: 'var(--surface-card)',
                       border: '1px solid var(--border-soft)',
-                      borderRadius: 16,
+                      borderRadius: 10,
                       color: 'var(--text-main)',
                     }}
                     formatter={(value: number) => [`${value}%`, 'Readiness']}
@@ -262,7 +262,7 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="mt-6 rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+            <div className="mt-6 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
               No profile data yet. Open a career path, select your skills, and run an analysis to populate this page.
             </div>
           )}
@@ -275,7 +275,7 @@ export default function DashboardPage() {
               <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Where your learning stands now</div>
             </div>
             {latest?.levelLabel && (
-              <div className={`rounded-[16px] border px-4 py-3 text-sm font-semibold ${LEVEL_STYLES[latest.levelLabel] || LEVEL_STYLES.Beginner}`}>
+              <div className={`rounded-[10px] border px-4 py-3 text-sm font-semibold ${LEVEL_STYLES[latest.levelLabel] || LEVEL_STYLES.Beginner}`}>
                 {latest.levelLabel}
               </div>
             )}
@@ -289,7 +289,7 @@ export default function DashboardPage() {
                   { label: 'Gap Count', value: latest.missingSkillsCount },
                   { label: 'Roadmap Time', value: `${latest.estimatedWeeks}w` },
                 ].map(item => (
-                  <div key={item.label} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                  <div key={item.label} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
                     <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
                     <div className="mt-3 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
                   </div>
@@ -306,12 +306,12 @@ export default function DashboardPage() {
                       contentStyle={{
                         background: 'var(--surface-card)',
                         border: '1px solid var(--border-soft)',
-                        borderRadius: 16,
+                        borderRadius: 10,
                         color: 'var(--text-main)',
                       }}
                       formatter={(value: number) => [`${value}%`, 'Coverage']}
                     />
-                    <Bar dataKey="score" radius={8}>
+                    <Bar dataKey="score" radius={6}>
                       {categoryData.map((entry, index) => (
                         <Cell key={index} fill={entry.fill} />
                       ))}
@@ -321,7 +321,7 @@ export default function DashboardPage() {
               </div>
             </>
           ) : (
-            <div className="mt-6 rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+            <div className="mt-6 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
               Your category view will appear here after the first assessment.
             </div>
           )}
@@ -341,7 +341,7 @@ export default function DashboardPage() {
           <div className="mt-6 space-y-3">
             {recentPaths.length > 0 ? (
               recentPaths.map((entry, index) => (
-                <div key={`${entry.careerPathId}-${entry.createdAt}`} className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                <div key={`${entry.careerPathId}-${entry.createdAt}`} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="text-lg font-semibold text-[color:var(--text-main)]">{entry.careerPathName}</div>
@@ -349,20 +349,20 @@ export default function DashboardPage() {
                         {entry.domain} • {new Date(entry.createdAt).toLocaleDateString()}
                       </div>
                     </div>
-                    <div className="rounded-lg bg-[#25283b] px-3 py-1.5 text-sm font-semibold text-white">
+                    <div className="rounded-[10px] bg-[#25283b] px-3 py-1.5 text-sm font-semibold text-white">
                       {entry.score}%
                     </div>
                   </div>
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-lg bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Known: {entry.knownCount}/{entry.totalSkills}</div>
-                    <div className="rounded-lg bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Gaps: {entry.missingSkillsCount}</div>
-                    <div className="rounded-lg bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Plan: {entry.estimatedWeeks} weeks</div>
+                    <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Known: {entry.knownCount}/{entry.totalSkills}</div>
+                    <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Gaps: {entry.missingSkillsCount}</div>
+                    <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Plan: {entry.estimatedWeeks} weeks</div>
                   </div>
                   {index === 0 && (
                     <button
                       type="button"
                       onClick={() => navigate('/career-paths')}
-                      className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#25283b] px-4 py-2 text-sm font-medium text-white"
+                      className="mt-4 inline-flex items-center gap-2 rounded-[10px] bg-[#25283b] px-4 py-2 text-sm font-medium text-white"
                     >
                       Update your skills
                     </button>
@@ -370,7 +370,7 @@ export default function DashboardPage() {
                 </div>
               ))
             ) : (
-              <div className="rounded-[16px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+              <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
                 No assessments saved yet.
               </div>
             )}
@@ -387,7 +387,7 @@ export default function DashboardPage() {
                 { label: 'Best readiness', value: `${topScore}%` },
                 { label: 'Explored domains', value: String(domainsExplored) },
               ].map(item => (
-                <div key={item.label} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3">
+                <div key={item.label} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3">
                   <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
                   <div className="mt-2 text-base font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 </div>

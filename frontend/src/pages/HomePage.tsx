@@ -95,7 +95,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-2.5">
               {['Career discovery', 'Skill tracking', 'Profile dashboard', 'Readiness insights'].map(item => (
-                <span key={item} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
+                <span key={item} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
                   {item}
                 </span>
               ))}
@@ -117,7 +117,7 @@ export default function HomePage() {
               { label: 'Tracked Skills', value: stats.skillsTracked || '100+', icon: 'SK', tone: 'from-violet-200 to-white' },
               { label: 'Avg Timeline', value: stats.avgTimeline, icon: 'TM', tone: 'from-slate-200 to-indigo-200' },
             ].map(item => (
-              <div key={item.label} className="metric-tile rounded-[14px] p-3.5">
+              <div key={item.label} className="metric-tile rounded-[10px] p-3.5">
                 <div className="flex items-center justify-between">
                   <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] bg-gradient-to-br ${item.tone}`} />
                   <div className={`h-2 w-12 rounded-full bg-gradient-to-r ${item.tone}`} />
@@ -148,7 +148,7 @@ export default function HomePage() {
           </h2>
           <div className="mt-5 grid gap-3">
             {workflow.map(item => (
-              <div key={item.step} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
+              <div key={item.step} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
                 <div className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">{item.step}</div>
                 <div className="mt-1.5 text-base font-semibold text-[color:var(--text-main)]">{item.title}</div>
                 <p className="mt-1.5 text-sm leading-6 text-[color:var(--text-soft)]">{item.text}</p>
@@ -165,7 +165,7 @@ export default function HomePage() {
             </h2>
             <div className="mt-5 space-y-2.5">
               {featureList.map(item => (
-                <div key={item} className="flex items-start gap-3 rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-2.5">
+                <div key={item} className="flex items-start gap-3 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-2.5">
                   <LogoBadge label="OK" className="mt-0.5 h-7 w-7 text-[7px]" />
                   <span className="text-sm leading-6 text-[color:var(--text-soft)]">{item}</span>
                 </div>
@@ -186,7 +186,7 @@ export default function HomePage() {
                 { label: 'Choose better', value: 'Compare multiple career directions' },
                 { label: 'Track growth', value: 'Use the profile dashboard to monitor progress' },
               ].map(item => (
-                <div key={item.label} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
+                <div key={item.label} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
                   <div className="text-sm font-semibold text-[color:var(--text-main)]">{item.label}</div>
                   <div className="mt-2 text-sm leading-6 text-[color:var(--text-soft)]">{item.value}</div>
                 </div>
@@ -219,7 +219,7 @@ export default function HomePage() {
               'Structured dashboard insights',
               'Smarter next-step decisions',
             ].map(item => (
-              <div key={item} className="rounded-[14px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-3 text-sm font-medium text-[color:var(--text-soft)]">
+              <div key={item} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-3 text-sm font-medium text-[color:var(--text-soft)]">
                 {item}
               </div>
             ))}

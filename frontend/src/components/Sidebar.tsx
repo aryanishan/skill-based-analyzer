@@ -107,7 +107,7 @@ export default function Sidebar() {
   };
 
   const sidebarContent = (
-    <div className="sidebar-shell flex h-full flex-col rounded-[22px] p-4 text-white">
+    <div className="sidebar-shell flex h-full flex-col rounded-[10px] p-4 text-white">
       <div className="flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-3">
           <LogoBadge label="CR" className="h-10 w-10 text-[11px] bg-gradient-to-br from-white to-slate-300 text-[#171925]" />
@@ -120,7 +120,7 @@ export default function Sidebar() {
         {open && (
           <button
             type="button"
-            className="rounded-lg border border-white/10 bg-white/5 p-2 text-[#c5cbe0]"
+            className="rounded-[10px] border border-white/10 bg-white/5 p-2 text-[#c5cbe0]"
             onClick={() => setOpen(false)}
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -133,7 +133,7 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-5 hidden xl:block">
-        <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-3 text-sm text-[#8e96b4]">
+        <div className="flex items-center gap-2 rounded-[10px] bg-white/5 px-3 py-3 text-sm text-[#8e96b4]">
           <SidebarIcon type="search" />
           <span>Search pages...</span>
         </div>
@@ -165,9 +165,9 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto">
-        <div className="mt-6 rounded-[18px] border border-white/8 bg-white/5 p-3">
+        <div className="mt-6 rounded-[10px] border border-white/8 bg-white/5 p-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-sm font-semibold text-[#171925]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-white text-sm font-semibold text-[#171925]">
               {user.name.charAt(0).toUpperCase()}
             </div>
             <div className="hidden min-w-0 flex-1 xl:block">
@@ -194,7 +194,7 @@ export default function Sidebar() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-50 rounded-xl border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3 text-[color:var(--text-main)] shadow-lg md:hidden"
+        className="fixed left-4 top-4 z-50 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3 text-[color:var(--text-main)] shadow-lg md:hidden"
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M5 7h14" />
@@ -203,7 +203,7 @@ export default function Sidebar() {
         </svg>
       </button>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden px-4 py-5 md:block md:w-[96px] xl:w-[292px]">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden px-4 pb-5 pt-4 md:block md:w-[96px] xl:w-[292px]">
         {sidebarContent}
       </aside>
 
@@ -215,7 +215,7 @@ export default function Sidebar() {
             onClick={() => setOpen(false)}
             aria-label="Close sidebar"
           />
-          <div className="relative h-full w-[288px] max-w-[85vw] px-4 py-5">
+          <div className="relative h-full w-[288px] max-w-[85vw] px-4 pb-5 pt-4">
             {sidebarContent}
           </div>
         </div>
