@@ -26,7 +26,7 @@ export default function App() {
   return (
     <div className="app-shell">
       {showSidebar && <Sidebar />}
-      <main className={showSidebar ? 'min-h-screen pt-16 md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
+      <main className={showSidebar ? 'min-h-screen pt-4 md:pt-0 md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
         <Routes>
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
