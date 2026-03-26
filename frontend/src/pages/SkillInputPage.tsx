@@ -1,42 +1,51 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { getCareerPath } from '../api';
-import { CareerPath, Skill, KnownSkill } from '../types';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { getCareerPath } from '../api';
 import LogoBadge from '../components/LogoBadge';
+import { CareerPath, KnownSkill, Skill } from '../types';
 
 const PROFICIENCY_CYCLE: Array<KnownSkill['proficiency'] | null> = [null, 'basic', 'intermediate', 'advanced'];
-const PROFICIENCY_LABEL: Record<string, string> = { basic: 'Basic', intermediate: 'Mid', advanced: 'Expert' };
-const PROFICIENCY_COLOR: Record<string, string> = {
-  basic: 'border-accent-amber/70 bg-accent-amber/10 text-accent-amber',
-  intermediate: 'border-primary-500/70 bg-primary-500/10 text-primary-400',
-  advanced: 'border-accent-green/70 bg-accent-green/10 text-accent-green',
+const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
+  basic: 'Basic',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
 };
-const CATEGORY_ORDER = ['Foundation', 'Core', 'Advanced'];
-const CATEGORY_COLOR: Record<string, string> = {
-  Foundation: 'text-accent-amber border-accent-amber/30',
-  Core: 'text-primary-400 border-primary-500/30',
-  Advanced: 'text-accent-green border-accent-green/30',
+
+const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
+  basic: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300',
+  intermediate: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300',
+  advanced: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
 };
-const IMPORTANCE_COLOR: Record<string, string> = {
-  critical: 'text-rose-400',
-  recommended: 'text-primary-400',
-  optional: 'text-gray-500',
+
+const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; bar: string; icon: string }> = {
+  Foundation: {
+    pill: 'bg-amber-500/14 text-amber-700 dark:text-amber-300 border border-amber-500/20',
+    bar: 'from-amber-500 to-orange-500',
+    icon: 'FD',
+  },
+  Core: {
+    pill: 'bg-sky-500/14 text-sky-700 dark:text-sky-300 border border-sky-500/20',
+    bar: 'from-sky-500 to-cyan-500',
+    icon: 'CR',
+  },
+  Advanced: {
+    pill: 'bg-emerald-500/14 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20',
+    bar: 'from-emerald-500 to-teal-500',
+    icon: 'AD',
+  },
 };
 
 export default function SkillInputPage() {
   const { pathId } = useParams<{ pathId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const [careerPath, setCareerPath] = useState<CareerPath | null>(
-    (location.state as any)?.careerPath || null
-  );
+  const [careerPath, setCareerPath] = useState<CareerPath | null>((location.state as any)?.careerPath || null);
   const [loading, setLoading] = useState(!careerPath);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [knownSkills, setKnownSkills] = useState<Map<string, KnownSkill['proficiency']>>(new Map());
   const [filter, setFilter] = useState<string>('All');
   const [tooltip, setTooltip] = useState<Skill | null>(null);
-  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (pathId) fetchPath(pathId);
@@ -59,233 +68,185 @@ export default function SkillInputPage() {
       const next = new Map(prev);
       const current = next.get(skillId);
       const idx = PROFICIENCY_CYCLE.indexOf(current || null);
-      const nextVal = PROFICIENCY_CYCLE[(idx + 1) % PROFICIENCY_CYCLE.length];
-      if (nextVal === null) next.delete(skillId);
-      else next.set(skillId, nextVal);
+      const nextValue = PROFICIENCY_CYCLE[(idx + 1) % PROFICIENCY_CYCLE.length];
+      if (nextValue === null) next.delete(skillId);
+      else next.set(skillId, nextValue);
       return next;
     });
   }, []);
 
-  const skillsByCategory = CATEGORY_ORDER.reduce((acc, cat) => {
-    const filtered = skills.filter(s => s.category === cat);
-    if (filter !== 'All' && filter !== cat) return acc;
-    if (filtered.length) acc[cat] = filtered;
-    return acc;
-  }, {} as Record<string, Skill[]>);
-
   const selectedCount = knownSkills.size;
   const totalCount = skills.length;
   const completionPct = totalCount ? Math.round((selectedCount / totalCount) * 100) : 0;
+
+  const skillsByCategory = (['Foundation', 'Core', 'Advanced'] as const).reduce((acc, category) => {
+    const list = skills.filter(skill => skill.category === category);
+    if (filter !== 'All' && filter !== category) return acc;
+    if (list.length) acc[category] = list;
+    return acc;
+  }, {} as Record<'Foundation' | 'Core' | 'Advanced', Skill[]>);
 
   const handleAnalyze = () => {
     if (knownSkills.size === 0) {
       toast.error('Please select at least one skill to analyze.');
       return;
     }
-    const knownSkillsArr = Array.from(knownSkills.entries()).map(([skillId, proficiency]) => ({
-      skillId, proficiency
-    }));
+
     navigate('/dashboard', {
-      state: { careerPathId: pathId, knownSkills: knownSkillsArr, careerPath }
+      state: {
+        careerPathId: pathId,
+        knownSkills: Array.from(knownSkills.entries()).map(([skillId, proficiency]) => ({ skillId, proficiency })),
+        careerPath,
+      },
     });
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-60">
-        <div className="w-8 h-8 border-2 border-primary-500/40 border-t-primary-500 rounded-full animate-spin" />
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="card flex items-center gap-4">
+          <LogoBadge label="LD" className="h-10 w-10 text-[10px]" />
+          <div className="text-[color:var(--text-soft)]">Loading career path details...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8 animate-fade-in">
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-4 transition-colors"
-        >
-          {'<-'} Back to Career Paths
-        </button>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex items-center gap-4">
-            <LogoBadge label={careerPath?.icon || 'CR'} className="w-14 h-14 text-sm shadow-xl shadow-primary-600/20" />
-            <div>
-              <h1 className="text-2xl font-bold text-white">{careerPath?.name}</h1>
-              <p className="text-gray-400 text-sm">{careerPath?.description}</p>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <section className="card radial-panel">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="space-y-4">
+            <button onClick={() => navigate('/')} className="text-sm font-medium text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]">
+              {'<-'} Back to Career Paths
+            </button>
+            <div className="flex items-start gap-4">
+              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 text-sm shadow-lg shadow-sky-500/15" />
+              <div>
+                <div className="theme-chip">Skill Selection</div>
+                <h1 className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{careerPath?.name}</h1>
+                <p className="mt-2 max-w-2xl text-[color:var(--text-soft)]">{careerPath?.description}</p>
+              </div>
             </div>
           </div>
-          <div className="sm:ml-auto card py-3 px-5 text-center min-w-[160px]">
-            <div className="text-2xl font-bold gradient-text">{selectedCount} / {totalCount}</div>
-            <div className="text-xs text-gray-500 mt-0.5">Skills Selected</div>
-            <div className="progress-bar mt-2">
-              <div className="progress-fill bg-gradient-to-r from-primary-500 to-accent-purple" style={{ width: `${completionPct}%` }} />
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:w-[320px] lg:grid-cols-1">
+            <div className="rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Selected Skills</div>
+              <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{selectedCount} / {totalCount}</div>
+              <div className="progress-bar mt-4">
+                <div className="progress-fill bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500" style={{ width: `${completionPct}%` }} />
+              </div>
+            </div>
+            <div className="rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">How it works</div>
+              <div className="mt-3 space-y-2 text-sm leading-6 text-[color:var(--text-soft)]">
+                <p>1 click: basic</p>
+                <p>2 clicks: intermediate</p>
+                <p>3 clicks: advanced</p>
+                <p>4 clicks: deselect</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="glass border border-primary-500/20 rounded-xl p-4 mb-6 text-sm animate-fade-in">
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-6">
-          <span className="text-gray-300"><strong className="text-white">Click once</strong> = Basic</span>
-          <span className="text-gray-300"><strong className="text-white">Click twice</strong> = Intermediate</span>
-          <span className="text-gray-300"><strong className="text-white">Click three times</strong> = Expert</span>
-          <span className="text-gray-300"><strong className="text-white">Click again</strong> = Deselect</span>
-          <span className="text-gray-300"><strong className="text-white">Hover</strong> = Details</span>
-        </div>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1">
-          <div className="flex gap-2 mb-6 flex-wrap">
-            {['All', ...CATEGORY_ORDER].map(cat => (
+      <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="space-y-6">
+          <div className="card flex flex-wrap gap-3">
+            {['All', 'Foundation', 'Core', 'Advanced'].map(item => (
               <button
-                key={cat}
-                onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  filter === cat
-                    ? 'bg-gradient-to-r from-primary-600 to-accent-purple text-white'
-                    : 'glass text-gray-400 hover:text-white'
+                key={item}
+                onClick={() => setFilter(item)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  filter === item
+                    ? 'bg-[color:var(--text-main)] text-[color:var(--bg-main)]'
+                    : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)]'
                 }`}
               >
-                {cat}
+                {item}
               </button>
             ))}
           </div>
 
-          {Object.entries(skillsByCategory).map(([category, catSkills]) => (
-            <div key={category} className="mb-8 animate-slide-up">
-              <div className="flex items-center gap-3 mb-4">
-                <span className={`text-sm font-bold border rounded-lg px-3 py-1 ${CATEGORY_COLOR[category]}`}>
-                  {category}
-                </span>
-                <span className="text-xs text-gray-500">
-                  {catSkills.filter(s => knownSkills.has(s._id)).length} / {catSkills.length} selected
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2.5">
-                {catSkills.map(skill => {
-                  const proficiency = knownSkills.get(skill._id);
-                  const isSelected = !!proficiency;
-                  return (
-                    <div key={skill._id} className="relative group">
-                      <button
-                        onMouseEnter={() => setTooltip(skill)}
-                        onMouseLeave={() => setTooltip(null)}
-                        onClick={() => toggleSkill(skill._id)}
-                        className={`tag-skill transition-all duration-200 ${
-                          isSelected
-                            ? PROFICIENCY_COLOR[proficiency!]
-                            : 'border-surface-600 bg-surface-800/60 text-gray-400 hover:border-surface-500 hover:text-gray-200 hover:bg-surface-700/60'
-                        }`}
-                      >
-                        <span className={`text-[10px] font-bold ${IMPORTANCE_COLOR[skill.importanceLevel]}`}>
-                          {skill.importanceLevel === 'critical' ? 'CR' : skill.importanceLevel === 'recommended' ? 'RC' : 'OP'}
-                        </span>
-                        <span>{skill.name}</span>
-                        {isSelected && (
-                          <span className="text-[10px] font-bold opacity-80">
-                            {PROFICIENCY_LABEL[proficiency!]}
-                          </span>
-                        )}
-                      </button>
-                      {tooltip?._id === skill._id && skill.tooltip && (
-                        <div className="absolute z-50 bottom-full left-0 mb-2 w-64 glass rounded-xl p-3 shadow-2xl border border-white/15 animate-fade-in pointer-events-none">
-                          <p className="font-semibold text-white text-sm mb-1">{skill.name}</p>
-                          {skill.tooltip.whyItMatters && (
-                            <p className="text-xs text-gray-300 mb-1">
-                              <span className="text-primary-400">Why:</span> {skill.tooltip.whyItMatters}
-                            </p>
-                          )}
-                          {skill.tooltip.whereUsed && (
-                            <p className="text-xs text-gray-300">
-                              <span className="text-accent-green">Used in:</span> {skill.tooltip.whereUsed}
-                            </p>
-                          )}
-                          <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/8">
-                            <span className={`text-[10px] font-bold ${IMPORTANCE_COLOR[skill.importanceLevel]}`}>
-                              {skill.importanceLevel.toUpperCase()}
-                            </span>
-                            <span className="text-gray-500 text-[10px]">Weight: {skill.weight}/10</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
+          {Object.entries(skillsByCategory).map(([category, categorySkills]) => {
+            const style = CATEGORY_STYLE[category as keyof typeof CATEGORY_STYLE];
 
-        <div className="lg:w-64 flex-shrink-0">
-          <div className="sticky top-24 space-y-4">
-            <div className="card">
-              <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-3">Importance</p>
-              <div className="space-y-2">
-                {[
-                  { key: 'critical', label: 'Critical', icon: 'CR', color: 'text-rose-400' },
-                  { key: 'recommended', label: 'Recommended', icon: 'RC', color: 'text-primary-400' },
-                  { key: 'optional', label: 'Optional', icon: 'OP', color: 'text-gray-500' },
-                ].map(item => (
-                  <div key={item.key} className="flex items-center gap-2 text-sm">
-                    <span className={`font-bold ${item.color}`}>{item.icon}</span>
-                    <span className="text-gray-400">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="border-t border-white/8 mt-4 pt-4">
-                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-3">Proficiency</p>
-                <div className="space-y-2">
-                  {Object.entries(PROFICIENCY_COLOR).map(([key, colorClass]) => (
-                    <div key={key} className={`flex items-center gap-2 text-xs rounded-lg px-2 py-1 border ${colorClass}`}>
-                      <span className="font-semibold capitalize">{key}</span>
+            return (
+              <section key={category} className="card space-y-5">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${style.bar}`} />
+                    <div>
+                      <h2 className="text-xl font-semibold text-[color:var(--text-main)]">{category}</h2>
+                      <p className="text-sm text-[color:var(--text-muted)]">
+                        {categorySkills.filter(skill => knownSkills.has(skill._id)).length} of {categorySkills.length} selected
+                      </p>
                     </div>
-                  ))}
+                  </div>
+                  <span className={`badge ${style.pill}`}>{category} Layer</span>
                 </div>
-              </div>
-            </div>
 
-            <div className="card">
-              <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-3">Selection</p>
-              {CATEGORY_ORDER.map(cat => {
-                const catSkills = skills.filter(s => s.category === cat);
-                const selectedInCat = catSkills.filter(s => knownSkills.has(s._id)).length;
-                const pct = catSkills.length ? Math.round((selectedInCat / catSkills.length) * 100) : 0;
-                return (
-                  <div key={cat} className="mb-3">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-400">{cat}</span>
-                      <span className="text-gray-300">{selectedInCat}/{catSkills.length}</span>
-                    </div>
-                    <div className="progress-bar">
-                      <div className="progress-fill bg-gradient-to-r from-primary-500 to-accent-purple" style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                <div className="flex flex-wrap gap-3">
+                  {categorySkills.map(skill => {
+                    const proficiency = knownSkills.get(skill._id);
 
-            <button
-              onClick={handleAnalyze}
-              disabled={selectedCount === 0 || submitting}
-              className="btn-primary w-full text-center text-base py-4 shadow-xl shadow-primary-600/20"
-            >
-              {submitting ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Analyzing...
-                </span>
-              ) : (
-                `Analyze Readiness (${selectedCount})`
-              )}
-            </button>
-            {selectedCount === 0 && (
-              <p className="text-xs text-gray-500 text-center">Select at least one skill to proceed</p>
-            )}
-          </div>
+                    return (
+                      <div key={skill._id} className="relative">
+                        <button
+                          onMouseEnter={() => setTooltip(skill)}
+                          onMouseLeave={() => setTooltip(null)}
+                          onClick={() => toggleSkill(skill._id)}
+                          className={`tag-skill border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] text-[color:var(--text-soft)] hover:border-[color:var(--border-strong)] ${
+                            proficiency ? PROFICIENCY_STYLE[proficiency] : ''
+                          }`}
+                        >
+                          <span className="text-[10px] uppercase tracking-[0.16em] text-[color:var(--text-muted)]">{skill.importanceLevel.slice(0, 3)}</span>
+                          <span>{skill.name}</span>
+                          {proficiency && <span className="font-semibold">{PROFICIENCY_LABEL[proficiency]}</span>}
+                        </button>
+
+                        {tooltip?._id === skill._id && skill.tooltip && (
+                          <div className="absolute bottom-full left-0 z-20 mb-3 w-72 rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 shadow-2xl">
+                            <div className="text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
+                            {skill.tooltip.whyItMatters && (
+                              <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
+                                <span className="font-semibold text-sky-500">Why:</span> {skill.tooltip.whyItMatters}
+                              </p>
+                            )}
+                            {skill.tooltip.whereUsed && (
+                              <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
+                                <span className="font-semibold text-emerald-500">Used in:</span> {skill.tooltip.whereUsed}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
         </div>
-      </div>
+
+        <aside className="space-y-4">
+          <div className="card">
+            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Proficiency Key</div>
+            <div className="mt-4 space-y-3">
+              {Object.entries(PROFICIENCY_LABEL).map(([key, label]) => (
+                <div key={key} className={`rounded-2xl border px-4 py-3 text-sm font-medium ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
+                  {label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button onClick={handleAnalyze} className="btn-primary w-full">
+            Analyze Readiness ({selectedCount})
+          </button>
+        </aside>
+      </section>
     </div>
   );
 }

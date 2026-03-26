@@ -19,7 +19,7 @@ export default function App() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen">
+    <div className="app-shell">
       <Navbar />
       <Routes>
         <Route path="/auth" element={<AuthPage />} />

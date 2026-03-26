@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCareerPaths } from '../api';
-import { CareerPath } from '../types';
 import toast from 'react-hot-toast';
+import { getCareerPaths } from '../api';
 import LogoBadge from '../components/LogoBadge';
+import { CareerPath } from '../types';
 
 const DOMAINS = ['All', 'Software/IT', 'Core Engineering', 'Government Exams', 'General'];
-const DOMAIN_COLORS: Record<string, string> = {
-  'Software/IT': 'from-primary-600 to-accent-cyan',
-  'Core Engineering': 'from-amber-500 to-orange-600',
-  'Government Exams': 'from-accent-purple to-pink-600',
-  General: 'from-accent-green to-teal-600',
-};
-const DOMAIN_BG: Record<string, string> = {
-  'Software/IT': 'border-primary-500/30 hover:border-primary-400/60 hover:shadow-primary-500/10',
-  'Core Engineering': 'border-amber-500/30 hover:border-amber-400/60 hover:shadow-amber-500/10',
-  'Government Exams': 'border-accent-purple/30 hover:border-accent-purple/60 hover:shadow-purple-500/10',
-  General: 'border-accent-green/30 hover:border-accent-green/60 hover:shadow-green-500/10',
+
+const DOMAIN_STYLES: Record<string, { band: string; badge: string; icon: string }> = {
+  'Software/IT': {
+    band: 'from-sky-500 via-cyan-500 to-teal-500',
+    badge: 'bg-sky-500/12 text-sky-600 dark:text-sky-300 border border-sky-500/20',
+    icon: 'IT',
+  },
+  'Core Engineering': {
+    band: 'from-amber-500 via-orange-500 to-red-500',
+    badge: 'bg-amber-500/12 text-amber-700 dark:text-amber-300 border border-amber-500/20',
+    icon: 'CE',
+  },
+  'Government Exams': {
+    band: 'from-rose-500 via-orange-500 to-amber-500',
+    badge: 'bg-rose-500/12 text-rose-700 dark:text-rose-300 border border-rose-500/20',
+    icon: 'GX',
+  },
+  General: {
+    band: 'from-emerald-500 via-teal-500 to-cyan-500',
+    badge: 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20',
+    icon: 'GN',
+  },
 };
 
 export default function CareerSelectPage() {
@@ -41,163 +52,160 @@ export default function CareerSelectPage() {
     }
   };
 
-  const filtered = paths.filter(p => {
-    const matchDomain = selectedDomain === 'All' || p.domain === selectedDomain;
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filtered = paths.filter(path => {
+    const matchDomain = selectedDomain === 'All' || path.domain === selectedDomain;
+    const matchSearch = path.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      path.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchDomain && matchSearch;
   });
 
-  const grouped = DOMAINS.filter(d => d !== 'All').reduce((acc, domain) => {
-    const domainPaths = filtered.filter(p => p.domain === domain);
-    if (domainPaths.length) acc[domain] = domainPaths;
-    return acc;
-  }, {} as Record<string, CareerPath[]>);
-
-  const handleSelect = (path: CareerPath) => {
-    navigate(`/skills/${path._id}`, { state: { careerPath: path } });
-  };
+  const grouped = DOMAINS
+    .filter(domain => domain !== 'All')
+    .reduce((acc, domain) => {
+      const domainPaths = filtered.filter(path => path.domain === domain);
+      if (domainPaths.length) acc[domain] = domainPaths;
+      return acc;
+    }, {} as Record<string, CareerPath[]>);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <div className="text-center mb-12 animate-fade-in">
-        <div className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-sm text-primary-400 border border-primary-500/30 mb-6">
-          <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
-          Career Intelligence Platform
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-          <span className="text-white">Choose Your </span>
-          <span className="gradient-text">Career Path</span>
-        </h1>
-        <p className="text-gray-400 text-lg max-w-2xl mx-auto text-balance">
-          Select a path to analyze your readiness with our AI-powered evaluation engine. Get personalized insights, gap analysis, and a study roadmap.
-        </p>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
-        <div className="relative flex-1 max-w-md">
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">SR</span>
-          <input
-            type="text"
-            placeholder="Search paths or skills..."
-            className="input-field pl-10"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {DOMAINS.map(d => (
-            <button
-              key={d}
-              onClick={() => setSelectedDomain(d)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                selectedDomain === d
-                  ? 'bg-gradient-to-r from-primary-600 to-accent-purple text-white shadow-lg shadow-primary-600/20'
-                  : 'glass text-gray-400 hover:text-white hover:bg-white/8'
-              }`}
-            >
-              {d}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-        {[
-          { label: 'Career Paths', value: paths.length, icon: 'CP' },
-          { label: 'Domains', value: 4, icon: 'DM' },
-          { label: 'Skills Tracked', value: '100+', icon: 'SK' },
-          { label: 'Smart Insights', value: 'AI', icon: 'AI' },
-        ].map(stat => (
-          <div key={stat.label} className="card text-center py-4">
-            <div className="mb-2 flex justify-center">
-              <LogoBadge label={stat.icon} className="w-10 h-10 text-[10px]" />
-            </div>
-            <div className="text-2xl font-bold gradient-text">{stat.value}</div>
-            <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+      <section className="card radial-panel overflow-hidden">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div className="space-y-5">
+            <div className="theme-chip">Career Discovery</div>
+            <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-5xl">
+              Explore career paths with clearer structure, stronger color cues, and sharper focus.
+            </h1>
+            <p className="max-w-2xl text-lg leading-8 text-[color:var(--text-soft)]">
+              Search by path, narrow by domain, and pick a roadmap that fits where you are now. Each section is color-coded so the experience feels more like a product and less like a template.
+            </p>
           </div>
-        ))}
-      </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { label: 'Career Paths', value: paths.length, icon: 'CP', tone: 'from-sky-500 to-cyan-500' },
+              { label: 'Domains', value: 4, icon: 'DM', tone: 'from-amber-500 to-orange-500' },
+              { label: 'Skills Tracked', value: '100+', icon: 'SK', tone: 'from-emerald-500 to-teal-500' },
+              { label: 'Insights', value: 'Live', icon: 'IN', tone: 'from-rose-500 to-orange-500' },
+            ].map(item => (
+              <div key={item.label} className="rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                <div className="flex items-center justify-between">
+                  <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
+                  <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
+                </div>
+                <div className="mt-6 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+                <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto]">
+        <div className="card flex items-center gap-3 p-4">
+          <LogoBadge label="SR" className="h-11 w-11 text-[10px] bg-gradient-to-br from-slate-700 to-slate-500" />
+          <div className="flex-1">
+            <div className="mb-2 text-sm font-medium text-[color:var(--text-soft)]">Search by career title or related skills</div>
+            <input
+              type="text"
+              placeholder="Search paths or skills..."
+              className="input-field"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="card flex flex-wrap gap-2 p-4">
+          {DOMAINS.map(domain => {
+            const active = selectedDomain === domain;
+            return (
+              <button
+                key={domain}
+                onClick={() => setSelectedDomain(domain)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                  active
+                    ? 'bg-[color:var(--text-main)] text-[color:var(--bg-main)]'
+                    : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)]'
+                }`}
+              >
+                {domain}
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="card h-52 animate-pulse bg-surface-800/50" />
+        <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="card h-64 animate-pulse bg-[color:var(--surface-card)]" />
           ))}
         </div>
       ) : (
-        Object.entries(grouped).map(([domain, domainPaths]) => (
-          <div key={domain} className="mb-10">
-            <div className="flex items-center gap-3 mb-5">
-              <div className={`h-1 w-8 rounded-full bg-gradient-to-r ${DOMAIN_COLORS[domain]}`} />
-              <h2 className="text-lg font-bold text-white">{domain}</h2>
-              <span className="badge bg-surface-700 text-gray-400">{domainPaths.length} paths</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {domainPaths.map(path => (
-                <PathCard
-                  key={path._id}
-                  path={path}
-                  borderClass={DOMAIN_BG[domain]}
-                  onSelect={() => handleSelect(path)}
-                />
-              ))}
-            </div>
-          </div>
-        ))
+        <div className="mt-8 space-y-8">
+          {Object.entries(grouped).map(([domain, domainPaths]) => {
+            const style = DOMAIN_STYLES[domain];
+            return (
+              <section key={domain} className="space-y-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${style.band}`} />
+                  <div>
+                    <h2 className="text-2xl font-semibold text-[color:var(--text-main)]">{domain}</h2>
+                    <p className="text-sm text-[color:var(--text-muted)]">{domainPaths.length} paths available</p>
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                  {domainPaths.map(path => (
+                    <PathCard key={path._id} path={path} onSelect={() => navigate(`/skills/${path._id}`, { state: { careerPath: path } })} />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
       )}
 
       {!loading && filtered.length === 0 && (
-        <div className="text-center py-20">
-          <div className="mb-4 flex justify-center">
-            <LogoBadge label="SR" className="w-14 h-14 text-sm" />
+        <div className="card mt-8 text-center">
+          <div className="mx-auto mb-4 flex justify-center">
+            <LogoBadge label="NF" className="h-14 w-14 text-sm bg-gradient-to-br from-slate-600 to-slate-400" />
           </div>
-          <p className="text-gray-400">No career paths match your search.</p>
+          <p className="text-lg font-semibold text-[color:var(--text-main)]">No career paths match your search.</p>
+          <p className="mt-2 text-[color:var(--text-muted)]">Try a different search term or switch to another domain.</p>
         </div>
       )}
     </div>
   );
 }
 
-function PathCard({
-  path, borderClass, onSelect
-}: {
-  path: CareerPath;
-  borderClass: string;
-  onSelect: () => void;
-}) {
+function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }) {
+  const style = DOMAIN_STYLES[path.domain] || DOMAIN_STYLES.General;
+
   return (
-    <button
-      onClick={onSelect}
-      className={`group card text-left hover:shadow-xl w-full glass-hover border animate-fade-in ${borderClass} cursor-pointer`}
-    >
-      <div className="flex items-start justify-between mb-4">
-        <LogoBadge label={path.icon || 'CR'} className="w-12 h-12 text-[11px] shadow-lg transition-transform group-hover:scale-110" />
-        <span className="badge bg-surface-700/80 text-gray-400 text-[10px] uppercase tracking-wider">
-          {path.subdomain || path.domain}
-        </span>
+    <button onClick={onSelect} className="card glass-hover text-left">
+      <div className={`h-1.5 rounded-full bg-gradient-to-r ${style.band}`} />
+
+      <div className="mt-5 flex items-start justify-between gap-3">
+        <LogoBadge label={path.icon || 'CR'} className={`h-12 w-12 text-[11px] bg-gradient-to-br ${style.band}`} />
+        <span className={`badge ${style.badge}`}>{path.subdomain || path.domain}</span>
       </div>
 
-      <h3 className="font-bold text-white text-lg mb-2 group-hover:text-primary-400 transition-colors leading-tight">
-        {path.name}
-      </h3>
-      <p className="text-gray-400 text-sm mb-4 line-clamp-2 leading-relaxed">{path.description}</p>
+      <h3 className="mt-5 text-xl font-semibold text-[color:var(--text-main)]">{path.name}</h3>
+      <p className="mt-3 line-clamp-3 text-sm leading-7 text-[color:var(--text-soft)]">{path.description}</p>
 
-      <div className="flex flex-wrap gap-1.5 mb-4">
+      <div className="mt-5 flex flex-wrap gap-2">
         {path.tags.slice(0, 4).map(tag => (
-          <span key={tag} className="px-2 py-0.5 text-xs bg-surface-700/80 text-gray-400 rounded-md">
+          <span key={tag} className="rounded-full bg-[color:var(--surface-strong)] px-3 py-1 text-xs font-medium text-[color:var(--text-muted)]">
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="flex items-center justify-between pt-3 border-t border-white/5">
-        {path.estimatedMonths && (
-          <span className="text-xs text-gray-500">ETA ~{path.estimatedMonths} months</span>
-        )}
-        <span className="ml-auto text-sm font-semibold gradient-text group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-          Analyze {'->'}
-        </span>
+      <div className="mt-6 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-4 text-sm">
+        <span className="text-[color:var(--text-muted)]">{path.estimatedMonths ? `ETA ${path.estimatedMonths} months` : 'Flexible timeline'}</span>
+        <span className="font-semibold text-sky-500">Open Path</span>
       </div>
     </button>
   );
