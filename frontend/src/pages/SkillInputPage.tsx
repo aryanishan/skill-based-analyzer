@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { getCareerPath } from '../api';
 import LogoBadge from '../components/LogoBadge';
 import { CareerPath, KnownSkill, Skill } from '../types';
+import { getPathProgress, savePathProgress } from '../utils/pathProgress';
 
 const PROFICIENCY_CYCLE: Array<KnownSkill['proficiency'] | null> = [null, 'basic', 'intermediate', 'advanced'];
 const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
@@ -50,6 +51,20 @@ export default function SkillInputPage() {
   useEffect(() => {
     if (pathId) fetchPath(pathId);
   }, [pathId]);
+
+  useEffect(() => {
+    if (!pathId) return;
+    const stored = getPathProgress(pathId);
+    setKnownSkills(new Map(stored.map(item => [item.skillId, item.proficiency])));
+  }, [pathId]);
+
+  useEffect(() => {
+    if (!pathId) return;
+    savePathProgress(
+      pathId,
+      Array.from(knownSkills.entries()).map(([skillId, proficiency]) => ({ skillId, proficiency }))
+    );
+  }, [knownSkills, pathId]);
 
   const fetchPath = async (id: string) => {
     try {

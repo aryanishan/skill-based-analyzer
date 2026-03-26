@@ -126,7 +126,7 @@ export default function CareerSelectPage() {
 
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {domainPaths.map(path => (
-                    <PathCard key={path._id} path={path} onSelect={() => navigate(`/skills/${path._id}`, { state: { careerPath: path } })} />
+                    <PathCard key={path._id} path={path} onSelect={() => navigate(`/roadmap/${path._id}`, { state: { careerPath: path } })} />
                   ))}
                 </div>
               </section>
@@ -152,7 +152,7 @@ function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }
   const style = DOMAIN_STYLES[path.domain] || DOMAIN_STYLES.General;
 
   return (
-    <button onClick={onSelect} className="card glass-hover relative overflow-hidden text-left">
+    <div className="card glass-hover relative overflow-hidden text-left">
       <div className={`h-1 rounded-full bg-gradient-to-r ${style.band}`} />
 
       <div className="mt-5 flex items-start justify-between gap-3">
@@ -173,8 +173,14 @@ function PathCard({ path, onSelect }: { path: CareerPath; onSelect: () => void }
 
       <div className="mt-6 flex items-center justify-between border-t border-[color:var(--border-soft)] pt-4 text-sm">
         <span className="text-[color:var(--text-muted)]">{path.estimatedMonths ? `ETA ${path.estimatedMonths} months` : 'Flexible timeline'}</span>
-        <span className="font-semibold text-indigo-500 dark:text-indigo-300">Open Path</span>
+        <button
+          type="button"
+          onClick={onSelect}
+          className="font-semibold text-indigo-500 transition hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+        >
+          Open Path
+        </button>
       </div>
-    </button>
+    </div>
   );
 }

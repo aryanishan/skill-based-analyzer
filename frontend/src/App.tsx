@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import CareerSelectPage from './pages/CareerSelectPage';
+import RoadmapPage from './pages/RoadmapPage';
 import SkillInputPage from './pages/SkillInputPage';
 import DashboardPage from './pages/DashboardPage';
 import Sidebar from './components/Sidebar';
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
           <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
+          <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
           <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
           <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
