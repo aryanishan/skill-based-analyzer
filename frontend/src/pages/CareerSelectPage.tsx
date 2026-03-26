@@ -68,20 +68,20 @@ export default function CareerSelectPage() {
     }, {} as Record<string, CareerPath[]>);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+    <div className="section-shell">
       <section className="card radial-panel overflow-hidden">
-        <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
-          <div className="space-y-5">
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div className="space-y-4">
             <div className="theme-chip">Career Discovery</div>
-            <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-5xl">
+            <h1 className="max-w-3xl text-balance text-3xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-4xl">
               Compare career tracks in a cleaner workspace built for faster decisions.
             </h1>
-            <p className="max-w-2xl text-lg leading-8 text-[color:var(--text-soft)]">
+            <p className="max-w-2xl text-base leading-7 text-[color:var(--text-soft)]">
               Search, filter, and open a roadmap with less noise on screen. The layout now favors compact analytics styling, clearer grouping, and stronger contrast for the important actions.
             </p>
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-2.5 pt-1">
               {['Guided selection', 'Live skill mapping', 'Domain-based colors'].map(label => (
-                <span key={label} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
+                <span key={label} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
                   {label}
                 </span>
               ))}
@@ -95,12 +95,12 @@ export default function CareerSelectPage() {
               { label: 'Skills Tracked', value: '100+', icon: 'SK', tone: 'from-violet-200 to-white' },
               { label: 'Insights', value: 'Live', icon: 'IN', tone: 'from-slate-200 to-indigo-200' },
             ].map(item => (
-              <div key={item.label} className="metric-tile rounded-[16px] p-4">
+              <div key={item.label} className="metric-tile rounded-[14px] p-3.5">
                 <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
-                  <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
+                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] bg-gradient-to-br ${item.tone}`} />
+                  <div className={`h-2 w-12 rounded-full bg-gradient-to-r ${item.tone}`} />
                 </div>
-                <div className="mt-6 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+                <div className="mt-5 text-xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
               </div>
             ))}
@@ -108,9 +108,9 @@ export default function CareerSelectPage() {
         </div>
       </section>
 
-      <section className="mt-8 grid gap-4 lg:grid-cols-[1fr_auto]">
-        <div className="card flex items-center gap-3 p-4">
-          <LogoBadge label="SR" className="h-11 w-11 text-[10px]" />
+      <section className="mt-6 grid gap-3 lg:grid-cols-[1fr_auto]">
+        <div className="card flex items-center gap-3 p-3.5">
+          <LogoBadge label="SR" className="h-10 w-10 text-[9px]" />
           <div className="flex-1">
             <div className="mb-2 text-sm font-medium text-[color:var(--text-soft)]">Search by career title or related skills</div>
             <input
@@ -123,7 +123,7 @@ export default function CareerSelectPage() {
           </div>
         </div>
 
-        <div className="card flex flex-wrap gap-2 p-4">
+        <div className="card flex flex-wrap gap-2 p-3.5">
           {DOMAINS.map(domain => {
             const active = selectedDomain === domain;
             return (
@@ -144,13 +144,13 @@ export default function CareerSelectPage() {
       </section>
 
       {loading ? (
-        <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="card h-64 animate-pulse bg-[color:var(--surface-card)]" />
+            <div key={index} className="card h-56 animate-pulse bg-[color:var(--surface-card)]" />
           ))}
         </div>
       ) : (
-        <div className="mt-8 space-y-8">
+        <div className="mt-6 space-y-6">
           {Object.entries(grouped).map(([domain, domainPaths]) => {
             const style = DOMAIN_STYLES[domain];
             return (
@@ -163,7 +163,7 @@ export default function CareerSelectPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {domainPaths.map(path => (
                     <PathCard key={path._id} path={path} onSelect={() => navigate(`/skills/${path._id}`, { state: { careerPath: path } })} />
                   ))}
@@ -175,7 +175,7 @@ export default function CareerSelectPage() {
       )}
 
       {!loading && filtered.length === 0 && (
-        <div className="card mt-8 text-center">
+        <div className="card mt-6 text-center">
           <div className="mx-auto mb-4 flex justify-center">
             <LogoBadge label="NF" className="h-14 w-14 text-sm bg-gradient-to-br from-fuchsia-500 to-orange-400" />
           </div>
