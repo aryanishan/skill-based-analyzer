@@ -69,26 +69,7 @@ export default function CareerSelectPage() {
 
   return (
     <div className="section-shell">
-      <section className="card radial-panel overflow-hidden">
-        <div className="space-y-4">
-          <div className="theme-chip">Career Discovery</div>
-          <h1 className="max-w-3xl text-balance text-3xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-4xl">
-            Compare career tracks in a cleaner workspace built for faster decisions.
-          </h1>
-          <p className="max-w-2xl text-base leading-7 text-[color:var(--text-soft)]">
-            Search, filter, and open a roadmap with less noise on screen. The layout now favors compact analytics styling, clearer grouping, and stronger contrast for the important actions.
-          </p>
-          <div className="flex flex-wrap gap-2.5 pt-1">
-            {['Guided selection', 'Live skill mapping', 'Domain-based colors'].map(label => (
-              <span key={label} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
-                {label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-6 grid gap-3 lg:grid-cols-[1fr_auto]">
+      <section className="grid gap-3 lg:grid-cols-[1fr_auto]">
         <div className="card flex items-center gap-3 p-3.5">
           <LogoBadge label="SR" className="h-10 w-10 text-[9px]" />
           <div className="flex-1">
