@@ -6,9 +6,9 @@ import LogoBadge from '../components/LogoBadge';
 import { useAuth } from '../context/AuthContext';
 
 const featureCards = [
-  { label: 'Readiness Score', value: 'Live', tone: 'from-sky-500 to-cyan-500' },
-  { label: 'Gap Mapping', value: 'Smart', tone: 'from-amber-500 to-orange-500' },
-  { label: 'Study Signals', value: 'Actionable', tone: 'from-emerald-500 to-teal-500' },
+  { label: 'Readiness Score', value: 'Live', tone: 'bg-[#1c768f]' },
+  { label: 'Gap Mapping', value: 'Smart', tone: 'bg-[#fa991c]' },
+  { label: 'Study Signals', value: 'Actionable', tone: 'bg-[#032539]' },
 ];
 
 export default function AuthPage() {
@@ -43,7 +43,7 @@ export default function AuthPage() {
         <div className="space-y-5">
           <div className="theme-chip">Career Strategy Platform</div>
           <div className="flex items-center gap-4">
-            <LogoBadge label="CR" className="h-16 w-16 text-lg shadow-lg shadow-sky-500/15" />
+            <LogoBadge label="CR" className="h-16 w-16 bg-[#032539] text-lg text-[#fbf3f2] shadow-lg shadow-[#032539]/20" />
             <div>
               <h1 className="text-balance text-4xl font-semibold leading-tight text-[color:var(--text-main)] sm:text-5xl">
                 Build a clearer path from current skills to professional readiness.
@@ -58,7 +58,7 @@ export default function AuthPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {featureCards.map(card => (
             <div key={card.label} className="card glass-hover overflow-hidden">
-              <div className={`h-1.5 rounded-full bg-gradient-to-r ${card.tone}`} />
+              <div className={`h-1.5 rounded-full ${card.tone}`} />
               <div className="mt-4 text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">{card.label}</div>
               <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">{card.value}</div>
             </div>
@@ -68,7 +68,7 @@ export default function AuthPage() {
         <div className="card radial-panel">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <div className="text-sm uppercase tracking-[0.24em] text-sky-500">What you get</div>
+              <div className="text-sm uppercase tracking-[0.24em] text-[#1c768f]">What you get</div>
               <h2 className="mt-3 text-2xl font-semibold text-[color:var(--text-main)]">A cleaner roadmap, not just a score.</h2>
             </div>
             <div className="space-y-3 text-sm text-[color:var(--text-soft)]">
@@ -98,7 +98,7 @@ export default function AuthPage() {
               onClick={() => setMode(item)}
               className={`rounded-lg px-4 py-3 text-sm font-semibold transition-all ${
                 mode === item
-                  ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-lg shadow-sky-500/20'
+                  ? 'bg-[#032539] text-white shadow-lg shadow-[#032539]/20'
                   : 'text-[color:var(--text-muted)]'
               }`}
             >

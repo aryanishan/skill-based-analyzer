@@ -11,7 +11,7 @@ const DOMAIN_STYLES: Record<string, { band: string; line: string; badge: string;
   'Software/IT': {
     band: 'bg-[#dfe6ff]',
     line: 'bg-[#8ea2ff]',
-    badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/15',
+    badge: 'bg-[#1c768f]/10 text-[#1c768f] border border-[#1c768f]/20',
     icon: 'IT',
   },
   'Core Engineering': {
@@ -23,7 +23,7 @@ const DOMAIN_STYLES: Record<string, { band: string; line: string; badge: string;
   'Government Exams': {
     band: 'bg-[#ede9fe]',
     line: 'bg-[#b8a7ff]',
-    badge: 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/15',
+    badge: 'bg-[#fa991c]/10 text-[#a96208] border border-[#fa991c]/20',
     icon: 'GX',
   },
   General: {
@@ -190,7 +190,7 @@ function PathCard({
         <button
           type="button"
           onClick={onOpenPath}
-          className="font-semibold text-indigo-500 transition hover:text-indigo-700 dark:text-indigo-300 dark:hover:text-indigo-200"
+          className="font-semibold text-[#1c768f] transition hover:text-[#032539]"
         >
           Open Path
         </button>

@@ -24,9 +24,9 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 px-4 py-5 sm:px-6">
       <div className="neo-panel mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-[20px] px-5 py-4 backdrop-blur-2xl">
         <Link to="/" className="flex items-center gap-3">
-          <LogoBadge label="CR" className="h-11 w-11 text-[11px] shadow-lg shadow-lime-500/20" />
+          <LogoBadge label="CR" className="h-11 w-11 bg-[#032539] text-[11px] text-[#fbf3f2] shadow-lg shadow-[#032539]/20" />
           <div>
-            <div className="text-sm font-semibold uppercase tracking-[0.24em] text-lime-300">Career Readiness</div>
+            <div className="text-sm font-semibold uppercase tracking-[0.24em] text-[#fa991c]">Career Readiness</div>
             <div className="text-sm text-[color:var(--text-muted)]">Intelligence Studio</div>
           </div>
         </Link>
@@ -41,7 +41,7 @@ export default function Navbar() {
                   to={item.path}
                   className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                     active
-                      ? 'bg-lime-300 text-[#11170f] shadow-[0_8px_24px_rgba(183,255,52,0.18)]'
+                      ? 'bg-[#fa991c] text-[#032539] shadow-[0_8px_24px_rgba(250,153,28,0.22)]'
                       : 'text-[color:var(--text-muted)] hover:text-[color:var(--text-main)]'
                   }`}
                 >
@@ -58,7 +58,7 @@ export default function Navbar() {
             className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-sm font-medium text-[color:var(--text-main)] transition-all hover:border-white/20 hover:bg-white/10"
             type="button"
           >
-            <span className="text-xs uppercase tracking-[0.2em] text-lime-300">
+            <span className="text-xs uppercase tracking-[0.2em] text-[#fa991c]">
               {theme === 'dark' ? 'Dark' : 'Light'}
             </span>
             <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs">{theme === 'dark' ? 'Sun' : 'Moon'}</span>
@@ -67,7 +67,7 @@ export default function Navbar() {
           {user ? (
             <>
               <div className="hidden items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-3 py-2 md:flex">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-lime-300 to-emerald-400 text-sm font-semibold text-[#11170f]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1c768f] text-sm font-semibold text-[#fbf3f2]">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <div>

@@ -42,10 +42,10 @@ const CATEGORY_COLORS = {
 };
 
 const LEVEL_STYLES: Record<string, string> = {
-  Beginner: 'border-zinc-500/20 bg-zinc-500/10',
-  Developing: 'border-amber-500/20 bg-amber-500/10',
-  Competitive: 'border-indigo-400/20 bg-indigo-400/10',
-  'Fully Ready': 'border-violet-400/20 bg-violet-400/12',
+  Beginner: 'border-[#6e858f]/20 bg-[#6e858f]/10 text-[color:var(--text-main)]',
+  Developing: 'border-[#fa991c]/20 bg-[#fa991c]/10 text-[color:var(--text-main)]',
+  Competitive: 'border-[#1c768f]/20 bg-[#1c768f]/10 text-[color:var(--text-main)]',
+  'Fully Ready': 'border-[#032539]/20 bg-[#032539]/10 text-[color:var(--text-main)]',
 };
 
 function loadSavedAssessments(): SavedAssessment[] {

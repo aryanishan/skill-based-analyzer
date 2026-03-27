@@ -149,7 +149,7 @@ export default function HomePage() {
           <div className="mt-5 grid gap-3">
             {workflow.map(item => (
               <div key={item.step} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-indigo-500">{item.step}</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#1c768f]">{item.step}</div>
                 <div className="mt-1.5 text-base font-semibold text-[color:var(--text-main)]">{item.title}</div>
                 <p className="mt-1.5 text-sm leading-6 text-[color:var(--text-soft)]">{item.text}</p>
               </div>

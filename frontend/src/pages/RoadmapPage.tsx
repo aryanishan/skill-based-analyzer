@@ -11,23 +11,23 @@ const PROFICIENCY_CYCLE: Array<KnownSkill['proficiency'] | null> = [null, 'basic
 const STATUS_META: Record<NonNullable<KnownSkill['proficiency']> | 'not_started', { label: string; line: string; chip: string }> = {
   not_started: {
     label: 'Not Started',
-    line: 'bg-rose-400',
-    chip: 'bg-rose-500/10 text-rose-600 dark:text-rose-300 border border-rose-500/20',
+    line: 'bg-[#fa991c]',
+    chip: 'bg-[#fa991c]/10 text-[#a96208] border border-[#fa991c]/20',
   },
   basic: {
     label: 'Basic',
-    line: 'bg-amber-400',
-    chip: 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border border-amber-500/20',
+    line: 'bg-[#f6b457]',
+    chip: 'bg-[#f6b457]/12 text-[#8b5a13] border border-[#f6b457]/20',
   },
   intermediate: {
     label: 'Intermediate',
-    line: 'bg-indigo-400',
-    chip: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-500/20',
+    line: 'bg-[#1c768f]',
+    chip: 'bg-[#1c768f]/10 text-[#1c768f] border border-[#1c768f]/20',
   },
   advanced: {
     label: 'Advanced',
-    line: 'bg-emerald-500',
-    chip: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20',
+    line: 'bg-[#032539]',
+    chip: 'bg-[#032539]/10 text-[color:var(--text-main)] border border-[#032539]/20',
   },
 };
 
@@ -268,7 +268,7 @@ export default function RoadmapPage() {
               onClick={() => setSelectedPathId(path._id)}
               className={`rounded-[10px] border px-4 py-3 text-left transition ${
                 selectedPathId === path._id
-                  ? 'border-indigo-300 bg-indigo-500/10'
+                  ? 'border-[#1c768f]/30 bg-[#1c768f]/10'
                   : 'border-[color:var(--border-soft)] bg-[color:var(--surface-strong)]'
               }`}
             >
