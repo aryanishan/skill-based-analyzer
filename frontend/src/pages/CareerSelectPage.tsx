@@ -7,24 +7,28 @@ import { CareerPath } from '../types';
 
 const DOMAINS = ['All', 'Software/IT', 'Core Engineering', 'Government Exams', 'General'];
 
-const DOMAIN_STYLES: Record<string, { band: string; badge: string; icon: string }> = {
+const DOMAIN_STYLES: Record<string, { band: string; line: string; badge: string; icon: string }> = {
   'Software/IT': {
-    band: 'from-indigo-300 via-violet-300 to-slate-100',
+    band: 'bg-[#dfe6ff]',
+    line: 'bg-[#8ea2ff]',
     badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/15',
     icon: 'IT',
   },
   'Core Engineering': {
-    band: 'from-slate-300 via-slate-200 to-white',
+    band: 'bg-[#e5e7eb]',
+    line: 'bg-[#a8b0bf]',
     badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-500/15',
     icon: 'CE',
   },
   'Government Exams': {
-    band: 'from-violet-300 via-indigo-200 to-white',
+    band: 'bg-[#ede9fe]',
+    line: 'bg-[#b8a7ff]',
     badge: 'bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/15',
     icon: 'GX',
   },
   General: {
-    band: 'from-zinc-200 via-slate-200 to-white',
+    band: 'bg-[#eceff4]',
+    line: 'bg-[#aab3c3]',
     badge: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/15',
     icon: 'GN',
   },
@@ -117,7 +121,7 @@ export default function CareerSelectPage() {
             return (
               <section key={domain} className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
-                  <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${style.band}`} />
+                  <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] ${style.band}`} />
                   <div>
                     <h2 className="text-2xl font-semibold text-[color:var(--text-main)]">{domain}</h2>
                     <p className="text-sm text-[color:var(--text-muted)]">{domainPaths.length} paths available</p>
@@ -142,7 +146,7 @@ export default function CareerSelectPage() {
       {!loading && filtered.length === 0 && (
         <div className="card mt-6 text-center">
           <div className="mx-auto mb-4 flex justify-center">
-            <LogoBadge label="NF" className="h-14 w-14 text-sm bg-gradient-to-br from-fuchsia-500 to-orange-400" />
+            <LogoBadge label="NF" className="h-14 w-14 bg-[#f4b183] text-sm" />
           </div>
           <p className="text-lg font-semibold text-[color:var(--text-main)]">No career paths match your search.</p>
           <p className="mt-2 text-[color:var(--text-muted)]">Try a different search term or switch to another domain.</p>
@@ -163,10 +167,10 @@ function PathCard({
 
   return (
     <div className="card glass-hover relative overflow-hidden text-left">
-      <div className={`h-1 rounded-full bg-gradient-to-r ${style.band}`} />
+      <div className={`h-1 rounded-full ${style.line}`} />
 
       <div className="mt-5 flex items-start justify-between gap-3">
-        <LogoBadge label={path.icon || 'CR'} className={`h-12 w-12 text-[11px] bg-gradient-to-br ${style.band}`} />
+        <LogoBadge label={path.icon || 'CR'} className={`h-12 w-12 text-[11px] ${style.band}`} />
         <span className={`badge ${style.badge}`}>{path.subdomain || path.domain}</span>
       </div>
 

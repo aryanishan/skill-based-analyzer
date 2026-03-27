@@ -32,9 +32,9 @@ const STATUS_META: Record<NonNullable<KnownSkill['proficiency']> | 'not_started'
 };
 
 const CATEGORY_META: Record<'Foundation' | 'Core' | 'Advanced', { tone: string; icon: string }> = {
-  Foundation: { tone: 'from-slate-300 to-white', icon: 'FD' },
-  Core: { tone: 'from-indigo-300 to-white', icon: 'CR' },
-  Advanced: { tone: 'from-violet-200 to-white', icon: 'AD' },
+  Foundation: { tone: 'bg-[#e5e7eb]', icon: 'FD' },
+  Core: { tone: 'bg-[#dfe6ff]', icon: 'CR' },
+  Advanced: { tone: 'bg-[#ede9fe]', icon: 'AD' },
 };
 
 const CATEGORY_ORDER: Record<'Foundation' | 'Core' | 'Advanced', number> = {
@@ -225,14 +225,14 @@ export default function RoadmapPage() {
 
           <div className="grid gap-3 sm:grid-cols-3 lg:w-[420px]">
             {[
-              { label: 'Completed', value: completedCount, icon: 'CP', tone: 'from-emerald-300 to-white' },
-              { label: 'Tracked Skills', value: skills.length, icon: 'SK', tone: 'from-indigo-200 to-white' },
-              { label: 'Roadmap Progress', value: `${progressPercent}%`, icon: 'PG', tone: 'from-rose-200 to-white' },
+              { label: 'Completed', value: completedCount, icon: 'CP', tone: 'bg-[#dff3e6]', line: 'bg-[#77c596]' },
+              { label: 'Tracked Skills', value: skills.length, icon: 'SK', tone: 'bg-[#dfe6ff]', line: 'bg-[#8ea2ff]' },
+              { label: 'Roadmap Progress', value: `${progressPercent}%`, icon: 'PG', tone: 'bg-[#fde2e2]', line: 'bg-[#f2a3a3]' },
             ].map(item => (
               <div key={item.label} className="metric-tile rounded-[10px] p-4">
                 <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] bg-gradient-to-br ${item.tone}`} />
-                  <div className={`h-2 w-12 rounded-full bg-gradient-to-r ${item.tone}`} />
+                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] ${item.tone}`} />
+                  <div className={`h-2 w-12 rounded-full ${item.line}`} />
                 </div>
                 <div className="mt-4 text-xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
@@ -344,7 +344,7 @@ export default function RoadmapPage() {
                               </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <LogoBadge label={categoryMeta.icon} className={`h-7 w-7 text-[7px] bg-gradient-to-br ${categoryMeta.tone}`} />
+                              <LogoBadge label={categoryMeta.icon} className={`h-7 w-7 text-[7px] ${categoryMeta.tone}`} />
                               <span className={`badge ${meta.chip}`}>{meta.label}</span>
                             </div>
                           </div>

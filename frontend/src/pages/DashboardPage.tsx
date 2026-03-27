@@ -157,10 +157,10 @@ export default function DashboardPage() {
 
   const profileStats = useMemo(
     () => [
-      { label: 'Known Skills', value: latest ? `${latest.knownCount}/${latest.totalSkills}` : '0/0', icon: 'KS', tone: 'from-indigo-200 to-white' },
-      { label: 'Learning Progress', value: latest ? `${latest.score}%` : '0%', icon: 'LP', tone: 'from-violet-200 to-white' },
-      { label: 'Assessments', value: totalAssessments, icon: 'AS', tone: 'from-slate-200 to-white' },
-      { label: 'Domains', value: domainsExplored, icon: 'DM', tone: 'from-indigo-100 to-slate-100' },
+      { label: 'Known Skills', value: latest ? `${latest.knownCount}/${latest.totalSkills}` : '0/0', icon: 'KS', tone: 'bg-[#dfe6ff]', line: 'bg-[#8ea2ff]' },
+      { label: 'Learning Progress', value: latest ? `${latest.score}%` : '0%', icon: 'LP', tone: 'bg-[#ede9fe]', line: 'bg-[#b8a7ff]' },
+      { label: 'Assessments', value: totalAssessments, icon: 'AS', tone: 'bg-[#e5e7eb]', line: 'bg-[#a8b0bf]' },
+      { label: 'Domains', value: domainsExplored, icon: 'DM', tone: 'bg-[#e7ebf7]', line: 'bg-[#9aa8cb]' },
     ],
     [latest, totalAssessments, domainsExplored]
   );
@@ -214,8 +214,8 @@ export default function DashboardPage() {
             {profileStats.map(item => (
               <div key={item.label} className="metric-tile rounded-[10px] p-4">
                 <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${item.tone}`} />
-                  <div className={`h-2 w-16 rounded-full bg-gradient-to-r ${item.tone}`} />
+                  <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] ${item.tone}`} />
+                  <div className={`h-2 w-16 rounded-full ${item.line}`} />
                 </div>
                 <div className="mt-5 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>

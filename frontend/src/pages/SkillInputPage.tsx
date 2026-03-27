@@ -22,17 +22,17 @@ const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
 const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; bar: string; icon: string }> = {
   Foundation: {
     pill: 'bg-zinc-500/14 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20',
-    bar: 'from-zinc-200 to-zinc-400',
+    bar: 'bg-[#e5e7eb]',
     icon: 'FD',
   },
   Core: {
     pill: 'bg-indigo-500/14 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20',
-    bar: 'from-indigo-200 to-indigo-400',
+    bar: 'bg-[#dfe6ff]',
     icon: 'CR',
   },
   Advanced: {
     pill: 'bg-violet-500/14 text-violet-700 dark:text-violet-300 border border-violet-500/20',
-    bar: 'from-violet-200 to-violet-400',
+    bar: 'bg-[#ede9fe]',
     icon: 'AD',
   },
 };
@@ -150,7 +150,7 @@ export default function SkillInputPage() {
               <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Selected Skills</div>
               <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{selectedCount} / {totalCount}</div>
               <div className="progress-bar mt-4">
-                <div className="progress-fill bg-gradient-to-r from-slate-300 via-indigo-300 to-violet-300" style={{ width: `${completionPct}%` }} />
+                <div className="progress-fill bg-[#8ea2ff]" style={{ width: `${completionPct}%` }} />
               </div>
             </div>
             <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
@@ -191,7 +191,7 @@ export default function SkillInputPage() {
               <section key={category} className="card space-y-5">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] bg-gradient-to-br ${style.bar}`} />
+                    <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] ${style.bar}`} />
                     <div>
                       <h2 className="text-xl font-semibold text-[color:var(--text-main)]">{category}</h2>
                       <p className="text-sm text-[color:var(--text-muted)]">

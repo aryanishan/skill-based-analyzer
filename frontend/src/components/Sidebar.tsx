@@ -127,7 +127,7 @@ export default function Sidebar() {
     <div className="sidebar-shell flex h-full flex-col rounded-[10px] p-4 text-white">
       <div className="flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-3">
-          <LogoBadge label="CR" className="h-10 w-10 text-[11px] bg-gradient-to-br from-white to-slate-300 text-[#171925]" />
+          <LogoBadge label="CR" className="h-10 w-10 bg-white text-[11px] text-[#171925]" />
           <div className="hidden xl:block">
             <div className="font-['Space_Grotesk'] text-lg font-bold tracking-tight text-white">CareerLab</div>
             <div className="text-xs text-[#9aa3bf]">Readiness Workspace</div>

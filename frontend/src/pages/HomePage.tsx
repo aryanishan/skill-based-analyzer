@@ -112,15 +112,15 @@ export default function HomePage() {
 
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Career Paths', value: stats.careerPaths || 10, icon: 'CP', tone: 'from-indigo-300 to-white' },
-              { label: 'Domains', value: stats.domains || 4, icon: 'DM', tone: 'from-slate-300 to-white' },
-              { label: 'Tracked Skills', value: stats.skillsTracked || '100+', icon: 'SK', tone: 'from-violet-200 to-white' },
-              { label: 'Avg Timeline', value: stats.avgTimeline, icon: 'TM', tone: 'from-slate-200 to-indigo-200' },
+              { label: 'Career Paths', value: stats.careerPaths || 10, icon: 'CP', tone: 'bg-[#dfe6ff]', line: 'bg-[#8ea2ff]' },
+              { label: 'Domains', value: stats.domains || 4, icon: 'DM', tone: 'bg-[#e5e7eb]', line: 'bg-[#a8b0bf]' },
+              { label: 'Tracked Skills', value: stats.skillsTracked || '100+', icon: 'SK', tone: 'bg-[#ede9fe]', line: 'bg-[#b8a7ff]' },
+              { label: 'Avg Timeline', value: stats.avgTimeline, icon: 'TM', tone: 'bg-[#e9edf5]', line: 'bg-[#98a6c0]' },
             ].map(item => (
               <div key={item.label} className="metric-tile rounded-[10px] p-3.5">
                 <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] bg-gradient-to-br ${item.tone}`} />
-                  <div className={`h-2 w-12 rounded-full bg-gradient-to-r ${item.tone}`} />
+                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] ${item.tone}`} />
+                  <div className={`h-2 w-12 rounded-full ${item.line}`} />
                 </div>
                 <div className="mt-5 text-xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
