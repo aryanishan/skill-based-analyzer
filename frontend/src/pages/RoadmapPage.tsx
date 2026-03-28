@@ -43,6 +43,10 @@ const CATEGORY_ORDER: Record<'Foundation' | 'Core' | 'Advanced', number> = {
   Advanced: 2,
 };
 
+function getStatusKey(proficiency: KnownSkill['proficiency'] | undefined): keyof typeof STATUS_META {
+  return proficiency || 'not_started';
+}
+
 function buildLearningSequence(skills: Skill[]) {
   const skillMap = new Map(skills.map(skill => [skill._id, skill]));
   const indegree = new Map<string, number>();
@@ -178,17 +182,6 @@ export default function RoadmapPage() {
 
   const orderedSkills = useMemo(() => buildLearningSequence(skills), [skills]);
 
-  const stagedSkills = useMemo(() => {
-    const grouped = orderedSkills.reduce((acc, skill) => {
-      const key = `Stage ${skill.stage}`;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(skill);
-      return acc;
-    }, {} as Record<string, Array<Skill & { stage: number }>>);
-
-    return Object.entries(grouped).map(([stage, items]) => ({ stage, items }));
-  }, [orderedSkills]);
-
   const completedCount = Array.from(progress.values()).filter(value => value === 'advanced').length;
   const progressPercent = skills.length ? Math.round((completedCount / skills.length) * 100) : 0;
 
@@ -293,83 +286,69 @@ export default function RoadmapPage() {
         <div className="flex items-center gap-3">
           <LogoBadge label="TR" className="h-10 w-10 text-[9px]" />
           <div>
-            <h2 className="text-xl font-semibold text-[color:var(--text-main)]">Tree Roadmap</h2>
-            <p className="text-sm text-[color:var(--text-muted)]">Learn step by step from beginner foundations to advanced skills.</p>
+            <h2 className="text-xl font-semibold text-[color:var(--text-main)]">Skill Roadmap</h2>
+            <p className="text-sm text-[color:var(--text-muted)]">Follow the path in order, from your first foundation skill to advanced milestones.</p>
           </div>
         </div>
 
-        <div className="mt-6 overflow-x-auto">
-          <div className="flex min-w-max items-start gap-6 pb-2">
-            {stagedSkills.map((stageGroup, stageIndex) => (
-              <div key={stageGroup.stage} className="min-w-[260px] flex-1">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#25283b] text-sm font-semibold text-white">
-                    {stageIndex + 1}
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold text-[color:var(--text-main)]">{stageGroup.stage}</div>
-                    <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
-                      {stageGroup.items.length} skill{stageGroup.items.length > 1 ? 's' : ''}
+        <div className="mt-6 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-card)] p-4 sm:p-6">
+          <div className="roadmap-track">
+            {orderedSkills.map((skill, index) => {
+              const currentLevel = progress.get(skill._id);
+              const statusKey = getStatusKey(currentLevel);
+              const meta = STATUS_META[statusKey];
+              const categoryMeta = CATEGORY_META[skill.category];
+              const deps = (skill.dependencies || []).map(dep => dep.name).filter(Boolean);
+              const isRight = index % 2 === 1;
+
+              return (
+                <div key={skill._id} className={`roadmap-stop ${isRight ? 'roadmap-stop-right' : 'roadmap-stop-left'}`}>
+                  <div className="roadmap-connector" aria-hidden="true">
+                    <div className={`roadmap-pin ${meta.line}`}>
+                      <span>{index + 1}</span>
                     </div>
                   </div>
-                </div>
 
-                <div className="relative mt-4 rounded-[10px] border border-dashed border-[color:var(--border-soft)] p-4">
-                  {stageIndex < stagedSkills.length - 1 && (
-                    <div className="absolute -right-5 top-1/2 hidden h-[3px] w-5 -translate-y-1/2 bg-[color:var(--border-soft)] xl:block" />
-                  )}
-
-                  <div className="space-y-3">
-                    {stageGroup.items.map(skill => {
-                      const currentLevel = progress.get(skill._id);
-                      const meta = STATUS_META[currentLevel || 'not_started'];
-                      const categoryMeta = CATEGORY_META[skill.category];
-                      const deps = (skill.dependencies || []).map(dep => dep.name).filter(Boolean);
-
-                      return (
-                        <button
-                          key={skill._id}
-                          type="button"
-                          onClick={() => toggleSkillStatus(skill._id)}
-                          className="w-full rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 text-left shadow-sm transition hover:border-[color:var(--border-strong)]"
-                        >
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div className="flex items-start gap-3">
-                              <div className={`mt-1 h-3 w-3 rounded-full ${meta.line}`} />
-                              <div>
-                                <div className="text-base font-semibold text-[color:var(--text-main)]">{skill.name}</div>
-                                <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
-                                  {skill.category} | {skill.type}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <LogoBadge label={categoryMeta.icon} className={`h-7 w-7 text-[7px] ${categoryMeta.tone}`} />
-                              <span className={`badge ${meta.chip}`}>{meta.label}</span>
-                            </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleSkillStatus(skill._id)}
+                    className="roadmap-card w-full rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 text-left shadow-sm transition hover:border-[color:var(--border-strong)]"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className={`mt-1 h-3 w-3 rounded-full ${meta.line}`} />
+                        <div>
+                          <div className="text-xs uppercase tracking-[0.24em] text-[color:var(--text-muted)]">Step {index + 1}</div>
+                          <div className="mt-1 text-lg font-semibold text-[color:var(--text-main)]">{skill.name}</div>
+                          <div className="mt-1 text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
+                            {skill.category} | {skill.type}
                           </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <LogoBadge label={categoryMeta.icon} className={`h-7 w-7 text-[7px] ${categoryMeta.tone}`} />
+                        <span className={`badge ${meta.chip}`}>{meta.label}</span>
+                      </div>
+                    </div>
 
-                          <p className="mt-3 text-sm leading-6 text-[color:var(--text-soft)]">
-                            {skill.tooltip?.whyItMatters || `Learn ${skill.name} as part of your ${careerPath?.name} roadmap.`}
-                          </p>
+                    <p className="mt-3 text-sm leading-6 text-[color:var(--text-soft)]">
+                      {skill.tooltip?.whyItMatters || `Learn ${skill.name} as part of your ${careerPath?.name} roadmap.`}
+                    </p>
 
-                          <div className="mt-3 space-y-2">
-                            <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-xs text-[color:var(--text-muted)]">
-                              {deps.length ? `Learn after: ${deps.join(', ')}` : 'Start here first as a beginner step'}
-                            </div>
-                            {skill.tooltip?.whereUsed && (
-                              <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-xs text-[color:var(--text-muted)]">
-                                Used in: {skill.tooltip.whereUsed}
-                              </div>
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                    <div className="mt-3 space-y-2">
+                      <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-xs text-[color:var(--text-muted)]">
+                        {deps.length ? `Learn after: ${deps.join(', ')}` : 'Start here first as your entry point'}
+                      </div>
+                      {skill.tooltip?.whereUsed && (
+                        <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-xs text-[color:var(--text-muted)]">
+                          Used in: {skill.tooltip.whereUsed}
+                        </div>
+                      )}
+                    </div>
+                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
