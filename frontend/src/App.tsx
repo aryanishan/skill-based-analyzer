@@ -12,8 +12,8 @@ import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 
-const SIDEBAR_EXPANDED_WIDTH = '292px';
-const SIDEBAR_COLLAPSED_WIDTH = '88px';
+const SIDEBAR_EXPANDED_WIDTH = '296px';
+const SIDEBAR_COLLAPSED_WIDTH = '92px';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -48,7 +48,7 @@ export default function App() {
         className={
           showSidebar
             ? `min-h-screen transition-[padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                sidebarCollapsed ? 'md:pl-[88px]' : 'md:pl-[292px]'
+                sidebarCollapsed ? 'md:pl-[92px]' : 'md:pl-[296px]'
               }`
             : 'min-h-screen'
         }

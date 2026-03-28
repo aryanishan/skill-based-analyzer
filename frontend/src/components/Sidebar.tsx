@@ -128,8 +128,8 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   };
 
   const sidebarContent = (
-    <div className="sidebar-shell flex h-full flex-col p-4 text-white transition-[width,padding,background-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:rounded-none">
-      <div className={`flex items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3'}`}>
+    <div className="sidebar-shell flex h-full flex-col p-3 text-white transition-[width,padding,background-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
+      <div className={`flex items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3 px-1 pt-1'}`}>
         <Link to="/" className={`flex min-w-0 items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3'}`}>
           <LogoBadge label="CR" className="h-10 w-10 bg-white text-[11px] text-[#171925] shadow-[0_10px_20px_rgba(0,0,0,0.18)]" />
           <div
@@ -157,15 +157,17 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         )}
       </div>
 
-      <div
-        className={`mt-5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          collapsed ? 'max-h-0 opacity-0' : 'max-h-20 opacity-100'
-        }`}
-      >
-        <div className="flex items-center gap-2 rounded-[14px] border border-white/6 bg-white/[0.04] px-3 py-3 text-sm text-[#8e96b4]">
-          <SidebarIcon type="search" />
-          <span>Search pages...</span>
-        </div>
+      <div className="mt-5">
+        {collapsed ? (
+          <button type="button" className="sidebar-item sidebar-item-collapsed w-full" title="Search">
+            <SidebarIcon type="search" />
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 rounded-[16px] border border-white/6 bg-white/[0.04] px-3 py-3 text-sm text-[#8e96b4]">
+            <SidebarIcon type="search" />
+            <span>Search pages...</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 space-y-2">
@@ -192,7 +194,9 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         })}
       </div>
 
-      <div className="mt-6 border-t border-white/8 pt-6">
+      <div className="sidebar-divider mt-6" />
+
+      <div className="mt-6">
         <button
           type="button"
           onClick={toggleTheme}
@@ -212,7 +216,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
 
       <div className="mt-auto">
         <div
-          className={`mt-6 rounded-[16px] border border-white/10 bg-white/[0.04] p-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`mt-6 rounded-[18px] border border-white/8 bg-white/[0.03] p-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             collapsed ? 'flex justify-center px-0 py-2' : ''
           }`}
         >
@@ -269,8 +273,8 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       </button>
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 hidden overflow-hidden transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:block ${
-          collapsed ? 'md:w-[88px]' : 'md:w-[292px]'
+        className={`fixed inset-y-0 left-0 z-40 hidden overflow-hidden px-3 py-3 transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:block ${
+          collapsed ? 'md:w-[92px]' : 'md:w-[296px]'
         }`}
       >
         {sidebarContent}
