@@ -8,26 +8,33 @@ import { getPathProgress, savePathProgress } from '../utils/pathProgress';
 
 const PROFICIENCY_CYCLE: Array<KnownSkill['proficiency'] | null> = [null, 'basic', 'intermediate', 'advanced'];
 
-const STATUS_META: Record<NonNullable<KnownSkill['proficiency']> | 'not_started', { label: string; line: string; chip: string }> = {
+const STATUS_META: Record<
+  NonNullable<KnownSkill['proficiency']> | 'not_started',
+  { label: string; line: string; chip: string; dot: string }
+> = {
   not_started: {
     label: 'Not Started',
     line: 'bg-[#fa991c]',
     chip: 'bg-[#fa991c]/10 text-[#a96208] border border-[#fa991c]/20',
+    dot: 'bg-[#cbd5e1]',
   },
   basic: {
     label: 'Basic',
-    line: 'bg-[#f6b457]',
-    chip: 'bg-[#f6b457]/12 text-[#8b5a13] border border-[#f6b457]/20',
+    line: 'bg-[#22c55e]',
+    chip: 'border border-[#22c55e]/25 bg-[#22c55e]/18',
+    dot: 'bg-[#22c55e]',
   },
   intermediate: {
     label: 'Intermediate',
-    line: 'bg-[#1c768f]',
-    chip: 'bg-[#1c768f]/10 text-[#1c768f] border border-[#1c768f]/20',
+    line: 'bg-[#eab308]',
+    chip: 'border border-[#eab308]/25 bg-[#eab308]/18',
+    dot: 'bg-[#eab308]',
   },
   advanced: {
     label: 'Advanced',
-    line: 'bg-[#032539]',
-    chip: 'bg-[#032539]/10 text-[color:var(--text-main)] border border-[#032539]/20',
+    line: 'bg-[#ef4444]',
+    chip: 'border border-[#ef4444]/25 bg-[#ef4444]/18',
+    dot: 'bg-[#ef4444]',
   },
 };
 
@@ -327,7 +334,13 @@ export default function RoadmapPage() {
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <LogoBadge label={categoryMeta.icon} className={`h-7 w-7 text-[7px] ${categoryMeta.tone}`} />
-                        <span className={`badge ${meta.chip}`}>{meta.label}</span>
+                        <span
+                          className={`inline-flex h-7 w-12 items-center justify-center rounded-full ${meta.chip}`}
+                          aria-label={meta.label}
+                          title={meta.label}
+                        >
+                          <span className={`h-3.5 w-3.5 rounded-full ${meta.dot}`} />
+                        </span>
                       </div>
                     </div>
 

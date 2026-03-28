@@ -14,9 +14,15 @@ const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
 };
 
 const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
-  basic: 'border-[#fa991c]/30 bg-[#fa991c]/10 text-[#a96208]',
-  intermediate: 'border-[#1c768f]/30 bg-[#1c768f]/10 text-[#1c768f]',
-  advanced: 'border-[#032539]/30 bg-[#032539]/10 text-[color:var(--text-main)]',
+  basic: 'border-[#22c55e]/35 bg-[#22c55e]/16 text-[#166534]',
+  intermediate: 'border-[#eab308]/35 bg-[#eab308]/18 text-[#854d0e]',
+  advanced: 'border-[#ef4444]/35 bg-[#ef4444]/16 text-[#991b1b]',
+};
+
+const PROFICIENCY_ACCENT: Record<KnownSkill['proficiency'], string> = {
+  basic: 'bg-[#22c55e]',
+  intermediate: 'bg-[#eab308]',
+  advanced: 'bg-[#ef4444]',
 };
 
 const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; bar: string; icon: string }> = {
@@ -215,10 +221,13 @@ export default function SkillInputPage() {
                           className={`tag-skill border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] text-[color:var(--text-soft)] hover:border-[color:var(--border-strong)] ${
                             proficiency ? PROFICIENCY_STYLE[proficiency] : ''
                           }`}
+                          title={proficiency ? `${skill.name} - ${PROFICIENCY_LABEL[proficiency]}` : skill.name}
                         >
-                          <span className="text-[10px] uppercase tracking-[0.16em] text-[color:var(--text-muted)]">{skill.importanceLevel.slice(0, 3)}</span>
+                          <span className={`text-[10px] uppercase tracking-[0.16em] ${proficiency ? 'text-current/80' : 'text-[color:var(--text-muted)]'}`}>
+                            {skill.importanceLevel.slice(0, 3)}
+                          </span>
                           <span>{skill.name}</span>
-                          {proficiency && <span className="font-semibold">{PROFICIENCY_LABEL[proficiency]}</span>}
+                          {proficiency && <span className={`h-2.5 w-2.5 rounded-full ${PROFICIENCY_ACCENT[proficiency]}`} aria-hidden="true" />}
                         </button>
 
                         {tooltip?._id === skill._id && skill.tooltip && (
