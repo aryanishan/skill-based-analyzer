@@ -103,7 +103,11 @@ function SidebarIcon({ type }: { type: string }) {
   );
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  collapsed: boolean;
+}
+
+export default function Sidebar({ collapsed }: SidebarProps) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -124,11 +128,15 @@ export default function Sidebar() {
   };
 
   const sidebarContent = (
-    <div className="sidebar-shell flex h-full flex-col p-4 text-white md:rounded-none xl:p-5">
-      <div className="flex items-center justify-between gap-3">
-        <Link to="/" className="flex items-center gap-3">
-          <LogoBadge label="CR" className="h-10 w-10 bg-white text-[11px] text-[#171925]" />
-          <div className="hidden xl:block">
+    <div className="sidebar-shell flex h-full flex-col p-4 text-white transition-[width,padding,background-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:rounded-none">
+      <div className={`flex items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3'}`}>
+        <Link to="/" className={`flex min-w-0 items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3'}`}>
+          <LogoBadge label="CR" className="h-10 w-10 bg-white text-[11px] text-[#171925] shadow-[0_10px_20px_rgba(0,0,0,0.18)]" />
+          <div
+            className={`min-w-0 overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-0 max-w-[170px] opacity-100'
+            }`}
+          >
             <div className="font-['Space_Grotesk'] text-lg font-bold tracking-tight text-white">CareerLab</div>
             <div className="text-xs text-[#9aa3bf]">Readiness Workspace</div>
           </div>
@@ -149,14 +157,18 @@ export default function Sidebar() {
         )}
       </div>
 
-      <div className="mt-5 hidden xl:block">
-        <div className="flex items-center gap-2 rounded-[10px] bg-white/5 px-3 py-3 text-sm text-[#8e96b4]">
+      <div
+        className={`mt-5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          collapsed ? 'max-h-0 opacity-0' : 'max-h-20 opacity-100'
+        }`}
+      >
+        <div className="flex items-center gap-2 rounded-[14px] border border-white/6 bg-white/[0.04] px-3 py-3 text-sm text-[#8e96b4]">
           <SidebarIcon type="search" />
           <span>Search pages...</span>
         </div>
       </div>
 
-      <div className="mt-5 space-y-2">
+      <div className="mt-6 space-y-2">
         {navItems.map(item => {
           const active = currentSkillPath === item.path || (item.path === '/' && location.pathname === '/');
           return (
@@ -164,43 +176,79 @@ export default function Sidebar() {
               key={item.path}
               to={item.path}
               onClick={() => setOpen(false)}
-              className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`}
+              className={`sidebar-item ${active ? 'sidebar-item-active' : ''} ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
               title={item.label}
             >
               <SidebarIcon type={item.icon} />
-              <span className="hidden xl:inline">{item.label}</span>
+              <span
+                className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
+                }`}
+              >
+                {item.label}
+              </span>
             </Link>
           );
         })}
       </div>
 
       <div className="mt-6 border-t border-white/8 pt-6">
-        <button type="button" onClick={toggleTheme} className="sidebar-item w-full text-left" title="Toggle theme">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className={`sidebar-item w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
+          title="Toggle theme"
+        >
           <SidebarIcon type="theme" />
-          <span className="hidden xl:inline">{theme === 'dark' ? 'Light Theme' : 'Dark Theme'}</span>
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
+            }`}
+          >
+            {theme === 'dark' ? 'Light Theme' : 'Dark Theme'}
+          </span>
         </button>
       </div>
 
       <div className="mt-auto">
-        <div className="mt-6 rounded-[10px] border border-white/8 bg-white/5 p-3">
+        <div
+          className={`mt-6 rounded-[16px] border border-white/10 bg-white/[0.04] p-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            collapsed ? 'flex justify-center px-0 py-2' : ''
+          }`}
+        >
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-white text-sm font-semibold text-[#171925]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-white text-sm font-semibold text-[#171925]">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <div className="hidden min-w-0 flex-1 xl:block">
+            <div
+              className={`min-w-0 flex-1 overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'
+              }`}
+            >
               <div className="truncate text-sm font-semibold text-white">{user.name}</div>
               <div className="truncate text-xs text-[#8e96b4]">{user.email}</div>
             </div>
           </div>
         </div>
 
-        <button type="button" onClick={handleLogout} className="sidebar-item mt-3 w-full text-left" title="Logout">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className={`sidebar-item mt-3 w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
+          title="Logout"
+        >
           <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]" stroke="currentColor" strokeWidth="1.8">
             <path d="M15 17l5-5-5-5" />
             <path d="M20 12H9" />
             <path d="M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
           </svg>
-          <span className="hidden xl:inline">Logout</span>
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
+            }`}
+          >
+            Logout
+          </span>
         </button>
       </div>
     </div>
@@ -220,7 +268,11 @@ export default function Sidebar() {
         </svg>
       </button>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden md:block md:w-[96px] xl:w-[292px]">
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 hidden overflow-hidden transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:block ${
+          collapsed ? 'md:w-[88px]' : 'md:w-[292px]'
+        }`}
+      >
         {sidebarContent}
       </aside>
 

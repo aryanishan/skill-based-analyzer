@@ -264,8 +264,8 @@
   }
 
   .workspace-header {
-    background: #2a2f34;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: #15131d;
+    border: none;
     border-bottom: none;
     box-shadow: none;
   }
@@ -467,8 +467,8 @@
   }
 
   .sidebar-shell {
-    background: #2a2f34;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: #15131d;
+    border: none;
     box-shadow: none;
   }
 
@@ -492,19 +492,28 @@
   }
 
   .sidebar-item {
-    @apply flex items-center gap-3 rounded-[10px] px-3 py-3 text-sm font-medium transition-all duration-200;
-    color: #c2ccd3;
+    @apply flex items-center gap-3 rounded-[16px] px-4 py-3 text-sm font-medium transition-all duration-300;
+    color: #d7d9e4;
   }
 
   .sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #f5f7ff;
+    background: rgba(255, 255, 255, 0.045);
+    color: #ffffff;
   }
 
   .sidebar-item-active {
-    background: #3b434a;
-    color: #ffffff;
-    box-shadow: 0 10px 22px rgba(3, 37, 57, 0.16);
+    background: #ffffff;
+    color: #1a1826;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+  }
+
+  .sidebar-item-collapsed {
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 18px;
   }
 
   @keyframes float {

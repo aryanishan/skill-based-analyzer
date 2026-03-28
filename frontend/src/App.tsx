@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AuthPage from './pages/AuthPage';
@@ -12,6 +12,9 @@ import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 
+const SIDEBAR_EXPANDED_WIDTH = '292px';
+const SIDEBAR_COLLAPSED_WIDTH = '88px';
+
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <LoadingSpinner />;
@@ -21,17 +24,46 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   const { loading } = useAuth();
   const location = useLocation();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem('sidebar-collapsed');
+    if (stored === 'true') {
+      setSidebarCollapsed(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('sidebar-collapsed', String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
+
   if (loading) return <LoadingSpinner />;
 
   const showSidebar = location.pathname !== '/auth';
 
   return (
     <div className="app-shell">
-      {showSidebar && <Sidebar />}
-      <main className={showSidebar ? 'min-h-screen md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
+      {showSidebar && <Sidebar collapsed={sidebarCollapsed} />}
+      <main
+        className={
+          showSidebar
+            ? `min-h-screen transition-[padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                sidebarCollapsed ? 'md:pl-[88px]' : 'md:pl-[292px]'
+              }`
+            : 'min-h-screen'
+        }
+        style={
+          showSidebar
+            ? {
+                ['--sidebar-expanded-width' as any]: SIDEBAR_EXPANDED_WIDTH,
+                ['--sidebar-collapsed-width' as any]: SIDEBAR_COLLAPSED_WIDTH,
+              }
+            : undefined
+        }
+      >
         {showSidebar ? (
           <div className="dashboard-frame min-h-screen">
-            <Navbar />
+            <Navbar collapsed={sidebarCollapsed} onToggleSidebar={() => setSidebarCollapsed(current => !current)} />
             <div className="dashboard-canvas min-h-[calc(100vh-76px)] overflow-hidden">
               <Routes>
                 <Route path="/auth" element={<AuthPage />} />
