@@ -266,8 +266,9 @@
   .workspace-header {
     background: linear-gradient(180deg, #3b434a 0%, #343b42 100%);
     border: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: none;
     box-shadow:
-      0 16px 30px rgba(3, 37, 57, 0.16),
+      0 12px 24px rgba(3, 37, 57, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
@@ -276,6 +277,7 @@
       linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.84)),
       linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
     border: 1px solid var(--border-soft);
+    border-top: none;
     box-shadow: var(--shadow-soft);
   }
 
