@@ -181,7 +181,9 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               className={`sidebar-item ${active ? 'sidebar-item-active' : ''} ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
               title={item.label}
             >
-              <SidebarIcon type={item.icon} />
+              <span className="sidebar-item-icon">
+                <SidebarIcon type={item.icon} />
+              </span>
               <span
                 className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
@@ -203,7 +205,9 @@ export default function Sidebar({ collapsed }: SidebarProps) {
           className={`sidebar-item w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
           title="Toggle theme"
         >
-          <SidebarIcon type="theme" />
+          <span className="sidebar-item-icon">
+            <SidebarIcon type="theme" />
+          </span>
           <span
             className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
@@ -241,11 +245,13 @@ export default function Sidebar({ collapsed }: SidebarProps) {
           className={`sidebar-item mt-3 w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
           title="Logout"
         >
-          <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]" stroke="currentColor" strokeWidth="1.8">
-            <path d="M15 17l5-5-5-5" />
-            <path d="M20 12H9" />
-            <path d="M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
-          </svg>
+          <span className="sidebar-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]" stroke="currentColor" strokeWidth="1.8">
+              <path d="M15 17l5-5-5-5" />
+              <path d="M20 12H9" />
+              <path d="M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
+            </svg>
+          </span>
           <span
             className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
