@@ -8,6 +8,7 @@ import RoadmapPage from './pages/RoadmapPage';
 import SkillInputPage from './pages/SkillInputPage';
 import DashboardPage from './pages/DashboardPage';
 import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 
@@ -27,17 +28,35 @@ export default function App() {
   return (
     <div className="app-shell">
       {showSidebar && <Sidebar />}
-      <main className={showSidebar ? 'min-h-screen pt-4 md:pt-0 md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
-        <Routes>
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
-          <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
-          <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
-          <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
-          <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
-          <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+      <main className={showSidebar ? 'min-h-screen pt-4 md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
+        {showSidebar ? (
+          <div className="dashboard-frame min-h-screen px-4 pb-4 md:px-5 md:pb-5">
+            <Navbar />
+            <div className="dashboard-canvas mt-4 min-h-[calc(100vh-7rem)] overflow-hidden rounded-[10px]">
+              <Routes>
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+                <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
+                <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
+                <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
+                <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
+                <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+          </div>
+        ) : (
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+            <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
+            <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
+            <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
+            <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
+            <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        )}
       </main>
     </div>
   );

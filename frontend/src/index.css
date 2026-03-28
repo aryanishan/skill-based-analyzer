@@ -258,6 +258,32 @@
   .section-shell {
     @apply mx-auto max-w-6xl px-4 pb-6 pt-4 sm:px-5 lg:pb-8 lg:pt-4;
   }
+
+  .dashboard-frame {
+    position: relative;
+  }
+
+  .workspace-header {
+    background: linear-gradient(180deg, #3b434a 0%, #343b42 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 16px 30px rgba(3, 37, 57, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .dashboard-canvas {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.84)),
+      linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
+    border: 1px solid var(--border-soft);
+    box-shadow: var(--shadow-soft);
+  }
+
+  html[data-theme='dark'] .dashboard-canvas {
+    background:
+      linear-gradient(180deg, rgba(8, 39, 58, 0.92), rgba(3, 37, 57, 0.98)),
+      linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bottom) 100%);
+  }
 }
 
 @layer utilities {
@@ -441,25 +467,25 @@
   }
 
   .sidebar-shell {
-    background: linear-gradient(180deg, #0b3147 0%, #032539 100%);
-    border: 1px solid rgba(251, 243, 242, 0.08);
-    box-shadow: 0 22px 44px rgba(3, 37, 57, 0.32);
+    background: linear-gradient(180deg, #2c3237 0%, #23282d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 22px 44px rgba(3, 37, 57, 0.24);
   }
 
   .sidebar-item {
     @apply flex items-center gap-3 rounded-[10px] px-3 py-3 text-sm font-medium transition-all duration-200;
-    color: #aeb4cb;
+    color: #c2ccd3;
   }
 
   .sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     color: #f5f7ff;
   }
 
   .sidebar-item-active {
-    background: #fbf3f2;
-    color: #032539;
-    box-shadow: 0 10px 22px rgba(3, 37, 57, 0.18);
+    background: #3b434a;
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(3, 37, 57, 0.16);
   }
 
   @keyframes float {
