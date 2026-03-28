@@ -474,6 +474,26 @@
     box-shadow: 0 22px 44px rgba(3, 37, 57, 0.24);
   }
 
+  @media (min-width: 768px) {
+    .workspace-header {
+      border-left: none;
+      border-radius: 0 10px 0 0;
+      box-shadow: none;
+    }
+
+    .dashboard-canvas {
+      border-left: none;
+      border-radius: 0 0 10px 0;
+      box-shadow: none;
+    }
+
+    .sidebar-shell {
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+
   .sidebar-item {
     @apply flex items-center gap-3 rounded-[10px] px-3 py-3 text-sm font-medium transition-all duration-200;
     color: #c2ccd3;

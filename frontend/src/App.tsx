@@ -28,11 +28,11 @@ export default function App() {
   return (
     <div className="app-shell">
       {showSidebar && <Sidebar />}
-      <main className={showSidebar ? 'min-h-screen pt-4 md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
+      <main className={showSidebar ? 'min-h-screen md:pl-[96px] xl:pl-[292px]' : 'min-h-screen'}>
         {showSidebar ? (
-          <div className="dashboard-frame min-h-screen px-4 pb-4 md:px-4 md:pb-4">
+          <div className="dashboard-frame min-h-screen">
             <Navbar />
-            <div className="dashboard-canvas min-h-[calc(100vh-7rem)] overflow-hidden rounded-b-[10px]">
+            <div className="dashboard-canvas min-h-[calc(100vh-76px)] overflow-hidden">
               <Routes>
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />

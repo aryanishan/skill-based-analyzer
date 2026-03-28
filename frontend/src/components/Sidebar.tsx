@@ -124,7 +124,7 @@ export default function Sidebar() {
   };
 
   const sidebarContent = (
-    <div className="sidebar-shell flex h-full flex-col rounded-[10px] p-4 text-white">
+    <div className="sidebar-shell flex h-full flex-col p-4 text-white md:rounded-none xl:p-5">
       <div className="flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-3">
           <LogoBadge label="CR" className="h-10 w-10 bg-white text-[11px] text-[#171925]" />
@@ -220,7 +220,7 @@ export default function Sidebar() {
         </svg>
       </button>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden px-4 pb-5 pt-4 md:block md:w-[96px] xl:w-[292px]">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden md:block md:w-[96px] xl:w-[292px]">
         {sidebarContent}
       </aside>
 
