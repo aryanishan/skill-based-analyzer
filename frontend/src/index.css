@@ -264,7 +264,7 @@
   }
 
   .workspace-header {
-    background: linear-gradient(180deg, #3b434a 0%, #343b42 100%);
+    background: linear-gradient(180deg, #2c3237 0%, #23282d 100%);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-bottom: none;
     box-shadow:
@@ -477,13 +477,13 @@
   @media (min-width: 768px) {
     .workspace-header {
       border-left: none;
-      border-radius: 0 10px 0 0;
+      border-radius: 0;
       box-shadow: none;
     }
 
     .dashboard-canvas {
       border-left: none;
-      border-radius: 0 0 10px 0;
+      border-radius: 0;
       box-shadow: none;
     }
 
