@@ -32,6 +32,29 @@ const seedData = async () => {
   ]);
 
   // ─────────────────────────────────────────────
+  // SKILLS: SOFTWARE / IT — Android Development
+  // ─────────────────────────────────────────────
+  const androidSkills = await Skill.insertMany([
+    { name: 'Programming Basics', type: 'skill', domain: 'Android Dev', category: 'Foundation', weight: 7, importanceLevel: 'critical', tooltip: { whyItMatters: 'Builds the logic and problem-solving base needed for app development', whereUsed: 'All Android developer roles' }, tags: ['programming'] },
+    { name: 'Kotlin', type: 'skill', domain: 'Android Dev', category: 'Foundation', weight: 10, importanceLevel: 'critical', tooltip: { whyItMatters: 'Primary modern language for Android apps', whereUsed: 'Native Android development' }, tags: ['programming', 'android'] },
+    { name: 'Android Studio', type: 'skill', domain: 'Android Dev', category: 'Foundation', weight: 8, importanceLevel: 'critical', tooltip: { whyItMatters: 'Official IDE for building, running, and debugging Android apps', whereUsed: 'All Android projects' }, tags: ['tools', 'android'] },
+    { name: 'Git & Version Control (Android)', type: 'skill', domain: 'Android Dev', category: 'Foundation', weight: 7, importanceLevel: 'critical', tooltip: { whyItMatters: 'Helps you collaborate safely and manage app code history', whereUsed: 'Team-based Android development' }, tags: ['devtools'] },
+    { name: 'Object-Oriented Programming', type: 'skill', domain: 'Android Dev', category: 'Foundation', weight: 8, importanceLevel: 'critical', tooltip: { whyItMatters: 'Android apps rely heavily on classes, objects, and modular design', whereUsed: 'App architecture, reusable code' }, tags: ['programming'] },
+    { name: 'Android Fundamentals', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 10, importanceLevel: 'critical', tooltip: { whyItMatters: 'Covers activities, intents, fragments, and app lifecycle', whereUsed: 'Every Android application' }, tags: ['android'] },
+    { name: 'Jetpack Compose', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 9, importanceLevel: 'critical', tooltip: { whyItMatters: 'Modern toolkit for building native Android UI', whereUsed: 'Contemporary Android app interfaces' }, tags: ['android', 'ui'] },
+    { name: 'XML Layouts', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 6, importanceLevel: 'recommended', tooltip: { whyItMatters: 'Many existing apps still use XML-based UI screens', whereUsed: 'Legacy and hybrid Android codebases' }, tags: ['android', 'ui'] },
+    { name: 'Android Jetpack', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 8, importanceLevel: 'critical', tooltip: { whyItMatters: 'Provides lifecycle-aware components and app architecture support', whereUsed: 'Navigation, ViewModel, Room, WorkManager' }, tags: ['android', 'architecture'] },
+    { name: 'REST APIs & JSON', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 8, importanceLevel: 'critical', tooltip: { whyItMatters: 'Most mobile apps need backend communication and data parsing', whereUsed: 'Networking, external services, app integrations' }, tags: ['api', 'networking'] },
+    { name: 'Room Database', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 7, importanceLevel: 'recommended', tooltip: { whyItMatters: 'Enables structured local storage in Android apps', whereUsed: 'Offline-first and cached mobile apps' }, tags: ['database', 'android'] },
+    { name: 'Firebase', type: 'skill', domain: 'Android Dev', category: 'Core', weight: 7, importanceLevel: 'recommended', tooltip: { whyItMatters: 'Speeds up auth, analytics, notifications, and backend features', whereUsed: 'Mobile MVPs and production apps' }, tags: ['backend', 'cloud'] },
+    { name: 'MVVM Architecture', type: 'skill', domain: 'Android Dev', category: 'Advanced', weight: 8, importanceLevel: 'critical', tooltip: { whyItMatters: 'Keeps Android code maintainable and testable at scale', whereUsed: 'Professional Android teams and large apps' }, tags: ['architecture'] },
+    { name: 'Dependency Injection', type: 'skill', domain: 'Android Dev', category: 'Advanced', weight: 7, importanceLevel: 'recommended', tooltip: { whyItMatters: 'Improves modularity and testability of app components', whereUsed: 'Scalable Android codebases' }, tags: ['architecture'] },
+    { name: 'Coroutines & Flow', type: 'skill', domain: 'Android Dev', category: 'Advanced', weight: 8, importanceLevel: 'critical', tooltip: { whyItMatters: 'Handles asynchronous work cleanly in Android apps', whereUsed: 'Networking, state updates, background tasks' }, tags: ['kotlin', 'concurrency'] },
+    { name: 'Android Testing', type: 'skill', domain: 'Android Dev', category: 'Advanced', weight: 7, importanceLevel: 'recommended', tooltip: { whyItMatters: 'Reduces regressions across UI and business logic changes', whereUsed: 'Unit tests, UI tests, release quality' }, tags: ['testing'] },
+    { name: 'Play Store Deployment', type: 'skill', domain: 'Android Dev', category: 'Advanced', weight: 6, importanceLevel: 'recommended', tooltip: { whyItMatters: 'Publishing is part of shipping a real Android product', whereUsed: 'Releases, app signing, rollout management' }, tags: ['deployment', 'android'] },
+  ]);
+
+  // ─────────────────────────────────────────────
   // SKILLS: AI/ML
   // ─────────────────────────────────────────────
   const aiSkills = await Skill.insertMany([
@@ -168,6 +191,20 @@ const seedData = async () => {
   const dockerSkill = webDevSkills.find(s => s.name === 'Docker & Containers');
   const tsSkill = webDevSkills.find(s => s.name === 'TypeScript');
   const cicdSkill = webDevSkills.find(s => s.name === 'CI/CD Pipelines');
+  const dsaSkill = webDevSkills.find(s => s.name === 'Data Structures & Algorithms');
+
+  const programmingBasicsSkill = androidSkills.find(s => s.name === 'Programming Basics');
+  const kotlinSkill = androidSkills.find(s => s.name === 'Kotlin');
+  const androidFundamentalsSkill = androidSkills.find(s => s.name === 'Android Fundamentals');
+  const composeSkill = androidSkills.find(s => s.name === 'Jetpack Compose');
+  const jetpackSkill = androidSkills.find(s => s.name === 'Android Jetpack');
+  const roomSkill = androidSkills.find(s => s.name === 'Room Database');
+  const firebaseSkill = androidSkills.find(s => s.name === 'Firebase');
+  const mvvmSkill = androidSkills.find(s => s.name === 'MVVM Architecture');
+  const diSkill = androidSkills.find(s => s.name === 'Dependency Injection');
+  const coroutinesSkill = androidSkills.find(s => s.name === 'Coroutines & Flow');
+  const testingSkill = androidSkills.find(s => s.name === 'Android Testing');
+  const deploymentSkill = androidSkills.find(s => s.name === 'Play Store Deployment');
 
   const pythonSkill = aiSkills.find(s => s.name === 'Python');
   const numpySkill = aiSkills.find(s => s.name === 'NumPy & Pandas');
@@ -194,6 +231,18 @@ const seedData = async () => {
   await Skill.findByIdAndUpdate(tsSkill._id, { dependencies: [jsSkill._id] });
   await Skill.findByIdAndUpdate(dockerSkill._id, { dependencies: [nodeSkill._id] });
   await Skill.findByIdAndUpdate(cicdSkill._id, { dependencies: [dockerSkill._id] });
+
+  await Skill.findByIdAndUpdate(kotlinSkill._id, { dependencies: [programmingBasicsSkill._id] });
+  await Skill.findByIdAndUpdate(androidFundamentalsSkill._id, { dependencies: [kotlinSkill._id] });
+  await Skill.findByIdAndUpdate(composeSkill._id, { dependencies: [androidFundamentalsSkill._id] });
+  await Skill.findByIdAndUpdate(jetpackSkill._id, { dependencies: [androidFundamentalsSkill._id] });
+  await Skill.findByIdAndUpdate(roomSkill._id, { dependencies: [androidFundamentalsSkill._id, jetpackSkill._id] });
+  await Skill.findByIdAndUpdate(firebaseSkill._id, { dependencies: [androidFundamentalsSkill._id] });
+  await Skill.findByIdAndUpdate(mvvmSkill._id, { dependencies: [androidFundamentalsSkill._id, jetpackSkill._id] });
+  await Skill.findByIdAndUpdate(diSkill._id, { dependencies: [mvvmSkill._id] });
+  await Skill.findByIdAndUpdate(coroutinesSkill._id, { dependencies: [kotlinSkill._id, androidFundamentalsSkill._id] });
+  await Skill.findByIdAndUpdate(testingSkill._id, { dependencies: [mvvmSkill._id, coroutinesSkill._id] });
+  await Skill.findByIdAndUpdate(deploymentSkill._id, { dependencies: [testingSkill._id] });
 
   await Skill.findByIdAndUpdate(numpySkill._id, { dependencies: [pythonSkill._id] });
   await Skill.findByIdAndUpdate(mlSkill._id, { dependencies: [pythonSkill._id, numpySkill._id] });
@@ -239,6 +288,16 @@ const seedData = async () => {
       tags: ['Pentesting', 'Networking', 'SIEM', 'OWASP'],
       estimatedMonths: 12,
       roadmap: cyberSkills.map(s => s._id)
+    },
+    {
+      name: 'Android Developer',
+      domain: 'Software/IT',
+      subdomain: 'Android Dev',
+      description: 'Build native Android applications with Kotlin, Jetpack, and modern mobile architecture',
+      icon: 'AD',
+      tags: ['Kotlin', 'Jetpack Compose', 'Firebase', 'Android'],
+      estimatedMonths: 9,
+      roadmap: [...androidSkills.map(s => s._id), dsaSkill._id]
     },
     {
       name: 'Data Scientist',
@@ -308,7 +367,7 @@ const seedData = async () => {
       icon: 'GC',
       tags: ['GATE', 'CS', 'DSA', 'OS', 'DBMS'],
       estimatedMonths: 12,
-      roadmap: [...gateSkills.map(s => s._id), webDevSkills.find(s => s.name === 'Data Structures & Algorithms')._id]
+      roadmap: [...gateSkills.map(s => s._id), dsaSkill._id]
     }
   ]);
 
