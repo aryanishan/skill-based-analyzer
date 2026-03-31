@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getCareerPath } from '../api';
@@ -14,31 +14,31 @@ const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
 };
 
 const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
-  basic: 'border-[#22c55e]/35 bg-[#22c55e]/16 text-[#166534]',
-  intermediate: 'border-[#eab308]/35 bg-[#eab308]/18 text-[#854d0e]',
-  advanced: 'border-[#ef4444]/35 bg-[#ef4444]/16 text-[#991b1b]',
+  basic: 'border-[#94a383]/35 bg-[#94a383]/16 text-[#43503b]',
+  intermediate: 'border-[#f3c94a]/35 bg-[#f3c94a]/18 text-[#7c5d10]',
+  advanced: 'border-[#f18a57]/35 bg-[#f18a57]/16 text-[#87472d]',
 };
 
 const PROFICIENCY_ACCENT: Record<KnownSkill['proficiency'], string> = {
-  basic: 'bg-[#22c55e]',
-  intermediate: 'bg-[#eab308]',
-  advanced: 'bg-[#ef4444]',
+  basic: 'bg-[#94a383]',
+  intermediate: 'bg-[#f3c94a]',
+  advanced: 'bg-[#f18a57]',
 };
 
-const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; bar: string; icon: string }> = {
+const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; panel: string; icon: string }> = {
   Foundation: {
-    pill: 'bg-zinc-500/14 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20',
-    bar: 'bg-[#e5e7eb]',
+    pill: 'bg-[#eef2ea] text-[#43503b] border border-[#94a383]/20',
+    panel: 'bg-[#eef2ea]',
     icon: 'FD',
   },
   Core: {
-    pill: 'bg-[#1c768f]/10 text-[#1c768f] border border-[#1c768f]/20',
-    bar: 'bg-[#dfe6ff]',
+    pill: 'bg-[#fff6db] text-[#6c5310] border border-[#f3c94a]/20',
+    panel: 'bg-[#fff6db]',
     icon: 'CR',
   },
   Advanced: {
-    pill: 'bg-[#032539]/10 text-[color:var(--text-main)] border border-[#032539]/20',
-    bar: 'bg-[#ede9fe]',
+    pill: 'bg-[#fff1ea] text-[#87472d] border border-[#f18a57]/20',
+    panel: 'bg-[#fff1ea]',
     icon: 'AD',
   },
 };
@@ -55,7 +55,7 @@ export default function SkillInputPage() {
   const [tooltip, setTooltip] = useState<Skill | null>(null);
 
   useEffect(() => {
-    if (pathId) fetchPath(pathId);
+    if (pathId) void fetchPath(pathId);
   }, [pathId]);
 
   useEffect(() => {
@@ -100,12 +100,12 @@ export default function SkillInputPage() {
   const totalCount = skills.length;
   const completionPct = totalCount ? Math.round((selectedCount / totalCount) * 100) : 0;
 
-  const skillsByCategory = (['Foundation', 'Core', 'Advanced'] as const).reduce((acc, category) => {
+  const skillsByCategory = useMemo(() => (['Foundation', 'Core', 'Advanced'] as const).reduce((acc, category) => {
     const list = skills.filter(skill => skill.category === category);
     if (filter !== 'All' && filter !== category) return acc;
     if (list.length) acc[category] = list;
     return acc;
-  }, {} as Record<'Foundation' | 'Core' | 'Advanced', Skill[]>);
+  }, {} as Record<'Foundation' | 'Core' | 'Advanced', Skill[]>), [skills, filter]);
 
   const handleAnalyze = () => {
     if (knownSkills.size === 0) {
@@ -124,9 +124,9 @@ export default function SkillInputPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="card flex items-center gap-4">
-          <LogoBadge label="LD" className="h-10 w-10 text-[10px]" />
+      <div className="section-shell">
+        <div className="card flex min-h-[60vh] items-center justify-center gap-4">
+          <LogoBadge label="LD" className="h-10 w-10 text-[10px] bg-[#f4e6bf]" />
           <div className="text-[color:var(--text-soft)]">Loading career path details...</div>
         </div>
       </div>
@@ -134,55 +134,56 @@ export default function SkillInputPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-      <section className="card radial-panel">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+    <div className="section-shell space-y-5">
+      <section className="card radial-panel overflow-hidden">
+        <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-4">
             <button onClick={() => navigate('/career-paths')} className="text-sm font-medium text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]">
               {'<-'} Back to Career Paths
             </button>
             <div className="flex items-start gap-4">
-              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 bg-[#032539] text-sm text-[#fbf3f2] shadow-lg shadow-[#032539]/15" />
+              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 rounded-[22px] bg-[color:var(--bg-dark)] text-sm text-[color:var(--text-on-dark)]" />
               <div>
-                <div className="theme-chip">Skill Selection</div>
-                <h1 className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{careerPath?.name}</h1>
-                <p className="mt-2 max-w-2xl text-[color:var(--text-soft)]">{careerPath?.description}</p>
+                <div className="theme-chip">Skill Input</div>
+                <h1 className="mt-3 font-['Sora'] text-4xl font-bold tracking-tight text-[color:var(--text-main)]">{careerPath?.name}</h1>
+                <p className="mt-3 max-w-2xl text-base leading-8 text-[color:var(--text-soft)]">{careerPath?.description}</p>
               </div>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:w-[320px] lg:grid-cols-1">
-            <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Selected Skills</div>
-              <div className="mt-3 text-3xl font-semibold text-[color:var(--text-main)]">{selectedCount} / {totalCount}</div>
-              <div className="progress-bar mt-4">
-                <div className="progress-fill bg-[#032539]" style={{ width: `${completionPct}%` }} />
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="soft-dark-card rounded-[30px] p-5 text-white">
+              <div className="text-sm uppercase tracking-[0.22em] text-white/55">Selection progress</div>
+              <div className="mt-4 text-4xl font-bold">{selectedCount}<span className="text-xl text-white/55">/{totalCount}</span></div>
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full rounded-full bg-[#f3c94a]" style={{ width: `${completionPct}%` }} />
               </div>
+              <p className="mt-4 text-sm leading-6 text-white/72">Cycle each skill through basic, intermediate, advanced, then back to empty.</p>
             </div>
-            <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">How it works</div>
-              <div className="mt-3 space-y-2 text-sm leading-6 text-[color:var(--text-soft)]">
-                <p>1 click: basic</p>
-                <p>2 clicks: intermediate</p>
-                <p>3 clicks: advanced</p>
-                <p>4 clicks: deselect</p>
+            <div className="card">
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Click guide</div>
+              <div className="mt-4 space-y-3 text-sm text-[color:var(--text-soft)]">
+                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">1 click: basic</div>
+                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">2 clicks: intermediate</div>
+                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">3 clicks: advanced</div>
+                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">4 clicks: clear selection</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-6">
-          <div className="card flex flex-wrap gap-3">
+      <section className="grid gap-5 xl:grid-cols-[1fr_320px]">
+        <div className="space-y-5">
+          <div className="card flex flex-wrap gap-2">
             {['All', 'Foundation', 'Core', 'Advanced'].map(item => (
               <button
                 key={item}
                 onClick={() => setFilter(item)}
-                className={`rounded-[10px] px-4 py-2 text-sm font-medium transition ${
+                className={`rounded-full px-4 py-2.5 text-sm font-semibold transition ${
                   filter === item
-                    ? 'bg-[#25283b] text-white'
-                    : 'bg-[color:var(--surface-strong)] text-[color:var(--text-muted)]'
+                    ? 'bg-[color:var(--bg-dark)] text-[color:var(--text-on-dark)]'
+                    : 'border border-[color:var(--border-soft)] bg-white/50 text-[color:var(--text-soft)]'
                 }`}
               >
                 {item}
@@ -195,17 +196,15 @@ export default function SkillInputPage() {
 
             return (
               <section key={category} className="card space-y-5">
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <LogoBadge label={style.icon} className={`h-10 w-10 text-[10px] ${style.bar}`} />
+                    <LogoBadge label={style.icon} className={`h-11 w-11 text-[10px] ${style.panel}`} />
                     <div>
-                      <h2 className="text-xl font-semibold text-[color:var(--text-main)]">{category}</h2>
-                      <p className="text-sm text-[color:var(--text-muted)]">
-                        {categorySkills.filter(skill => knownSkills.has(skill._id)).length} of {categorySkills.length} selected
-                      </p>
+                      <h2 className="text-2xl font-semibold text-[color:var(--text-main)]">{category}</h2>
+                      <p className="text-sm text-[color:var(--text-muted)]">{categorySkills.filter(skill => knownSkills.has(skill._id)).length} of {categorySkills.length} selected</p>
                     </div>
                   </div>
-                  <span className={`badge ${style.pill}`}>{category} Layer</span>
+                  <span className={`badge rounded-full ${style.pill}`}>{category} layer</span>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
@@ -218,9 +217,7 @@ export default function SkillInputPage() {
                           onMouseEnter={() => setTooltip(skill)}
                           onMouseLeave={() => setTooltip(null)}
                           onClick={() => toggleSkill(skill._id)}
-                          className={`tag-skill border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] text-[color:var(--text-soft)] hover:border-[color:var(--border-strong)] ${
-                            proficiency ? PROFICIENCY_STYLE[proficiency] : ''
-                          }`}
+                          className={`tag-skill border-[color:var(--border-soft)] bg-white/55 text-[color:var(--text-soft)] hover:border-[color:var(--border-strong)] ${proficiency ? PROFICIENCY_STYLE[proficiency] : ''}`}
                           title={proficiency ? `${skill.name} - ${PROFICIENCY_LABEL[proficiency]}` : skill.name}
                         >
                           <span className={`text-[10px] uppercase tracking-[0.16em] ${proficiency ? 'text-current/80' : 'text-[color:var(--text-muted)]'}`}>
@@ -231,16 +228,16 @@ export default function SkillInputPage() {
                         </button>
 
                         {tooltip?._id === skill._id && skill.tooltip && (
-                          <div className="absolute bottom-full left-0 z-20 mb-3 w-72 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4 shadow-2xl">
+                          <div className="absolute bottom-full left-0 z-20 mb-3 w-72 rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--bg-panel-strong)] p-4 shadow-2xl">
                             <div className="text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
                             {skill.tooltip.whyItMatters && (
                               <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
-                                <span className="font-semibold text-[#1c768f]">Why:</span> {skill.tooltip.whyItMatters}
+                                <span className="font-semibold text-[#6c5310]">Why:</span> {skill.tooltip.whyItMatters}
                               </p>
                             )}
                             {skill.tooltip.whereUsed && (
                               <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
-                                <span className="font-semibold text-[#fa991c]">Used in:</span> {skill.tooltip.whereUsed}
+                                <span className="font-semibold text-[#87472d]">Used in:</span> {skill.tooltip.whereUsed}
                               </p>
                             )}
                           </div>
@@ -256,19 +253,24 @@ export default function SkillInputPage() {
 
         <aside className="space-y-4">
           <div className="card">
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Proficiency Key</div>
+            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Proficiency key</div>
             <div className="mt-4 space-y-3">
               {Object.entries(PROFICIENCY_LABEL).map(([key, label]) => (
-                <div key={key} className={`rounded-[10px] border px-4 py-3 text-sm font-medium ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
+                <div key={key} className={`rounded-[22px] border px-4 py-3 text-sm font-medium ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
                   {label}
                 </div>
               ))}
             </div>
           </div>
 
-          <button onClick={handleAnalyze} className="btn-primary w-full">
-            Analyze Readiness ({selectedCount})
-          </button>
+          <div className="soft-dark-card rounded-[30px] p-5 text-white">
+            <div className="text-sm uppercase tracking-[0.22em] text-white/55">Ready for scoring</div>
+            <div className="mt-3 text-2xl font-semibold">Analyze your path</div>
+            <p className="mt-3 text-sm leading-7 text-white/72">Once your selections feel right, move to the dashboard to generate a readiness score and recommendations.</p>
+            <button onClick={handleAnalyze} className="btn-primary mt-5 w-full bg-[#fff9ef] text-[#15191d] hover:bg-white">
+              Analyze Readiness ({selectedCount})
+            </button>
+          </div>
         </aside>
       </section>
     </div>

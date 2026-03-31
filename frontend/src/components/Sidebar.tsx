@@ -60,16 +60,6 @@ function SidebarIcon({ type }: { type: string }) {
     );
   }
 
-  if (type === 'layers') {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.8">
-        <path d="m12 4 8 4-8 4-8-4 8-4Z" />
-        <path d="m4 12 8 4 8-4" />
-        <path d="m4 16 8 4 8-4" />
-      </svg>
-    );
-  }
-
   if (type === 'theme') {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.8">
@@ -86,11 +76,12 @@ function SidebarIcon({ type }: { type: string }) {
     );
   }
 
-  if (type === 'search') {
+  if (type === 'logout') {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.8">
-        <circle cx="11" cy="11" r="6" />
-        <path d="m20 20-3.5-3.5" />
+        <path d="M15 17l5-5-5-5" />
+        <path d="M20 12H9" />
+        <path d="M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
       </svg>
     );
   }
@@ -115,7 +106,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   const [open, setOpen] = useState(false);
 
   const currentSkillPath = useMemo(() => {
-    if (location.pathname.startsWith('/skills')) return '/skills';
+    if (location.pathname.startsWith('/skills')) return '/career-paths';
     if (location.pathname.startsWith('/roadmap')) return '/roadmaps';
     return location.pathname;
   }, [location.pathname]);
@@ -128,44 +119,27 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   };
 
   const sidebarContent = (
-    <div className="sidebar-shell flex h-full flex-col p-3 text-white transition-[width,padding,background-color,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
-      <div className={`flex items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3 px-1 pt-1'}`}>
-        <Link to="/" className={`flex min-w-0 items-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${collapsed ? 'justify-center' : 'gap-3'}`}>
-          <LogoBadge label="CR" className="h-10 w-10 bg-white text-[11px] text-[#171925] shadow-[0_10px_20px_rgba(0,0,0,0.18)]" />
-          <div
-            className={`min-w-0 overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-0 max-w-[170px] opacity-100'
-            }`}
-          >
-            <div className="font-['Space_Grotesk'] text-lg font-bold tracking-tight text-white">CareerLab</div>
-            <div className="text-xs text-[#9aa3bf]">Readiness Workspace</div>
+    <div className="sidebar-shell flex h-full flex-col rounded-[32px] p-3 text-white transition-[width,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
+      <div className={`flex items-center overflow-hidden transition-all duration-500 ${collapsed ? 'justify-center pt-2' : 'gap-3 px-1 pt-1'}`}>
+        <Link to="/" className={`flex min-w-0 items-center overflow-hidden ${collapsed ? 'justify-center' : 'gap-3'}`}>
+          <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-[#fff9ef] text-[11px] text-[#161a1f] shadow-[0_12px_24px_rgba(0,0,0,0.18)]" />
+          <div className={`min-w-0 overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[170px] opacity-100'}`}>
+            <div className="font-['Sora'] text-lg font-bold tracking-tight text-[#fffaf2]">CareerLab</div>
+            <div className="text-xs uppercase tracking-[0.18em] text-[#b6b0a3]">Skill Gap Studio</div>
           </div>
         </Link>
-
-        {open && (
-          <button
-            type="button"
-            className="rounded-[10px] border border-white/10 bg-white/5 p-2 text-[#c5cbe0]"
-            onClick={() => setOpen(false)}
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M6 6h12" />
-              <path d="M6 12h12" />
-              <path d="M6 18h12" />
-            </svg>
-          </button>
-        )}
       </div>
 
-      <div className="mt-5">
+      <div className="mt-6 px-1">
         {collapsed ? (
-          <button type="button" className="sidebar-item sidebar-item-collapsed w-full" title="Search">
-            <SidebarIcon type="search" />
-          </button>
+          <div className="sidebar-item sidebar-item-collapsed" title="Planner mode">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#f3c94a]" />
+          </div>
         ) : (
-          <div className="flex items-center gap-2 rounded-[16px] border border-white/6 bg-white/[0.04] px-3 py-3 text-sm text-[#8e96b4]">
-            <SidebarIcon type="search" />
-            <span>Search pages...</span>
+          <div className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
+            <div className="text-[11px] uppercase tracking-[0.24em] text-[#b7b1a5]">Today</div>
+            <div className="mt-3 text-lg font-semibold text-white">Stay focused on the next useful skill.</div>
+            <p className="mt-2 text-sm leading-6 text-[#d6d0c4]">Use the path library, mark what you know, then let the dashboard show the gaps that matter most.</p>
           </div>
         )}
       </div>
@@ -182,11 +156,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
               title={item.label}
             >
               <SidebarIcon type={item.icon} />
-              <span
-                className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
-                }`}
-              >
+              <span className={`overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'}`}>
                 {item.label}
               </span>
             </Link>
@@ -196,7 +166,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
 
       <div className="sidebar-divider mt-6" />
 
-      <div className="mt-6">
+      <div className="mt-6 space-y-2">
         <button
           type="button"
           onClick={toggleTheme}
@@ -204,33 +174,21 @@ export default function Sidebar({ collapsed }: SidebarProps) {
           title="Toggle theme"
         >
           <SidebarIcon type="theme" />
-          <span
-            className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
-            }`}
-          >
-            {theme === 'dark' ? 'Light Theme' : 'Dark Theme'}
+          <span className={`overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'}`}>
+            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </span>
         </button>
       </div>
 
       <div className="mt-auto">
-        <div
-          className={`mt-6 rounded-[18px] border border-white/8 bg-white/[0.03] p-3 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            collapsed ? 'flex justify-center px-0 py-2' : ''
-          }`}
-        >
+        <div className={`mt-6 rounded-[24px] border border-white/8 bg-white/[0.04] p-3 transition-all duration-500 ${collapsed ? 'flex justify-center px-0 py-2' : ''}`}>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-white text-sm font-semibold text-[#171925]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#fff9ef] text-sm font-semibold text-[#181b1f]">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <div
-              className={`min-w-0 flex-1 overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'
-              }`}
-            >
+            <div className={`min-w-0 flex-1 overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'}`}>
               <div className="truncate text-sm font-semibold text-white">{user.name}</div>
-              <div className="truncate text-xs text-[#8e96b4]">{user.email}</div>
+              <div className="truncate text-xs text-[#b6b0a3]">{user.email}</div>
             </div>
           </div>
         </div>
@@ -241,16 +199,8 @@ export default function Sidebar({ collapsed }: SidebarProps) {
           className={`sidebar-item mt-3 w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
           title="Logout"
         >
-          <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px]" stroke="currentColor" strokeWidth="1.8">
-            <path d="M15 17l5-5-5-5" />
-            <path d="M20 12H9" />
-            <path d="M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" />
-          </svg>
-          <span
-            className={`overflow-hidden whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              collapsed ? 'ml-0 max-w-0 opacity-0' : 'ml-1 max-w-[160px] opacity-100'
-            }`}
-          >
+          <SidebarIcon type="logout" />
+          <span className={`overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'}`}>
             Logout
           </span>
         </button>
@@ -263,7 +213,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed left-4 top-4 z-50 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3 text-[color:var(--text-main)] shadow-lg md:hidden"
+        className="fixed left-4 top-4 z-50 rounded-[18px] border border-[color:var(--border-soft)] bg-[color:var(--bg-panel-strong)] p-3 text-[color:var(--text-main)] shadow-lg md:hidden"
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
           <path d="M5 7h14" />
@@ -288,7 +238,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
             onClick={() => setOpen(false)}
             aria-label="Close sidebar"
           />
-          <div className="relative h-full w-[288px] max-w-[85vw] px-4 pb-5 pt-4">
+          <div className="relative h-full w-[292px] max-w-[85vw] px-4 pb-5 pt-4">
             {sidebarContent}
           </div>
         </div>

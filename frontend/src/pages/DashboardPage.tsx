@@ -36,16 +36,16 @@ type SavedAssessment = {
 };
 
 const CATEGORY_COLORS = {
-  Foundation: '#cbd5e1',
-  Core: '#818cf8',
-  Advanced: '#c4b5fd',
+  Foundation: '#94a383',
+  Core: '#f3c94a',
+  Advanced: '#f18a57',
 };
 
 const LEVEL_STYLES: Record<string, string> = {
-  Beginner: 'border-[#6e858f]/20 bg-[#6e858f]/10 text-[color:var(--text-main)]',
-  Developing: 'border-[#fa991c]/20 bg-[#fa991c]/10 text-[color:var(--text-main)]',
-  Competitive: 'border-[#1c768f]/20 bg-[#1c768f]/10 text-[color:var(--text-main)]',
-  'Fully Ready': 'border-[#032539]/20 bg-[#032539]/10 text-[color:var(--text-main)]',
+  Beginner: 'border-[#d4d9de] bg-[#eef0f3] text-[#4f5962]',
+  Developing: 'border-[#f3c94a]/25 bg-[#f3c94a]/16 text-[#7c5d10]',
+  Competitive: 'border-[#94a383]/25 bg-[#94a383]/16 text-[#43503b]',
+  'Fully Ready': 'border-[#f18a57]/25 bg-[#f18a57]/16 text-[#87472d]',
 };
 
 function loadSavedAssessments(): SavedAssessment[] {
@@ -99,7 +99,7 @@ export default function DashboardPage() {
       setHistory(loadSavedAssessments());
       return;
     }
-    runEvaluation();
+    void runEvaluation();
   }, []);
 
   const runEvaluation = async () => {
@@ -145,79 +145,58 @@ export default function DashboardPage() {
       ]
     : [];
 
-  const progressTrend = history
-    .slice()
-    .reverse()
-    .map((item, index) => ({
-      name: `Run ${index + 1}`,
-      score: item.score,
-    }));
-
+  const progressTrend = history.slice().reverse().map((item, index) => ({ name: `Run ${index + 1}`, score: item.score }));
   const recentPaths = history.slice(0, 4);
 
-  const profileStats = useMemo(
-    () => [
-      { label: 'Known Skills', value: latest ? `${latest.knownCount}/${latest.totalSkills}` : '0/0', icon: 'KS', tone: 'bg-[#dfe6ff]', line: 'bg-[#8ea2ff]' },
-      { label: 'Learning Progress', value: latest ? `${latest.score}%` : '0%', icon: 'LP', tone: 'bg-[#ede9fe]', line: 'bg-[#b8a7ff]' },
-      { label: 'Assessments', value: totalAssessments, icon: 'AS', tone: 'bg-[#e5e7eb]', line: 'bg-[#a8b0bf]' },
-      { label: 'Domains', value: domainsExplored, icon: 'DM', tone: 'bg-[#e7ebf7]', line: 'bg-[#9aa8cb]' },
-    ],
-    [latest, totalAssessments, domainsExplored]
-  );
+  const profileStats = useMemo(() => [
+    { label: 'Known Skills', value: latest ? `${latest.knownCount}/${latest.totalSkills}` : '0/0', tone: 'bg-[#eef2ea]' },
+    { label: 'Readiness', value: latest ? `${latest.score}%` : '0%', tone: 'bg-[#fff6db]' },
+    { label: 'Assessments', value: totalAssessments, tone: 'bg-[#fff1ea]' },
+    { label: 'Domains', value: domainsExplored, tone: 'bg-[#e7eaee]' },
+  ], [latest, totalAssessments, domainsExplored]);
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <div className="section-shell">
         <div className="card flex min-h-[60vh] items-center justify-center gap-4">
-          <LogoBadge label="PR" className="h-10 w-10 text-[10px]" />
-          <div className="text-[color:var(--text-soft)]">Preparing your profile dashboard...</div>
+          <LogoBadge label="PR" className="h-10 w-10 text-[10px] bg-[#f4e6bf]" />
+          <div className="text-[color:var(--text-soft)]">Preparing your dashboard...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+    <div className="section-shell space-y-5">
       <section className="card radial-panel overflow-hidden">
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="grid gap-5 xl:grid-cols-[1.12fr_0.88fr]">
           <div className="space-y-5">
-            <div className="theme-chip">User Profile</div>
+            <div className="theme-chip">Profile Dashboard</div>
             <div className="flex items-start gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-[10px] bg-[#25283b] text-xl font-semibold text-white shadow-[0_14px_28px_rgba(20,29,58,0.18)]">
+              <div className="flex h-16 w-16 items-center justify-center rounded-[22px] bg-[color:var(--bg-dark)] text-xl font-semibold text-[color:var(--text-on-dark)]">
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div>
-                <h1 className="font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-[color:var(--text-main)]">
-                  {user?.name || 'Your Dashboard'}
-                </h1>
-                <p className="mt-2 text-lg text-[color:var(--text-soft)]">{user?.email}</p>
-                <p className="mt-3 max-w-2xl text-[color:var(--text-soft)]">
-                  Track how much you know, how strong your current learning percentage is, and how your readiness is changing across assessments.
+                <h1 className="font-['Sora'] text-4xl font-bold tracking-tight text-[color:var(--text-main)] sm:text-5xl">{user?.name || 'Your Dashboard'}</h1>
+                <p className="mt-2 text-base text-[color:var(--text-soft)]">{user?.email}</p>
+                <p className="mt-4 max-w-2xl text-base leading-8 text-[color:var(--text-soft)]">
+                  Track assessments, monitor readiness, and keep your recent learning decisions inside one analytics view.
                 </p>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
-                Average score: {averageScore}%
-              </span>
-              <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
-                Best result: {topScore}%
-              </span>
-              <span className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-2 text-sm text-[color:var(--text-soft)]">
-                Last path: {latest?.careerPathName || 'No assessment yet'}
-              </span>
+              <span className="rounded-full border border-[color:var(--border-soft)] bg-white/50 px-4 py-2 text-sm text-[color:var(--text-soft)]">Average score: {averageScore}%</span>
+              <span className="rounded-full border border-[color:var(--border-soft)] bg-white/50 px-4 py-2 text-sm text-[color:var(--text-soft)]">Best result: {topScore}%</span>
+              <span className="rounded-full border border-[color:var(--border-soft)] bg-white/50 px-4 py-2 text-sm text-[color:var(--text-soft)]">Current path: {latest?.careerPathName || 'No assessment yet'}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             {profileStats.map(item => (
-              <div key={item.label} className="metric-tile rounded-[10px] p-4">
-                <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-10 w-10 text-[10px] ${item.tone}`} />
-                  <div className={`h-2 w-16 rounded-full ${item.line}`} />
-                </div>
-                <div className="mt-5 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+              <div key={item.label} className="mini-stat rounded-[28px] p-4">
+                <LogoBadge label={item.label.slice(0, 2)} className={`h-10 w-10 text-[9px] ${item.tone}`} />
+                <div className="mt-5 text-3xl font-bold text-[color:var(--text-main)]">{item.value}</div>
                 <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
               </div>
             ))}
@@ -225,14 +204,14 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-8 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+      <section className="grid gap-5 xl:grid-cols-[1.08fr_0.92fr]">
         <div className="card">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Learning Trend</div>
-              <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Profile progress across assessments</div>
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Trend</div>
+              <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">Readiness over time</div>
             </div>
-            <LogoBadge label="TR" className="h-10 w-10 text-[10px]" />
+            <LogoBadge label="TR" className="h-10 w-10 text-[10px] bg-[#eef2ea]" />
           </div>
 
           {progressTrend.length > 0 ? (
@@ -241,29 +220,29 @@ export default function DashboardPage() {
                 <AreaChart data={progressTrend} margin={{ left: 0, right: 10 }}>
                   <defs>
                     <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#818cf8" stopOpacity={0.35} />
-                      <stop offset="95%" stopColor="#818cf8" stopOpacity={0.02} />
+                      <stop offset="5%" stopColor="#f3c94a" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#f3c94a" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.18)" />
-                  <XAxis dataKey="name" tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 108, 118, 0.15)" />
+                  <XAxis dataKey="name" tick={{ fill: '#7e847d', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#7e847d', fontSize: 12 }} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip
                     contentStyle={{
-                      background: 'var(--surface-card)',
+                      background: 'var(--bg-panel-strong)',
                       border: '1px solid var(--border-soft)',
-                      borderRadius: 10,
+                      borderRadius: 18,
                       color: 'var(--text-main)',
                     }}
                     formatter={(value: number) => [`${value}%`, 'Readiness']}
                   />
-                  <Area type="monotone" dataKey="score" stroke="#818cf8" strokeWidth={3} fill="url(#trendFill)" />
+                  <Area type="monotone" dataKey="score" stroke="#f3c94a" strokeWidth={3} fill="url(#trendFill)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="mt-6 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
-              No profile data yet. Open a career path, select your skills, and run an analysis to populate this page.
+            <div className="mt-6 rounded-[24px] border border-[color:var(--border-soft)] bg-white/40 p-6 text-[color:var(--text-muted)]">
+              No profile data yet. Open a career path, select your skills, and run an analysis to populate this view.
             </div>
           )}
         </div>
@@ -271,11 +250,11 @@ export default function DashboardPage() {
         <div className="card">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Current Breakdown</div>
-              <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Where your learning stands now</div>
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Current snapshot</div>
+              <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">Latest readiness breakdown</div>
             </div>
             {latest?.levelLabel && (
-              <div className={`rounded-[10px] border px-4 py-3 text-sm font-semibold ${LEVEL_STYLES[latest.levelLabel] || LEVEL_STYLES.Beginner}`}>
+              <div className={`rounded-full border px-4 py-2 text-sm font-semibold ${LEVEL_STYLES[latest.levelLabel] || LEVEL_STYLES.Beginner}`}>
                 {latest.levelLabel}
               </div>
             )}
@@ -286,12 +265,12 @@ export default function DashboardPage() {
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 {[
                   { label: 'Readiness', value: `${latest.score}%` },
-                  { label: 'Gap Count', value: latest.missingSkillsCount },
-                  { label: 'Roadmap Time', value: `${latest.estimatedWeeks}w` },
+                  { label: 'Gap count', value: latest.missingSkillsCount },
+                  { label: 'Roadmap time', value: `${latest.estimatedWeeks}w` },
                 ].map(item => (
-                  <div key={item.label} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                  <div key={item.label} className="rounded-[24px] border border-[color:var(--border-soft)] bg-white/45 p-4">
                     <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
-                    <div className="mt-3 text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+                    <div className="mt-3 text-3xl font-bold text-[color:var(--text-main)]">{item.value}</div>
                   </div>
                 ))}
               </div>
@@ -299,19 +278,19 @@ export default function DashboardPage() {
               <div className="mt-6 h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={categoryData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.18)" />
-                    <XAxis dataKey="name" tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#8f95ad', fontSize: 12 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(100, 108, 118, 0.15)" />
+                    <XAxis dataKey="name" tick={{ fill: '#7e847d', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: '#7e847d', fontSize: 12 }} axisLine={false} tickLine={false} domain={[0, 100]} />
                     <Tooltip
                       contentStyle={{
-                        background: 'var(--surface-card)',
+                        background: 'var(--bg-panel-strong)',
                         border: '1px solid var(--border-soft)',
-                        borderRadius: 10,
+                        borderRadius: 18,
                         color: 'var(--text-main)',
                       }}
                       formatter={(value: number) => [`${value}%`, 'Coverage']}
                     />
-                    <Bar dataKey="score" radius={6}>
+                    <Bar dataKey="score" radius={10}>
                       {categoryData.map((entry, index) => (
                         <Cell key={index} fill={entry.fill} />
                       ))}
@@ -321,65 +300,55 @@ export default function DashboardPage() {
               </div>
             </>
           ) : (
-            <div className="mt-6 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
+            <div className="mt-6 rounded-[24px] border border-[color:var(--border-soft)] bg-white/40 p-6 text-[color:var(--text-muted)]">
               Your category view will appear here after the first assessment.
             </div>
           )}
         </div>
       </section>
 
-      <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_320px]">
+      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
         <div className="card">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Recent Activity</div>
-              <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">Latest paths you assessed</div>
+              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Recent runs</div>
+              <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">Latest paths you assessed</div>
             </div>
-            <LogoBadge label="RC" className="h-10 w-10 text-[10px]" />
+            <LogoBadge label="RC" className="h-10 w-10 text-[10px] bg-[#fff6db]" />
           </div>
 
           <div className="mt-6 space-y-3">
             {recentPaths.length > 0 ? (
               recentPaths.map((entry, index) => (
-                <div key={`${entry.careerPathId}-${entry.createdAt}`} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-4">
+                <div key={`${entry.careerPathId}-${entry.createdAt}`} className="rounded-[26px] border border-[color:var(--border-soft)] bg-white/45 p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="text-lg font-semibold text-[color:var(--text-main)]">{entry.careerPathName}</div>
-                      <div className="mt-1 text-sm text-[color:var(--text-muted)]">
-                        {entry.domain} â€¢ {new Date(entry.createdAt).toLocaleDateString()}
-                      </div>
+                      <div className="mt-1 text-sm text-[color:var(--text-muted)]">{entry.domain} • {new Date(entry.createdAt).toLocaleDateString()}</div>
                     </div>
-                    <div className="rounded-[10px] bg-[#25283b] px-3 py-1.5 text-sm font-semibold text-white">
-                      {entry.score}%
-                    </div>
+                    <div className="rounded-full bg-[color:var(--bg-dark)] px-4 py-2 text-sm font-semibold text-[color:var(--text-on-dark)]">{entry.score}%</div>
                   </div>
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Known: {entry.knownCount}/{entry.totalSkills}</div>
-                    <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Gaps: {entry.missingSkillsCount}</div>
-                    <div className="rounded-[10px] bg-[color:var(--surface-card)] px-3 py-2 text-sm text-[color:var(--text-soft)]">Plan: {entry.estimatedWeeks} weeks</div>
+                    <div className="rounded-[18px] bg-white/50 px-3 py-2 text-sm text-[color:var(--text-soft)]">Known: {entry.knownCount}/{entry.totalSkills}</div>
+                    <div className="rounded-[18px] bg-white/50 px-3 py-2 text-sm text-[color:var(--text-soft)]">Gaps: {entry.missingSkillsCount}</div>
+                    <div className="rounded-[18px] bg-white/50 px-3 py-2 text-sm text-[color:var(--text-soft)]">Plan: {entry.estimatedWeeks} weeks</div>
                   </div>
                   {index === 0 && (
-                    <button
-                      type="button"
-                      onClick={() => navigate('/career-paths')}
-                      className="mt-4 inline-flex items-center gap-2 rounded-[10px] bg-[#25283b] px-4 py-2 text-sm font-medium text-white"
-                    >
+                    <button type="button" onClick={() => navigate('/career-paths')} className="btn-primary mt-4">
                       Update your skills
                     </button>
                   )}
                 </div>
               ))
             ) : (
-              <div className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-6 text-[color:var(--text-muted)]">
-                No assessments saved yet.
-              </div>
+              <div className="rounded-[24px] border border-[color:var(--border-soft)] bg-white/40 p-6 text-[color:var(--text-muted)]">No assessments saved yet.</div>
             )}
           </div>
         </div>
 
         <div className="space-y-5">
           <div className="card">
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Profile Snapshot</div>
+            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Profile snapshot</div>
             <div className="mt-4 space-y-3">
               {[
                 { label: 'Current path', value: latest?.careerPathName || 'Not assessed yet' },
@@ -387,7 +356,7 @@ export default function DashboardPage() {
                 { label: 'Best readiness', value: `${topScore}%` },
                 { label: 'Explored domains', value: String(domainsExplored) },
               ].map(item => (
-                <div key={item.label} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3">
+                <div key={item.label} className="rounded-[24px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-4">
                   <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
                   <div className="mt-2 text-base font-semibold text-[color:var(--text-main)]">{item.value}</div>
                 </div>
@@ -395,17 +364,15 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="card">
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Next Action</div>
-            <div className="mt-3 text-xl font-semibold text-[color:var(--text-main)]">
-              {latest ? 'Continue improving your latest path' : 'Start your first assessment'}
-            </div>
-            <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">
+          <div className="soft-dark-card rounded-[30px] p-5 text-white">
+            <div className="text-sm uppercase tracking-[0.22em] text-white/55">Next action</div>
+            <div className="mt-3 text-2xl font-semibold">{latest ? 'Keep improving your latest path' : 'Start your first assessment'}</div>
+            <p className="mt-3 text-sm leading-7 text-white/72">
               {latest
                 ? `You currently know ${latest.knownCount} out of ${latest.totalSkills} tracked skills for ${latest.careerPathName}.`
-                : 'Choose a career path, mark the skills you already know, and this profile page will begin tracking your learning progress.'}
+                : 'Choose a career path, mark the skills you already know, and this dashboard will begin tracking your learning progress.'}
             </p>
-            <button type="button" onClick={() => navigate('/career-paths')} className="btn-primary mt-5 w-full">
+            <button type="button" onClick={() => navigate('/career-paths')} className="btn-primary mt-5 w-full bg-[#fff9ef] text-[#15191d] hover:bg-white">
               {latest ? 'Open Career Paths' : 'Start Assessment'}
             </button>
           </div>

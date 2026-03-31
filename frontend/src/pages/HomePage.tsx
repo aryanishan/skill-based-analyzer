@@ -1,58 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getCareerPaths } from '../api';
 import LogoBadge from '../components/LogoBadge';
 import { CareerPath } from '../types';
 
-const personaCards = [
+const focusCards = [
   {
-    title: 'Students and freshers',
-    text: 'Understand which skills matter first before spending months learning random topics.',
-    icon: 'ST',
+    title: 'Career discovery',
+    text: 'Browse domains and role tracks without guessing which direction to take first.',
+    metric: '4 domains',
+    accent: 'bg-[#f3c94a]',
   },
   {
-    title: 'Career switchers',
-    text: 'Map your current knowledge to a new role and identify exactly where the gaps are.',
-    icon: 'SW',
+    title: 'Skill gap mapping',
+    text: 'Mark what you know and let the app surface the missing pieces in the path.',
+    metric: '3 proficiency levels',
+    accent: 'bg-[#f18a57]',
   },
   {
-    title: 'Exam aspirants',
-    text: 'Track subject readiness, missing prerequisites, and next study priorities for structured preparation.',
-    icon: 'EX',
+    title: 'Readiness tracking',
+    text: 'Keep recent assessments together so your progress does not disappear after one run.',
+    metric: '12 saved runs',
+    accent: 'bg-[#96a57c]',
   },
 ];
 
 const workflow = [
-  {
-    step: '01',
-    title: 'Choose a career path',
-    text: 'Start from Software/IT, Core Engineering, Government Exams, or other domains.',
-  },
-  {
-    step: '02',
-    title: 'Mark skills you already know',
-    text: 'Select your current level for each skill so the system can understand your real starting point.',
-  },
-  {
-    step: '03',
-    title: 'Get your readiness analysis',
-    text: 'See your percentage, learning breakdown, missing skills, recommendations, and estimated roadmap time.',
-  },
-  {
-    step: '04',
-    title: 'Track progress over time',
-    text: 'Your dashboard keeps recent assessments so you can monitor improvement across attempts.',
-  },
-];
-
-const featureList = [
-  'Career path discovery by domain and search',
-  'Skill-wise readiness calculation',
-  'Learning percentage and category breakdown',
-  'Missing skill and recommendation tracking',
-  'Recent assessment history on dashboard',
-  'Profile-style progress view for each user',
+  { step: '01', title: 'Pick a direction', text: 'Choose a path from Software, Core Engineering, Government, or General tracks.' },
+  { step: '02', title: 'Mark your current level', text: 'Tap through skills and record what is basic, intermediate, or advanced.' },
+  { step: '03', title: 'Review the score', text: 'See readiness percentage, missing skills, recommendations, and expected study time.' },
+  { step: '04', title: 'Return to improve', text: 'Track repeat assessments so the dashboard becomes your learning control panel.' },
 ];
 
 export default function HomePage() {
@@ -64,165 +42,186 @@ export default function HomePage() {
         const res = await getCareerPaths();
         setPaths(res.data);
       } catch {
-        toast.error('Failed to load website overview data');
+        toast.error('Failed to load homepage data');
       }
     };
 
-    load();
+    void load();
   }, []);
 
-  const stats = {
-    careerPaths: paths.length,
-    domains: new Set(paths.map(path => path.domain)).size,
-    skillsTracked: paths.reduce((sum, path) => sum + (path.roadmap?.length || 0), 0),
+  const stats = useMemo(() => ({
+    careerPaths: paths.length || 10,
+    domains: new Set(paths.map(path => path.domain)).size || 4,
+    skillsTracked: paths.reduce((sum, path) => sum + (path.roadmap?.length || 0), 0) || 100,
     avgTimeline: paths.length
       ? `${Math.round(paths.reduce((sum, path) => sum + (path.estimatedMonths || 0), 0) / paths.length)} mo`
-      : '0 mo',
-  };
+      : '6 mo',
+  }), [paths]);
+
+  const featuredPaths = paths.slice(0, 3);
 
   return (
-    <div className="section-shell">
+    <div className="section-shell space-y-5">
       <section className="card radial-panel overflow-hidden">
-        <div className="grid gap-6 lg:grid-cols-[1.18fr_0.82fr] lg:items-end">
-          <div className="space-y-4">
-            <div className="theme-chip">Platform Overview</div>
-            <h1 className="max-w-3xl font-['Space_Grotesk'] text-3xl font-bold leading-[1.05] tracking-tight text-[color:var(--text-main)] sm:text-4xl xl:text-5xl">
-              Understand how this website helps users discover careers, measure readiness, and plan learning better.
-            </h1>
-            <p className="max-w-2xl text-base leading-7 text-[color:var(--text-soft)]">
-              This website is built to help users compare career options, check what they already know, find missing skills,
-              and get a clearer learning direction instead of guessing what to study next.
-            </p>
-            <div className="flex flex-wrap gap-2.5">
-              {['Career discovery', 'Skill tracking', 'Profile dashboard', 'Readiness insights'].map(item => (
-                <span key={item} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-1.5 text-sm text-[color:var(--text-soft)]">
-                  {item}
-                </span>
-              ))}
+        <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="space-y-5">
+            <div className="theme-chip">Home Dashboard</div>
+            <div>
+              <h1 className="max-w-3xl font-['Sora'] text-4xl font-bold leading-[1.02] tracking-tight text-[color:var(--text-main)] sm:text-5xl xl:text-[64px]">
+                Build your career plan from one calm, structured workspace.
+              </h1>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">
+                This redesign turns the site into a dashboard-style product: discover career paths, record known skills,
+                visualize your roadmap, and review readiness insights without bouncing between disconnected pages.
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2.5 pt-1">
-              <Link to="/career-paths" className="btn-primary">
-                Explore Career Paths
-              </Link>
-              <Link to="/dashboard" className="btn-secondary">
-                Open My Dashboard
-              </Link>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label: 'Career Paths', value: stats.careerPaths || 10, icon: 'CP', tone: 'bg-[#dfe6ff]', line: 'bg-[#8ea2ff]' },
-              { label: 'Domains', value: stats.domains || 4, icon: 'DM', tone: 'bg-[#e5e7eb]', line: 'bg-[#a8b0bf]' },
-              { label: 'Tracked Skills', value: stats.skillsTracked || '100+', icon: 'SK', tone: 'bg-[#ede9fe]', line: 'bg-[#b8a7ff]' },
-              { label: 'Avg Timeline', value: stats.avgTimeline, icon: 'TM', tone: 'bg-[#e9edf5]', line: 'bg-[#98a6c0]' },
-            ].map(item => (
-              <div key={item.label} className="metric-tile rounded-[10px] p-3.5">
-                <div className="flex items-center justify-between">
-                  <LogoBadge label={item.icon} className={`h-9 w-9 text-[9px] ${item.tone}`} />
-                  <div className={`h-2 w-12 rounded-full ${item.line}`} />
-                </div>
-                <div className="mt-5 text-xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
-                <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-6 grid gap-4 lg:grid-cols-3">
-        {personaCards.map(card => (
-          <div key={card.title} className="card glass-hover">
-            <LogoBadge label={card.icon} className="h-10 w-10 text-[9px]" />
-            <h2 className="mt-4 text-xl font-semibold text-[color:var(--text-main)]">{card.title}</h2>
-            <p className="mt-2.5 text-sm leading-6 text-[color:var(--text-soft)]">{card.text}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="mt-6 grid gap-4 xl:grid-cols-[1.02fr_0.98fr]">
-        <div className="card">
-          <div className="theme-chip">How It Works</div>
-          <h2 className="mt-3 font-['Space_Grotesk'] text-2xl font-bold tracking-tight text-[color:var(--text-main)]">
-            A simple flow from confusion to a clearer plan
-          </h2>
-          <div className="mt-5 grid gap-3">
-            {workflow.map(item => (
-              <div key={item.step} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[#1c768f]">{item.step}</div>
-                <div className="mt-1.5 text-base font-semibold text-[color:var(--text-main)]">{item.title}</div>
-                <p className="mt-1.5 text-sm leading-6 text-[color:var(--text-soft)]">{item.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="card">
-            <div className="theme-chip">What You Can Do</div>
-            <h2 className="mt-3 font-['Space_Grotesk'] text-2xl font-bold tracking-tight text-[color:var(--text-main)]">
-              Use this website to make learning more intentional
-            </h2>
-            <div className="mt-5 space-y-2.5">
-              {featureList.map(item => (
-                <div key={item} className="flex items-start gap-3 rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-2.5">
-                  <LogoBadge label="OK" className="mt-0.5 h-7 w-7 text-[7px]" />
-                  <span className="text-sm leading-6 text-[color:var(--text-soft)]">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Why it matters</div>
-            <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">
-              Many learners know they want a better career but do not know which skills to learn first, how much they already
-              know, or whether they are actually progressing. This website helps convert that uncertainty into a structured view.
-            </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {[
-                { label: 'Know your level', value: 'See your current readiness percentage clearly' },
-                { label: 'Find your gaps', value: 'Understand what is still missing' },
-                { label: 'Choose better', value: 'Compare multiple career directions' },
-                { label: 'Track growth', value: 'Use the profile dashboard to monitor progress' },
+                { label: 'Career paths', value: stats.careerPaths, tone: 'bg-[#f7e39b]' },
+                { label: 'Domains', value: stats.domains, tone: 'bg-[#d4dcc4]' },
+                { label: 'Tracked skills', value: stats.skillsTracked, tone: 'bg-[#f4c3ad]' },
+                { label: 'Avg timeline', value: stats.avgTimeline, tone: 'bg-[#d7d9df]' },
               ].map(item => (
-                <div key={item.label} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-3.5">
-                  <div className="text-sm font-semibold text-[color:var(--text-main)]">{item.label}</div>
-                  <div className="mt-2 text-sm leading-6 text-[color:var(--text-soft)]">{item.value}</div>
+                <div key={item.label} className="mini-stat rounded-[28px] p-4">
+                  <LogoBadge label={item.label.slice(0, 2)} className={`h-10 w-10 text-[9px] ${item.tone}`} />
+                  <div className="mt-5 text-3xl font-bold text-[color:var(--text-main)]">{item.value}</div>
+                  <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="mt-6 card">
-        <div className="grid gap-5 lg:grid-cols-[1fr_1fr] lg:items-center">
-          <div>
-            <div className="theme-chip">Website Outcome</div>
-            <h2 className="mt-3 font-['Space_Grotesk'] text-2xl font-bold tracking-tight text-[color:var(--text-main)]">
-              What users get after using this website
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:var(--text-soft)]">
-              By using this platform, a user can understand their present learning state, choose a more suitable path,
-              identify missing areas, and move forward with more clarity. It is not just a browsing website, it is a guided
-              decision and readiness tool.
-            </p>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link to="/career-paths" className="btn-primary">Explore Career Paths</Link>
+              <Link to="/dashboard" className="btn-secondary">Open Dashboard</Link>
+            </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            {[
-              'Better path selection',
-              'Clearer study priorities',
-              'Measured learning progress',
-              'Less wasted effort',
-              'Structured dashboard insights',
-              'Smarter next-step decisions',
-            ].map(item => (
-              <div key={item} className="rounded-[10px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3.5 py-3 text-sm font-medium text-[color:var(--text-soft)]">
-                {item}
+          <div className="grid gap-4">
+            <div className="soft-dark-card relative overflow-hidden rounded-[34px] p-6">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="hero-orb right-10 top-10 h-40 w-40 bg-[#f3c94a]" />
+                <div className="hero-orb bottom-10 left-12 h-28 w-28 bg-[#f18a57]" />
+                <div className="hero-orb bottom-24 right-20 h-20 w-20 bg-[#515b62]" />
               </div>
-            ))}
+              <div className="relative z-10">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-sm uppercase tracking-[0.22em] text-white/55">Today overview</div>
+                    <div className="mt-2 text-2xl font-semibold text-white">Your learning cockpit</div>
+                  </div>
+                  <div className="rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/72">
+                    Live Flow
+                  </div>
+                </div>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-[1.15fr_0.85fr]">
+                  <div className="rounded-[28px] bg-white/8 p-5 backdrop-blur-sm">
+                    <div className="text-sm text-white/68">Readiness mix</div>
+                    <div className="relative mt-5 h-52 overflow-hidden rounded-[28px] bg-[#d8cfbb]">
+                      <div className="absolute left-6 top-6 text-sm font-semibold text-[#1f2328]">What the platform brings together</div>
+                      <div className="absolute right-10 top-10 flex h-32 w-32 items-center justify-center rounded-full bg-[#f6d664] text-center text-sm font-bold text-[#1e2227] shadow-[0_20px_40px_rgba(243,201,74,0.35)]">
+                        Assessment<br />Results
+                      </div>
+                      <div className="absolute bottom-8 left-10 flex h-24 w-24 items-center justify-center rounded-full bg-[#f59873] text-center text-sm font-bold text-[#1e2227] shadow-[0_20px_40px_rgba(241,138,87,0.3)]">
+                        Skill<br />Gaps
+                      </div>
+                      <div className="absolute left-[42%] top-[34%] flex h-20 w-20 items-center justify-center rounded-full bg-[#31363b] text-center text-sm font-semibold text-white shadow-[0_20px_36px_rgba(0,0,0,0.28)]">
+                        Study
+                        <br />Time
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[28px] bg-[#11151a] p-5 text-white shadow-[0_20px_40px_rgba(0,0,0,0.18)]">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-sm text-white/55">This week</div>
+                        <div className="mt-2 text-xl font-semibold">Action rhythm</div>
+                      </div>
+                      <div className="rounded-full bg-white/8 px-3 py-1 text-xs text-white/65">7 days</div>
+                    </div>
+                    <div className="mt-6 grid grid-cols-7 gap-2 text-center text-xs text-white/58">
+                      {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
+                        <div key={`${day}-${index}`}>
+                          <div>{day}</div>
+                          <div className={`mx-auto mt-3 flex h-10 w-10 items-center justify-center rounded-full ${index === 1 || index === 5 ? 'bg-[#f3c94a] text-[#14181d]' : index === 3 ? 'bg-white/12' : 'bg-white/6'}`}>
+                            {index + 1}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6 flex items-center gap-4 text-xs text-white/58">
+                      <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#f3c94a]" /> active</span>
+                      <span className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-white/40" /> scheduled</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="card">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Flow</div>
+                    <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">4-step journey</div>
+                  </div>
+                  <LogoBadge label="WF" className="h-10 w-10 text-[9px] bg-[#f3e8bf]" />
+                </div>
+                <div className="mt-5 space-y-3">
+                  {workflow.map(item => (
+                    <div key={item.step} className="rounded-[24px] border border-[color:var(--border-soft)] bg-white/40 px-4 py-4">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Step {item.step}</div>
+                      <div className="mt-2 text-base font-semibold text-[color:var(--text-main)]">{item.title}</div>
+                      <p className="mt-1 text-sm leading-6 text-[color:var(--text-soft)]">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="card">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Included</div>
+                      <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">All website components</div>
+                    </div>
+                    <LogoBadge label="UI" className="h-10 w-10 text-[9px] bg-[#d9ddd3]" />
+                  </div>
+                  <div className="mt-5 grid gap-3">
+                    {focusCards.map(card => (
+                      <div key={card.title} className="rounded-[24px] border border-[color:var(--border-soft)] bg-white/45 p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-lg font-semibold text-[color:var(--text-main)]">{card.title}</div>
+                          <span className={`h-3 w-3 rounded-full ${card.accent}`} />
+                        </div>
+                        <p className="mt-2 text-sm leading-6 text-[color:var(--text-soft)]">{card.text}</p>
+                        <div className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{card.metric}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="card">
+                  <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Featured tracks</div>
+                  <div className="mt-4 grid gap-3">
+                    {(featuredPaths.length ? featuredPaths : [{ _id: 'a', name: 'Frontend Developer', domain: 'Software/IT', tags: ['React', 'UI'], description: '', icon: 'FE' } as CareerPath]).map(path => (
+                      <div key={path._id} className="flex items-center justify-between gap-4 rounded-[24px] border border-[color:var(--border-soft)] bg-white/42 px-4 py-4">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <LogoBadge label={path.icon || path.name.slice(0, 2)} className="h-11 w-11 text-[9px] bg-[#f0e6ca]" />
+                          <div className="min-w-0">
+                            <div className="truncate text-base font-semibold text-[color:var(--text-main)]">{path.name}</div>
+                            <div className="text-sm text-[color:var(--text-muted)]">{path.domain}</div>
+                          </div>
+                        </div>
+                        <Link to="/career-paths" className="text-sm font-semibold text-[color:var(--text-main)]">Open</Link>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
