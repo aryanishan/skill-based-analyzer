@@ -5,10 +5,10 @@ import { register, login } from '../api';
 import LogoBadge from '../components/LogoBadge';
 import { useAuth } from '../context/AuthContext';
 
-const insightCards = [
-  'Track your readiness across practical career paths.',
-  'Find the exact skills and prerequisites you are missing.',
-  'Follow a clearer plan instead of guessing what to learn next.',
+const detailPoints = [
+  'Analyze current skills against career goals.',
+  'Discover missing skills and prerequisite gaps.',
+  'Follow a clearer roadmap for what to study next.',
 ];
 
 export default function AuthPage() {
@@ -38,38 +38,77 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#eef2f7] px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/70 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.12)] lg:min-h-[720px]">
-        <section className="flex w-full items-center justify-center bg-white px-6 py-10 sm:px-10 lg:w-[42%] lg:px-12">
-          <div className="w-full max-w-sm">
-            <div className="mb-10 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <LogoBadge
-                  label="CR"
-                  className="h-10 w-10 rounded-2xl bg-[#0f172a] text-[10px] tracking-[0.22em] text-white"
-                />
-                <div>
-                  <div className="text-sm font-semibold text-[#0f172a]">Career Readiness</div>
-                  <div className="text-xs text-slate-400">Analyzer</div>
-                </div>
-              </div>
-              <div className="text-xs font-semibold text-[#4f6ef7]">
-                {mode === 'login' ? 'Need an account?' : 'Already joined?'}
+    <div className="min-h-screen bg-[#eef3f8] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-6xl overflow-hidden rounded-[30px] border border-black/5 bg-white shadow-[0_30px_90px_rgba(15,23,42,0.12)] lg:grid-cols-2">
+        <section className="relative flex flex-col justify-between bg-[linear-gradient(160deg,#0f172a_0%,#132238_55%,#1c768f_100%)] px-6 py-8 text-white sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -left-20 top-10 h-48 w-48 rounded-full bg-white/8 blur-3xl" />
+            <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-[#fa991c]/12 blur-3xl" />
+            <div className="absolute bottom-10 right-10 h-40 w-40 rounded-full bg-white/8 blur-2xl" />
+          </div>
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3">
+              <LogoBadge
+                label="CR"
+                className="h-11 w-11 rounded-2xl bg-white text-[10px] tracking-[0.22em] text-[#0f172a]"
+              />
+              <div>
+                <div className="text-sm font-semibold">Career Readiness Analyzer</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/60">Skill gap platform</div>
               </div>
             </div>
 
-            <div>
-              <h1 className="font-['Space_Grotesk'] text-3xl font-bold text-[#0f172a]">
-                {mode === 'login' ? 'Sign in' : 'Create account'}
+            <div className="mt-12 max-w-lg">
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#fa991c]">
+                About the website
+              </div>
+              <h1 className="mt-4 font-['Space_Grotesk'] text-4xl font-bold leading-tight sm:text-5xl">
+                Turn your skills into a clearer career plan.
               </h1>
-              <p className="mt-3 text-sm leading-6 text-slate-500">
-                {mode === 'login'
-                  ? 'Use your account to continue with your skill gap analysis and roadmap.'
-                  : 'Start building your personalized path with a clearer view of your current skills.'}
+              <p className="mt-5 text-base leading-8 text-white/78">
+                This website helps learners understand their current readiness, identify missing skills, and move
+                toward the right career path with more confidence and structure.
               </p>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 rounded-2xl bg-slate-100 p-1">
+            <div className="mt-10 space-y-4">
+              {detailPoints.map((point) => (
+                <div
+                  key={point}
+                  className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/8 px-4 py-4 backdrop-blur-sm"
+                >
+                  <div className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fa991c]" />
+                  <p className="text-sm leading-7 text-white/82">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative z-10 mt-10 rounded-[24px] border border-white/12 bg-white/8 p-5 backdrop-blur-sm">
+            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/50">Quote</div>
+            <p className="mt-3 text-lg leading-8 text-white">
+              "The future depends on what you do today."
+            </p>
+            <p className="mt-2 text-sm text-white/65">Mahatma Gandhi</p>
+          </div>
+        </section>
+
+        <section className="flex items-center justify-center px-6 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+          <div className="w-full max-w-md">
+            <div className="mb-8">
+              <div className="text-sm uppercase tracking-[0.22em] text-slate-400">Account access</div>
+              <h2 className="mt-3 font-['Space_Grotesk'] text-3xl font-bold leading-tight text-[#0f172a] sm:text-4xl">
+                {mode === 'login' ? 'Login to continue' : 'Create your account'}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-500">
+                {mode === 'login'
+                  ? 'Access your dashboard, roadmap, and skill gap analysis.'
+                  : 'Sign up to start exploring your readiness and next learning steps.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 rounded-2xl bg-slate-100 p-1">
               {(['login', 'register'] as const).map((item) => (
                 <button
                   key={item}
@@ -77,11 +116,11 @@ export default function AuthPage() {
                   onClick={() => setMode(item)}
                   className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
                     mode === item
-                      ? 'bg-[#4f6ef7] text-white shadow-[0_10px_24px_rgba(79,110,247,0.28)]'
+                      ? 'bg-[#0f172a] text-white shadow-[0_10px_24px_rgba(15,23,42,0.16)]'
                       : 'text-slate-500'
                   }`}
                 >
-                  {item === 'login' ? 'Sign In' : 'Register'}
+                  {item === 'login' ? 'Login' : 'Sign Up'}
                 </button>
               ))}
             </div>
@@ -92,7 +131,7 @@ export default function AuthPage() {
                   <label className="mb-2 block text-sm font-medium text-slate-700">Full Name</label>
                   <input
                     type="text"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#4f6ef7]/40 focus:ring-4 focus:ring-[#4f6ef7]/10"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#1c768f]/40 focus:ring-4 focus:ring-[#1c768f]/10"
                     placeholder="Aryan Ishan"
                     value={form.name}
                     onChange={e => setForm(current => ({ ...current, name: e.target.value }))}
@@ -105,8 +144,8 @@ export default function AuthPage() {
                 <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
                 <input
                   type="email"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#4f6ef7]/40 focus:ring-4 focus:ring-[#4f6ef7]/10"
-                  placeholder="Enter email"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#1c768f]/40 focus:ring-4 focus:ring-[#1c768f]/10"
+                  placeholder="you@example.com"
                   value={form.email}
                   onChange={e => setForm(current => ({ ...current, email: e.target.value }))}
                   required
@@ -122,8 +161,8 @@ export default function AuthPage() {
                 </div>
                 <input
                   type="password"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#4f6ef7]/40 focus:ring-4 focus:ring-[#4f6ef7]/10"
-                  placeholder={mode === 'login' ? 'Enter password' : 'Create password'}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#1c768f]/40 focus:ring-4 focus:ring-[#1c768f]/10"
+                  placeholder={mode === 'login' ? 'Enter your password' : 'Create your password'}
                   value={form.password}
                   onChange={e => setForm(current => ({ ...current, password: e.target.value }))}
                   required
@@ -134,79 +173,24 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-xl bg-[#4f6ef7] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#3f5de0] disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl bg-[#0f172a] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#18263d] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? 'Authenticating...' : mode === 'login' ? 'Sign In' : 'Create Account'}
+                {loading ? 'Authenticating...' : mode === 'login' ? 'Login' : 'Create Account'}
               </button>
             </form>
 
             <div className="mt-6 text-center text-sm text-slate-500">
-              {mode === 'login' ? 'New here?' : 'Already have an account?'}{' '}
+              {mode === 'login' ? 'Do not have an account?' : 'Already have an account?'}{' '}
               <button
                 type="button"
                 onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                className="font-semibold text-[#4f6ef7]"
+                className="font-semibold text-[#1c768f]"
               >
-                {mode === 'login' ? 'Create account' : 'Sign in'}
+                {mode === 'login' ? 'Sign up' : 'Login'}
               </button>
             </div>
           </div>
         </section>
-
-        <aside className="relative hidden overflow-hidden lg:flex lg:w-[58%] lg:flex-col lg:justify-between lg:bg-[linear-gradient(135deg,#dbe7ff_0%,#8cb1ff_26%,#496cff_58%,#1c2f8a_100%)] lg:p-8 xl:p-10">
-          <div className="absolute inset-0">
-            <div className="absolute -right-12 -top-6 h-40 w-72 rounded-[36px] bg-white/14 blur-sm rotate-[-18deg]" />
-            <div className="absolute right-10 top-14 h-64 w-80 rounded-[44px] bg-[#1b2c79]/36 rotate-[-24deg]" />
-            <div className="absolute right-24 top-8 h-64 w-56 rounded-[40px] border border-white/18 bg-white/8 rotate-[-25deg]" />
-            <div className="absolute bottom-14 left-10 h-36 w-36 rounded-full bg-white/10 blur-3xl" />
-          </div>
-
-          <div className="relative z-10 ml-auto flex items-center gap-3 rounded-2xl border border-white/30 bg-white/18 px-4 py-3 backdrop-blur-md">
-            <LogoBadge
-              label="AI"
-              className="h-10 w-10 rounded-xl bg-white text-[10px] tracking-[0.22em] text-[#1b2c79]"
-            />
-            <div>
-              <div className="text-sm font-semibold text-white">Career guidance workspace</div>
-              <div className="text-xs text-white/70">Skill gaps, readiness, roadmap</div>
-            </div>
-          </div>
-
-          <div className="relative z-10 mx-auto my-8 w-full max-w-sm rounded-[26px] border border-white/30 bg-white/92 p-5 shadow-[0_22px_45px_rgba(15,23,42,0.18)] backdrop-blur-md">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4f6ef7]">Platform overview</div>
-                <h2 className="mt-2 font-['Space_Grotesk'] text-xl font-bold leading-tight text-[#0f172a]">
-                  Plan your next move with more clarity.
-                </h2>
-              </div>
-              <div className="rounded-xl bg-[#eef3ff] px-3 py-2 text-xs font-semibold text-[#4f6ef7]">Live</div>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              {insightCards.map((item) => (
-                <div key={item} className="flex items-start gap-3 rounded-2xl bg-slate-50 px-3 py-3">
-                  <div className="mt-1 h-2.5 w-2.5 rounded-full bg-[#4f6ef7]" />
-                  <p className="text-sm leading-6 text-slate-600">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative z-10 max-w-md text-white">
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/65">Why this site</div>
-            <p className="mt-4 text-base leading-8 text-white/88">
-              Career Readiness Analyzer helps students and learners understand where they stand, what skills they are missing,
-              and which steps matter most for moving toward a chosen career path. It turns scattered effort into a more focused plan.
-            </p>
-            <div className="mt-8 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 backdrop-blur-sm">
-              <p className="text-lg leading-8 text-white">
-                "Success is where preparation and opportunity meet."
-              </p>
-              <p className="mt-3 text-sm font-medium text-white/75">Seneca</p>
-            </div>
-          </div>
-        </aside>
       </div>
     </div>
   );
