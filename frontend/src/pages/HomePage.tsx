@@ -64,8 +64,8 @@ export default function HomePage() {
 
   return (
     <div className="section-shell space-y-5">
-      <section className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
-        <div className="card radial-panel overflow-hidden">
+      <section className="card radial-panel overflow-hidden">
+        <div className="grid gap-5">
           <div className="theme-chip">Home Dashboard</div>
           <h1 className="mt-4 max-w-2xl font-['Sora'] text-3xl font-bold leading-[1.05] tracking-tight text-[color:var(--text-main)] sm:text-4xl xl:text-5xl">
             Build your career plan from one structured workspace.
@@ -97,84 +97,6 @@ export default function HomePage() {
             <Link to="/dashboard" className="btn-secondary">
               Open Dashboard
             </Link>
-          </div>
-        </div>
-
-        <div className="soft-dark-card relative overflow-hidden rounded-[32px] p-5 sm:p-6">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="hero-orb right-8 top-8 h-32 w-32 bg-[#f3c94a]" />
-            <div className="hero-orb bottom-8 left-8 h-24 w-24 bg-[#f18a57]" />
-            <div className="hero-orb bottom-16 right-16 h-16 w-16 bg-[#515b62]" />
-          </div>
-
-          <div className="relative z-10">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-xs uppercase tracking-[0.22em] text-white/55">Today overview</div>
-                <div className="mt-2 text-2xl font-semibold text-white">Your learning cockpit</div>
-              </div>
-              <div className="rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/72">
-                Live Flow
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-[1.12fr_0.88fr]">
-              <div className="rounded-[24px] bg-white/8 p-4 backdrop-blur-sm">
-                <div className="text-sm text-white/68">Readiness mix</div>
-                <div className="relative mt-4 h-44 overflow-hidden rounded-[24px] bg-[#d8cfbb]">
-                  <div className="absolute left-5 top-5 text-sm font-semibold text-[#1f2328]">What the platform combines</div>
-                  <div className="absolute right-7 top-8 flex h-24 w-24 items-center justify-center rounded-full bg-[#f6d664] text-center text-sm font-bold text-[#1e2227] shadow-[0_18px_34px_rgba(243,201,74,0.35)]">
-                    Results
-                  </div>
-                  <div className="absolute bottom-7 left-7 flex h-20 w-20 items-center justify-center rounded-full bg-[#f59873] text-center text-sm font-bold text-[#1e2227] shadow-[0_18px_32px_rgba(241,138,87,0.3)]">
-                    Gaps
-                  </div>
-                  <div className="absolute left-[42%] top-[38%] flex h-16 w-16 items-center justify-center rounded-full bg-[#31363b] text-center text-xs font-semibold text-white shadow-[0_18px_28px_rgba(0,0,0,0.28)]">
-                    Study
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[24px] bg-[#11151a] p-4 text-white shadow-[0_20px_40px_rgba(0,0,0,0.18)]">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-sm text-white/55">This week</div>
-                    <div className="mt-2 text-xl font-semibold">Action rhythm</div>
-                  </div>
-                  <div className="rounded-full bg-white/8 px-3 py-1 text-xs text-white/65">7 days</div>
-                </div>
-
-                <div className="mt-5 grid grid-cols-7 gap-2 text-center text-xs text-white/58">
-                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
-                    <div key={`${day}-${index}`}>
-                      <div>{day}</div>
-                      <div
-                        className={`mx-auto mt-2 flex h-9 w-9 items-center justify-center rounded-full ${
-                          index === 1 || index === 5
-                            ? 'bg-[#f3c94a] text-[#14181d]'
-                            : index === 3
-                              ? 'bg-white/12'
-                              : 'bg-white/6'
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-5 flex items-center gap-4 text-xs text-white/58">
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-[#f3c94a]" />
-                    active
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-white/40" />
-                    scheduled
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
