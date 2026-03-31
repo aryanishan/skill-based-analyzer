@@ -130,21 +130,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         </Link>
       </div>
 
-      <div className="mt-6 px-1">
-        {collapsed ? (
-          <div className="sidebar-item sidebar-item-collapsed" title="Planner mode">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#f3c94a]" />
-          </div>
-        ) : (
-          <div className="rounded-[24px] border border-white/8 bg-white/[0.04] p-4">
-            <div className="text-[11px] uppercase tracking-[0.24em] text-[#b7b1a5]">Today</div>
-            <div className="mt-3 text-lg font-semibold text-white">Stay focused on the next useful skill.</div>
-            <p className="mt-2 text-sm leading-6 text-[#d6d0c4]">Use the path library, mark what you know, then let the dashboard show the gaps that matter most.</p>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-6 space-y-2">
+      <div className="mt-8 space-y-2">
         {navItems.map(item => {
           const active = currentSkillPath === item.path || (item.path === '/' && location.pathname === '/');
           return (
@@ -166,7 +152,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
 
       <div className="sidebar-divider mt-6" />
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-5 space-y-2">
         <button
           type="button"
           onClick={toggleTheme}
@@ -181,7 +167,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       </div>
 
       <div className="mt-auto">
-        <div className={`mt-6 rounded-[24px] border border-white/8 bg-white/[0.04] p-3 transition-all duration-500 ${collapsed ? 'flex justify-center px-0 py-2' : ''}`}>
+        <div className={`mt-5 rounded-[24px] border border-white/8 bg-white/[0.04] p-3 transition-all duration-500 ${collapsed ? 'flex justify-center px-0 py-2' : ''}`}>
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#fff9ef] text-sm font-semibold text-[#181b1f]">
               {user.name.charAt(0).toUpperCase()}
@@ -196,7 +182,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
         <button
           type="button"
           onClick={handleLogout}
-          className={`sidebar-item mt-3 w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
+          className={`sidebar-item mt-2 w-full text-left ${collapsed ? 'sidebar-item-collapsed gap-0 px-0' : ''}`}
           title="Logout"
         >
           <SidebarIcon type="logout" />
