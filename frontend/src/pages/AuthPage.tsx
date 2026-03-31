@@ -5,6 +5,12 @@ import { register, login } from '../api';
 import LogoBadge from '../components/LogoBadge';
 import { useAuth } from '../context/AuthContext';
 
+const insightCards = [
+  'Track your readiness across practical career paths.',
+  'Find the exact skills and prerequisites you are missing.',
+  'Follow a clearer plan instead of guessing what to learn next.',
+];
+
 export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -32,29 +38,34 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5efe8] px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[28px] border border-black/5 bg-white shadow-[0_28px_70px_rgba(17,24,39,0.10)] lg:min-h-[720px]">
-        <section className="flex w-full items-center justify-center px-6 py-10 sm:px-10 lg:w-[56%] lg:px-14">
-          <div className="w-full max-w-md">
-            <div className="mb-8 flex items-center gap-3">
-              <LogoBadge
-                label="CR"
-                className="h-11 w-11 rounded-2xl bg-[#0f172a] text-[11px] tracking-[0.24em] text-white"
-              />
-              <div>
-                <div className="text-sm font-semibold text-[#0f172a]">Career Readiness Analyzer</div>
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-400">Career Strategy Platform</div>
+    <div className="min-h-screen bg-[#eef2f7] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[30px] border border-white/70 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.12)] lg:min-h-[720px]">
+        <section className="flex w-full items-center justify-center bg-white px-6 py-10 sm:px-10 lg:w-[42%] lg:px-12">
+          <div className="w-full max-w-sm">
+            <div className="mb-10 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <LogoBadge
+                  label="CR"
+                  className="h-10 w-10 rounded-2xl bg-[#0f172a] text-[10px] tracking-[0.22em] text-white"
+                />
+                <div>
+                  <div className="text-sm font-semibold text-[#0f172a]">Career Readiness</div>
+                  <div className="text-xs text-slate-400">Analyzer</div>
+                </div>
+              </div>
+              <div className="text-xs font-semibold text-[#4f6ef7]">
+                {mode === 'login' ? 'Need an account?' : 'Already joined?'}
               </div>
             </div>
 
             <div>
-              <h1 className="font-['Space_Grotesk'] text-3xl font-bold leading-tight text-[#0f172a] sm:text-4xl">
-                {mode === 'login' ? 'Welcome back' : 'Create Account'}
+              <h1 className="font-['Space_Grotesk'] text-3xl font-bold text-[#0f172a]">
+                {mode === 'login' ? 'Sign in' : 'Create account'}
               </h1>
-              <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-[15px]">
+              <p className="mt-3 text-sm leading-6 text-slate-500">
                 {mode === 'login'
-                  ? 'Sign in to continue tracking your skill gaps and learning roadmap.'
-                  : 'Begin with a clear view of your current skills and what to improve next.'}
+                  ? 'Use your account to continue with your skill gap analysis and roadmap.'
+                  : 'Start building your personalized path with a clearer view of your current skills.'}
               </p>
             </div>
 
@@ -66,7 +77,7 @@ export default function AuthPage() {
                   onClick={() => setMode(item)}
                   className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
                     mode === item
-                      ? 'bg-[#0f172a] text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)]'
+                      ? 'bg-[#4f6ef7] text-white shadow-[0_10px_24px_rgba(79,110,247,0.28)]'
                       : 'text-slate-500'
                   }`}
                 >
@@ -81,7 +92,7 @@ export default function AuthPage() {
                   <label className="mb-2 block text-sm font-medium text-slate-700">Full Name</label>
                   <input
                     type="text"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#4f6ef7]/40 focus:ring-4 focus:ring-[#4f6ef7]/10"
                     placeholder="Aryan Ishan"
                     value={form.name}
                     onChange={e => setForm(current => ({ ...current, name: e.target.value }))}
@@ -94,8 +105,8 @@ export default function AuthPage() {
                 <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
                 <input
                   type="email"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
-                  placeholder="you@example.com"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#4f6ef7]/40 focus:ring-4 focus:ring-[#4f6ef7]/10"
+                  placeholder="Enter email"
                   value={form.email}
                   onChange={e => setForm(current => ({ ...current, email: e.target.value }))}
                   required
@@ -111,8 +122,8 @@ export default function AuthPage() {
                 </div>
                 <input
                   type="password"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-4 focus:ring-slate-100"
-                  placeholder={mode === 'login' ? 'Enter your password' : 'Create a password'}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[#4f6ef7]/40 focus:ring-4 focus:ring-[#4f6ef7]/10"
+                  placeholder={mode === 'login' ? 'Enter password' : 'Create password'}
                   value={form.password}
                   onChange={e => setForm(current => ({ ...current, password: e.target.value }))}
                   required
@@ -123,42 +134,77 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 w-full rounded-xl bg-[#0f172a] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#162033] disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl bg-[#4f6ef7] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#3f5de0] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? 'Authenticating...' : mode === 'login' ? 'Sign In' : 'Create Account'}
               </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-slate-500">
+            <div className="mt-6 text-center text-sm text-slate-500">
               {mode === 'login' ? 'New here?' : 'Already have an account?'}{' '}
               <button
                 type="button"
                 onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
-                className="font-semibold text-[#0f172a]"
+                className="font-semibold text-[#4f6ef7]"
               >
-                {mode === 'login' ? 'Create an account' : 'Sign in'}
+                {mode === 'login' ? 'Create account' : 'Sign in'}
               </button>
-            </p>
+            </div>
           </div>
         </section>
 
-        <aside className="relative hidden lg:flex lg:w-[44%] lg:flex-col lg:justify-end lg:bg-[#111827] lg:p-12">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute right-[-60px] top-14 h-64 w-64 rounded-[56px] border border-white/6 bg-white/3 rotate-45" />
-            <div className="absolute right-8 top-36 h-40 w-40 rounded-[40px] border border-white/5 bg-white/[0.04] rotate-45" />
-            <div className="absolute bottom-24 right-[-30px] h-72 w-72 rounded-full bg-white/[0.03] blur-3xl" />
+        <aside className="relative hidden overflow-hidden lg:flex lg:w-[58%] lg:flex-col lg:justify-between lg:bg-[linear-gradient(135deg,#dbe7ff_0%,#8cb1ff_26%,#496cff_58%,#1c2f8a_100%)] lg:p-8 xl:p-10">
+          <div className="absolute inset-0">
+            <div className="absolute -right-12 -top-6 h-40 w-72 rounded-[36px] bg-white/14 blur-sm rotate-[-18deg]" />
+            <div className="absolute right-10 top-14 h-64 w-80 rounded-[44px] bg-[#1b2c79]/36 rotate-[-24deg]" />
+            <div className="absolute right-24 top-8 h-64 w-56 rounded-[40px] border border-white/18 bg-white/8 rotate-[-25deg]" />
+            <div className="absolute bottom-14 left-10 h-36 w-36 rounded-full bg-white/10 blur-3xl" />
           </div>
 
-          <div className="relative z-10 max-w-sm">
-            <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/40">
-              About the platform
+          <div className="relative z-10 ml-auto flex items-center gap-3 rounded-2xl border border-white/30 bg-white/18 px-4 py-3 backdrop-blur-md">
+            <LogoBadge
+              label="AI"
+              className="h-10 w-10 rounded-xl bg-white text-[10px] tracking-[0.22em] text-[#1b2c79]"
+            />
+            <div>
+              <div className="text-sm font-semibold text-white">Career guidance workspace</div>
+              <div className="text-xs text-white/70">Skill gaps, readiness, roadmap</div>
             </div>
-            <h2 className="mt-5 font-['Space_Grotesk'] text-3xl font-semibold leading-tight text-white">
-              Turn scattered skills into a clear career roadmap.
-            </h2>
-            <p className="mt-5 text-base leading-8 text-white/70">
-              Measure your readiness, find the missing skills, and get focused next-step guidance for the career path you want.
+          </div>
+
+          <div className="relative z-10 mx-auto my-8 w-full max-w-sm rounded-[26px] border border-white/30 bg-white/92 p-5 shadow-[0_22px_45px_rgba(15,23,42,0.18)] backdrop-blur-md">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4f6ef7]">Platform overview</div>
+                <h2 className="mt-2 font-['Space_Grotesk'] text-xl font-bold leading-tight text-[#0f172a]">
+                  Plan your next move with more clarity.
+                </h2>
+              </div>
+              <div className="rounded-xl bg-[#eef3ff] px-3 py-2 text-xs font-semibold text-[#4f6ef7]">Live</div>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {insightCards.map((item) => (
+                <div key={item} className="flex items-start gap-3 rounded-2xl bg-slate-50 px-3 py-3">
+                  <div className="mt-1 h-2.5 w-2.5 rounded-full bg-[#4f6ef7]" />
+                  <p className="text-sm leading-6 text-slate-600">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative z-10 max-w-md text-white">
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/65">Why this site</div>
+            <p className="mt-4 text-base leading-8 text-white/88">
+              Career Readiness Analyzer helps students and learners understand where they stand, what skills they are missing,
+              and which steps matter most for moving toward a chosen career path. It turns scattered effort into a more focused plan.
             </p>
+            <div className="mt-8 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 backdrop-blur-sm">
+              <p className="text-lg leading-8 text-white">
+                "Success is where preparation and opportunity meet."
+              </p>
+              <p className="mt-3 text-sm font-medium text-white/75">Seneca</p>
+            </div>
           </div>
         </aside>
       </div>
