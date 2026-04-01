@@ -41,7 +41,7 @@ export default function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] border border-[color:var(--border-soft)] bg-[rgba(255,255,255,0.58)] text-[color:var(--text-main)] transition hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]"
+            className="surface-medium inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] text-[color:var(--text-main)] transition hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
@@ -64,7 +64,7 @@ export default function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="flex min-w-[220px] items-center gap-3 rounded-full border border-[color:var(--border-soft)] bg-[rgba(255,255,255,0.55)] px-4 py-3 text-sm text-[color:var(--text-muted)]">
+          <div className="surface-medium flex min-w-[220px] items-center gap-3 rounded-full px-4 py-3 text-sm text-[color:var(--text-muted)]">
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
               <circle cx="11" cy="11" r="6" />
               <path d="m20 20-3.5-3.5" />
@@ -73,7 +73,7 @@ export default function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden rounded-full border border-[color:var(--border-soft)] bg-[rgba(255,255,255,0.5)] px-4 py-3 text-right sm:block">
+            <div className="surface-medium hidden rounded-full px-4 py-3 text-right sm:block">
               <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">Signed in</div>
               <div className="mt-1 text-sm font-semibold text-[color:var(--text-main)]">{user?.name || 'Learner'}</div>
             </div>

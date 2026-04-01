@@ -15,6 +15,9 @@
     --bg-dark: #1f2328;
     --bg-dark-soft: #2a3035;
     --surface-muted: rgba(44, 48, 54, 0.06);
+    --surface-soft: rgba(255, 255, 255, 0.42);
+    --surface-medium: rgba(255, 255, 255, 0.52);
+    --surface-strong: rgba(255, 255, 255, 0.68);
     --text-main: #181b1f;
     --text-soft: #4f565e;
     --text-muted: #7e847d;
@@ -43,6 +46,9 @@
     --bg-dark: #0f1216;
     --bg-dark-soft: #1a2026;
     --surface-muted: rgba(255, 255, 255, 0.05);
+    --surface-soft: rgba(255, 255, 255, 0.06);
+    --surface-medium: rgba(255, 255, 255, 0.08);
+    --surface-strong: rgba(255, 255, 255, 0.12);
     --text-main: #f6f1e8;
     --text-soft: #d3cabc;
     --text-muted: #9e9b94;
@@ -111,6 +117,32 @@
 
   html[data-theme='dark'] ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.14);
+  }
+
+  html[data-theme='dark'] .bg-white\/70 {
+    background-color: var(--surface-strong) !important;
+  }
+
+  html[data-theme='dark'] .bg-white\/58,
+  html[data-theme='dark'] .bg-white\/55,
+  html[data-theme='dark'] .bg-white\/50,
+  html[data-theme='dark'] .bg-\[rgba\(255\2c 255\2c 255\2c 0\.58\)\],
+  html[data-theme='dark'] .bg-\[rgba\(255\2c 255\2c 255\2c 0\.55\)\],
+  html[data-theme='dark'] .bg-\[rgba\(255\2c 255\2c 255\2c 0\.5\)\] {
+    background-color: var(--surface-medium) !important;
+  }
+
+  html[data-theme='dark'] .bg-white\/45,
+  html[data-theme='dark'] .bg-white\/42,
+  html[data-theme='dark'] .bg-white\/40,
+  html[data-theme='dark'] .bg-white\/35 {
+    background-color: var(--surface-soft) !important;
+  }
+
+  html[data-theme='dark'] .bg-white\/10,
+  html[data-theme='dark'] .bg-white\/8,
+  html[data-theme='dark'] .bg-white\/6 {
+    background-color: rgba(255, 255, 255, 0.08) !important;
   }
 }
 
@@ -218,7 +250,7 @@
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all duration-300;
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--surface-medium);
     color: var(--text-main);
     border: 1px solid var(--border-soft);
   }
@@ -230,13 +262,9 @@
 
   .input-field {
     @apply w-full rounded-full px-4 py-3 text-sm outline-none transition-all duration-200;
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--surface-strong);
     border: 1px solid var(--border-soft);
     color: var(--text-main);
-  }
-
-  html[data-theme='dark'] .input-field {
-    background: rgba(255, 255, 255, 0.04);
   }
 
   .input-field::placeholder {
@@ -363,12 +391,23 @@
 
   .mini-stat {
     @apply rounded-[24px] p-4;
-    background: rgba(255, 255, 255, 0.55);
+    background: var(--surface-medium);
     border: 1px solid var(--border-soft);
   }
 
-  html[data-theme='dark'] .mini-stat {
-    background: rgba(255,255,255,0.04);
+  .surface-soft {
+    background: var(--surface-soft);
+    border: 1px solid var(--border-soft);
+  }
+
+  .surface-medium {
+    background: var(--surface-medium);
+    border: 1px solid var(--border-soft);
+  }
+
+  .surface-strong {
+    background: var(--surface-strong);
+    border: 1px solid var(--border-soft);
   }
 }
 

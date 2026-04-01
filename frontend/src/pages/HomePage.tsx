@@ -113,7 +113,7 @@ export default function HomePage() {
 
           <div className="mt-5 grid gap-3">
             {workflow.map(item => (
-              <div key={item.step} className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/40 px-4 py-4">
+              <div key={item.step} className="surface-soft rounded-[22px] px-4 py-4">
                 <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
                   Step {item.step}
                 </div>
@@ -136,7 +136,7 @@ export default function HomePage() {
 
             <div className="mt-5 grid gap-3">
               {focusCards.map(card => (
-                <div key={card.title} className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 p-4">
+                <div key={card.title} className="surface-soft rounded-[22px] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div className="text-lg font-semibold text-[color:var(--text-main)]">{card.title}</div>
                     <span className={`h-3 w-3 rounded-full ${card.accent}`} />
@@ -171,7 +171,7 @@ export default function HomePage() {
           ).map(path => (
             <div
               key={path._id}
-              className="flex items-center justify-between gap-4 rounded-[22px] border border-[color:var(--border-soft)] bg-white/42 px-4 py-4"
+              className="surface-soft flex items-center justify-between gap-4 rounded-[22px] px-4 py-4"
             >
               <div className="flex min-w-0 items-center gap-3">
                 <LogoBadge label={path.icon || path.name.slice(0, 2)} className="h-11 w-11 text-[9px] bg-[#f0e6ca]" />
