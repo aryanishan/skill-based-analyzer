@@ -124,7 +124,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5">
           <div className="card">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -149,42 +149,42 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="card md:mt-14">
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Featured tracks</div>
-            <div className="mt-4 grid gap-3">
-              {(
-                featuredPaths.length
-                  ? featuredPaths
-                  : [
-                      {
-                        _id: 'a',
-                        name: 'Frontend Developer',
-                        domain: 'Software/IT',
-                        tags: ['React', 'UI'],
-                        description: '',
-                        icon: 'FE',
-                      } as CareerPath,
-                    ]
-              ).map(path => (
-                <div
-                  key={path._id}
-                  className="flex items-center justify-between gap-4 rounded-[22px] border border-[color:var(--border-soft)] bg-white/42 px-4 py-4"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <LogoBadge label={path.icon || path.name.slice(0, 2)} className="h-11 w-11 text-[9px] bg-[#f0e6ca]" />
-                    <div className="min-w-0">
-                      <div className="truncate text-base font-semibold text-[color:var(--text-main)]">{path.name}</div>
-                      <div className="text-sm text-[color:var(--text-muted)]">{path.domain}</div>
-                    </div>
-                  </div>
-                  <Link to="/career-paths" className="text-sm font-semibold text-[color:var(--text-main)]">
-                    Open
-                  </Link>
+      <section className="card">
+        <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Featured tracks</div>
+        <div className="mt-4 grid gap-3">
+          {(
+            featuredPaths.length
+              ? featuredPaths
+              : [
+                  {
+                    _id: 'a',
+                    name: 'Frontend Developer',
+                    domain: 'Software/IT',
+                    tags: ['React', 'UI'],
+                    description: '',
+                    icon: 'FE',
+                  } as CareerPath,
+                ]
+          ).map(path => (
+            <div
+              key={path._id}
+              className="flex items-center justify-between gap-4 rounded-[22px] border border-[color:var(--border-soft)] bg-white/42 px-4 py-4"
+            >
+              <div className="flex min-w-0 items-center gap-3">
+                <LogoBadge label={path.icon || path.name.slice(0, 2)} className="h-11 w-11 text-[9px] bg-[#f0e6ca]" />
+                <div className="min-w-0">
+                  <div className="truncate text-base font-semibold text-[color:var(--text-main)]">{path.name}</div>
+                  <div className="text-sm text-[color:var(--text-muted)]">{path.domain}</div>
                 </div>
-              ))}
+              </div>
+              <Link to="/career-paths" className="text-sm font-semibold text-[color:var(--text-main)]">
+                Open
+              </Link>
             </div>
-          </div>
+          ))}
         </div>
       </section>
     </div>
