@@ -150,7 +150,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="card">
+          <div className="card md:mt-14">
             <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Featured tracks</div>
             <div className="mt-4 grid gap-3">
               {(
