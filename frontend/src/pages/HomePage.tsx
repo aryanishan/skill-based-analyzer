@@ -187,6 +187,10 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <footer className="surface-soft rounded-[28px] px-5 py-4 text-center text-sm text-[color:var(--text-muted)]">
+        Copyright © {new Date().getFullYear()} Career Readiness Analyzer. All rights reserved.
+      </footer>
     </div>
   );
 }
