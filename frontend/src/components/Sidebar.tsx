@@ -167,17 +167,27 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       </div>
 
       <div className="mt-auto">
-        <div className={`mt-5 rounded-[24px] border border-white/8 bg-white/[0.04] p-3 transition-all duration-500 ${collapsed ? 'flex justify-center px-0 py-2' : ''}`}>
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#fff9ef] text-sm font-semibold text-[#181b1f]">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-            <div className={`min-w-0 flex-1 overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[160px] opacity-100'}`}>
-              <div className="truncate text-sm font-semibold text-white">{user.name}</div>
-              <div className="truncate text-xs text-[#b6b0a3]">{user.email}</div>
+        {collapsed ? (
+          <div className="mt-5 flex justify-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/45 bg-white/5 p-[5px] shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-[#fff9ef] text-sm font-semibold text-[#181b1f] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="mt-5 rounded-[24px] border border-white/8 bg-white/[0.04] p-3 transition-all duration-500">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#fff9ef] text-sm font-semibold text-[#181b1f]">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1 overflow-hidden whitespace-nowrap transition-all duration-500 max-w-[160px] opacity-100">
+                <div className="truncate text-sm font-semibold text-white">{user.name}</div>
+                <div className="truncate text-xs text-[#b6b0a3]">{user.email}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <button
           type="button"
