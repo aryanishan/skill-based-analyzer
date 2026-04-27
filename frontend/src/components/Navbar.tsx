@@ -8,9 +8,9 @@ interface NavbarProps {
 }
 
 const pageMeta: Record<string, { title: string; subtitle: string }> = {
-  '/': {
-    title: 'Readiness command center',
-    subtitle: 'See your goals, analysis flow, and platform highlights in one place.',
+  '/workspace': {
+    title: 'Workspace overview',
+    subtitle: 'Monitor product highlights, role coverage, and the next best move from one premium workspace.',
   },
   '/career-paths': {
     title: 'Career path library',
@@ -19,6 +19,14 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/roadmaps': {
     title: 'Roadmap planner',
     subtitle: 'Follow each learning sequence from foundation topics to advanced milestones.',
+  },
+  '/roadmap': {
+    title: 'Roadmap planner',
+    subtitle: 'Follow each learning sequence from foundation topics to advanced milestones.',
+  },
+  '/skills': {
+    title: 'Skill assessment',
+    subtitle: 'Capture what you already know and prepare a more accurate readiness analysis.',
   },
   '/dashboard': {
     title: 'Progress dashboard',
@@ -31,8 +39,8 @@ export default function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
   const { user } = useAuth();
 
   const current = Object.entries(pageMeta).find(([path]) =>
-    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
-  )?.[1] || pageMeta['/'];
+    path === '/workspace' ? location.pathname === '/workspace' : location.pathname.startsWith(path)
+  )?.[1] || pageMeta['/workspace'];
 
   return (
     <nav className="sticky top-0 z-30 px-4 pt-4 sm:px-5 lg:px-6">
