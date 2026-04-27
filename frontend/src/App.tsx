@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
+import LandingPage from './pages/LandingPage';
 import CareerSelectPage from './pages/CareerSelectPage';
 import RoadmapPage from './pages/RoadmapPage';
 import SkillInputPage from './pages/SkillInputPage';
@@ -22,7 +23,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -39,7 +40,10 @@ export default function App() {
 
   if (loading) return <LoadingSpinner />;
 
-  const showSidebar = location.pathname !== '/auth';
+  const workspaceRoutes = ['/workspace', '/career-paths', '/roadmaps', '/roadmap', '/skills', '/dashboard'];
+  const showSidebar = workspaceRoutes.some(route =>
+    location.pathname === route || location.pathname.startsWith(`${route}/`)
+  );
 
   return (
     <div className="app-shell">
@@ -66,8 +70,9 @@ export default function App() {
             <Navbar collapsed={sidebarCollapsed} onToggleSidebar={() => setSidebarCollapsed(current => !current)} />
             <div className="dashboard-canvas min-h-[calc(100vh-76px)] overflow-hidden">
               <Routes>
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/auth" element={user ? <Navigate to="/workspace" replace /> : <AuthPage />} />
+                <Route path="/workspace" element={<PrivateRoute><HomePage /></PrivateRoute>} />
                 <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
                 <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
                 <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
@@ -79,8 +84,9 @@ export default function App() {
           </div>
         ) : (
           <Routes>
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={user ? <Navigate to="/workspace" replace /> : <AuthPage />} />
+            <Route path="/workspace" element={<PrivateRoute><HomePage /></PrivateRoute>} />
             <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
             <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
             <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
