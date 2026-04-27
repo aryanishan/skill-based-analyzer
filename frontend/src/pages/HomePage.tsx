@@ -10,19 +10,19 @@ const focusCards = [
     title: 'Career discovery',
     text: 'Browse domains and role tracks without guessing which direction to take first.',
     metric: '4 domains',
-    accent: 'bg-[#f3c94a]',
+    accent: 'bg-[#7da8ff]',
   },
   {
     title: 'Skill gap mapping',
     text: 'Mark what you know and surface the missing pieces in the path.',
     metric: '3 levels',
-    accent: 'bg-[#f18a57]',
+    accent: 'bg-[#10b981]',
   },
   {
     title: 'Readiness tracking',
     text: 'Keep your latest assessments together and monitor improvement over time.',
     metric: '12 saved runs',
-    accent: 'bg-[#96a57c]',
+    accent: 'bg-[#f59e0b]',
   },
 ];
 
@@ -41,7 +41,7 @@ export default function HomePage() {
         const res = await getCareerPaths();
         setPaths(res.data);
       } catch {
-        toast.error('Failed to load homepage data');
+        toast.error('Failed to load workspace data');
       }
     };
 
@@ -66,21 +66,21 @@ export default function HomePage() {
     <div className="section-shell space-y-5">
       <section className="card radial-panel overflow-hidden">
         <div className="grid gap-5">
-          <div className="theme-chip">Home Dashboard</div>
+          <div className="theme-chip">Workspace Overview</div>
           <h1 className="mt-4 max-w-2xl font-['Sora'] text-3xl font-bold leading-[1.05] tracking-tight text-[color:var(--text-main)] sm:text-4xl xl:text-5xl">
-            Build your career plan from one structured workspace.
+            Keep discovery, readiness, and execution inside one serious workspace.
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-[color:var(--text-soft)] sm:text-base">
-            Discover career paths, mark known skills, follow the roadmap, and review readiness insights without jumping
-            between disconnected pages.
+            Review role coverage, launch a new assessment, and follow learning priorities without bouncing between
+            disconnected tools or low-context scorecards.
           </p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              { label: 'Career paths', value: stats.careerPaths, tone: 'bg-[#f7e39b]' },
-              { label: 'Domains', value: stats.domains, tone: 'bg-[#d4dcc4]' },
-              { label: 'Tracked skills', value: stats.skillsTracked, tone: 'bg-[#f4c3ad]' },
-              { label: 'Avg timeline', value: stats.avgTimeline, tone: 'bg-[#d7d9df]' },
+              { label: 'Career paths', value: stats.careerPaths, tone: 'bg-[#dbe7ff]' },
+              { label: 'Domains', value: stats.domains, tone: 'bg-[#d9f8ea]' },
+              { label: 'Tracked skills', value: stats.skillsTracked, tone: 'bg-[#ffe7c2]' },
+              { label: 'Avg timeline', value: stats.avgTimeline, tone: 'bg-[#edf2fb]' },
             ].map(item => (
               <div key={item.label} className="mini-stat rounded-[24px] p-4">
                 <LogoBadge label={item.label.slice(0, 2)} className={`h-9 w-9 text-[8px] ${item.tone}`} />
@@ -92,10 +92,10 @@ export default function HomePage() {
 
           <div className="mt-5 flex flex-wrap gap-3">
             <Link to="/career-paths" className="btn-primary">
-              Explore Career Paths
+              Analyze Career Paths
             </Link>
             <Link to="/dashboard" className="btn-secondary">
-              Open Dashboard
+              Review Analytics
             </Link>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function HomePage() {
               <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Flow</div>
               <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">How the platform works</div>
             </div>
-            <LogoBadge label="WF" className="h-10 w-10 text-[9px] bg-[#f3e8bf]" />
+            <LogoBadge label="WF" className="h-10 w-10 text-[9px] bg-[#dbe7ff]" />
           </div>
 
           <div className="mt-5 grid gap-3">
@@ -131,7 +131,7 @@ export default function HomePage() {
                 <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Included</div>
                 <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">Core features</div>
               </div>
-              <LogoBadge label="UI" className="h-10 w-10 text-[9px] bg-[#d9ddd3]" />
+              <LogoBadge label="UI" className="h-10 w-10 text-[9px] bg-[#d9f8ea]" />
             </div>
 
             <div className="mt-5 grid gap-3">
@@ -174,7 +174,10 @@ export default function HomePage() {
               className="surface-soft flex items-center justify-between gap-4 rounded-[22px] px-4 py-4"
             >
               <div className="flex min-w-0 items-center gap-3">
-                <LogoBadge label={path.icon || path.name.slice(0, 2)} className="h-11 w-11 text-[9px] bg-[#f0e6ca]" />
+                <LogoBadge
+                  label={path.icon || path.name.slice(0, 2)}
+                  className="h-11 w-11 text-[9px] bg-[#edf2fb]"
+                />
                 <div className="min-w-0">
                   <div className="truncate text-base font-semibold text-[color:var(--text-main)]">{path.name}</div>
                   <div className="text-sm text-[color:var(--text-muted)]">{path.domain}</div>
@@ -189,7 +192,7 @@ export default function HomePage() {
       </section>
 
       <footer className="surface-soft rounded-[28px] px-5 py-4 text-center text-sm text-[color:var(--text-muted)]">
-        Copyright © {new Date().getFullYear()} Career Readiness Analyzer. All rights reserved.
+        {`Copyright © ${new Date().getFullYear()} CareerLab. All rights reserved.`}
       </footer>
     </div>
   );
