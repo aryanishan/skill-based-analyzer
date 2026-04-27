@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { register, login } from '../api';
 import LogoBadge from '../components/LogoBadge';
 import { useAuth } from '../context/AuthContext';
 
 const detailPoints = [
-  'Discover career paths through a dashboard-style catalog.',
-  'Mark known skills and visualize missing capabilities clearly.',
-  'Track repeated assessments from one premium-looking workspace.',
+  'Position every user inside a clearer role discovery and readiness workflow.',
+  'Surface capability gaps with structured analysis instead of generic checklists.',
+  'Track repeat assessments inside a product experience that feels customer-ready.',
 ];
 
 export default function AuthPage() {
@@ -26,7 +26,7 @@ export default function AuthPage() {
       const res = mode === 'login' ? await login({ email: form.email, password: form.password }) : await register(form);
       setAuth(res.data.token, res.data.user);
       toast.success(`Welcome${mode === 'register' ? `, ${res.data.user.name}` : ' back'}!`);
-      navigate('/');
+      navigate('/workspace');
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Authentication failed');
     } finally {
@@ -45,19 +45,19 @@ export default function AuthPage() {
           </div>
 
           <div className="relative z-10">
-            <div className="flex items-center gap-3">
-              <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-[#fff9ef] text-[10px] tracking-[0.22em] text-[#15191d]" />
+            <Link to="/" className="flex items-center gap-3">
+              <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-white text-[10px] tracking-[0.22em] text-[#15191d]" />
               <div>
                 <div className="text-sm font-semibold">CareerLab</div>
-                <div className="text-xs uppercase tracking-[0.18em] text-white/55">Skill gap studio</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-white/55">Readiness Intelligence</div>
               </div>
-            </div>
+            </Link>
 
             <div className="mt-14 max-w-lg">
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#f3c94a]">Dashboard-first experience</div>
-              <h1 className="mt-4 font-['Sora'] text-4xl font-bold leading-tight sm:text-5xl">Turn your current skills into a cleaner next-step plan.</h1>
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9cc3ff]">Premium product access</div>
+              <h1 className="mt-4 font-['Sora'] text-4xl font-bold leading-tight sm:text-5xl">Open a workspace built for confident career decisions.</h1>
               <p className="mt-5 text-base leading-8 text-white/74">
-                The whole website now follows a unified dashboard visual language, and your account is what ties together home, paths, roadmap, and analytics.
+                Sign in to explore curated role tracks, run readiness analysis, and manage roadmap progress inside a calmer, more professional interface.
               </p>
             </div>
 
@@ -73,7 +73,7 @@ export default function AuthPage() {
 
           <div className="relative z-10 mt-10 rounded-[28px] border border-white/10 bg-white/6 p-5 backdrop-blur-sm">
             <div className="text-xs font-semibold uppercase tracking-[0.22em] text-white/48">Product promise</div>
-            <p className="mt-3 text-lg leading-8 text-white">Clearer paths, smarter prioritization, and less wasted study effort.</p>
+            <p className="mt-3 text-lg leading-8 text-white">Sharper role clarity, cleaner assessment, and a more persuasive learning journey.</p>
           </div>
         </section>
 
@@ -86,8 +86,8 @@ export default function AuthPage() {
               </h2>
               <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">
                 {mode === 'login'
-                  ? 'Continue to your dashboard, roadmap, and skill analysis views.'
-                  : 'Create an account to save your progress and start using the redesigned product.'}
+                  ? 'Continue to your workspace, role library, and readiness analytics.'
+                  : 'Create an account to save progress and start using the redesigned product experience.'}
               </p>
             </div>
 
