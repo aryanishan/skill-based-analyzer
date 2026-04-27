@@ -5,10 +5,10 @@ import { useTheme } from '../context/ThemeContext';
 import LogoBadge from './LogoBadge';
 
 const navItems = [
-  { label: 'Home', path: '/', icon: 'home' },
+  { label: 'Workspace', path: '/workspace', icon: 'home' },
   { label: 'Career Paths', path: '/career-paths', icon: 'grid' },
   { label: 'Roadmap', path: '/roadmaps', icon: 'tree' },
-  { label: 'Dashboard', path: '/dashboard', icon: 'chart' },
+  { label: 'Analytics', path: '/dashboard', icon: 'chart' },
 ];
 
 function SidebarIcon({ type }: { type: string }) {
@@ -121,8 +121,8 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   const sidebarContent = (
     <div className="sidebar-shell flex h-full flex-col rounded-[32px] p-3 text-white transition-[width,padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
       <div className={`flex items-center overflow-hidden transition-all duration-500 ${collapsed ? 'justify-center pt-2' : 'gap-3 px-1 pt-1'}`}>
-        <Link to="/" className={`flex min-w-0 items-center overflow-hidden ${collapsed ? 'justify-center' : 'gap-3'}`}>
-          <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-[#fff9ef] text-[11px] text-[#161a1f] shadow-[0_12px_24px_rgba(0,0,0,0.18)]" />
+        <Link to="/workspace" className={`flex min-w-0 items-center overflow-hidden ${collapsed ? 'justify-center' : 'gap-3'}`}>
+          <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-white text-[11px] text-[#161a1f] shadow-[0_12px_24px_rgba(0,0,0,0.18)]" />
           <div className={`min-w-0 overflow-hidden whitespace-nowrap transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[170px] opacity-100'}`}>
             <div className="font-['Sora'] text-lg font-bold tracking-tight text-[#fffaf2]">CareerLab</div>
             <div className="text-xs uppercase tracking-[0.18em] text-[#b6b0a3]">Skill Gap Studio</div>
@@ -132,7 +132,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
 
       <div className="mt-8 space-y-2">
         {navItems.map(item => {
-          const active = currentSkillPath === item.path || (item.path === '/' && location.pathname === '/');
+          const active = currentSkillPath === item.path || (item.path === '/workspace' && location.pathname === '/workspace');
           return (
             <Link
               key={item.path}
