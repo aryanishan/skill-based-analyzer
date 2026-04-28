@@ -1,93 +1,70 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import GlobalSearch from './GlobalSearch';
 
 interface NavbarProps {
   collapsed: boolean;
   onToggleSidebar: () => void;
 }
 
-const pageMeta: Record<string, { title: string; subtitle: string }> = {
-  '/workspace': {
-    title: 'Workspace overview',
-    subtitle: 'Monitor product highlights, role coverage, and the next best move from one premium workspace.',
-  },
-  '/career-paths': {
-    title: 'Career path library',
-    subtitle: 'Browse curated tracks and jump into the one that fits your direction.',
-  },
-  '/roadmaps': {
-    title: 'Roadmap planner',
-    subtitle: 'Follow each learning sequence from foundation topics to advanced milestones.',
-  },
-  '/roadmap': {
-    title: 'Roadmap planner',
-    subtitle: 'Follow each learning sequence from foundation topics to advanced milestones.',
-  },
-  '/skills': {
-    title: 'Skill assessment',
-    subtitle: 'Capture what you already know and prepare a more accurate readiness analysis.',
-  },
-  '/dashboard': {
-    title: 'Progress dashboard',
-    subtitle: 'Review recent assessments, trends, and current readiness across roles.',
-  },
+const pageMeta: Record<string, { title: string; section: string }> = {
+  '/workspace': { title: 'Workspace', section: 'Overview' },
+  '/career-paths': { title: 'Career Paths', section: 'Library' },
+  '/roadmaps': { title: 'Roadmaps', section: 'Planner' },
+  '/roadmap': { title: 'Roadmaps', section: 'Planner' },
+  '/skills': { title: 'Skill Assessment', section: 'Input' },
+  '/dashboard': { title: 'Analytics', section: 'Progress' },
+  '/search': { title: 'Search', section: 'Workspace' },
 };
+
+function MenuIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.9">
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </svg>
+  );
+}
 
 export default function Navbar({ collapsed, onToggleSidebar }: NavbarProps) {
   const location = useLocation();
   const { user } = useAuth();
 
-  const current = Object.entries(pageMeta).find(([path]) =>
-    path === '/workspace' ? location.pathname === '/workspace' : location.pathname.startsWith(path)
-  )?.[1] || pageMeta['/workspace'];
+  const current =
+    Object.entries(pageMeta).find(([path]) =>
+      path === '/workspace' ? location.pathname === '/workspace' : location.pathname.startsWith(path)
+    )?.[1] || pageMeta['/workspace'];
 
   return (
-    <nav className="sticky top-0 z-30 px-4 pt-4 sm:px-5 lg:px-6">
-      <div className="workspace-topbar flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-3 sm:gap-4">
-          <button
-            type="button"
-            onClick={onToggleSidebar}
-            className="surface-medium inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] text-[color:var(--text-main)] transition hover:-translate-y-0.5 hover:border-[color:var(--border-strong)]"
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M4 7h16" />
-              <path d="M4 12h16" />
-              <path d="M4 17h16" />
-            </svg>
-          </button>
+    <nav className="sticky top-0 z-30 border-b border-[color:var(--border-soft)] bg-[color:var(--bg-main)]/86 px-3 py-2 backdrop-blur-xl sm:px-4 lg:px-5">
+      <div className="mx-auto flex h-11 max-w-[1500px] items-center gap-3">
+        <button
+          type="button"
+          onClick={onToggleSidebar}
+          className="icon-button hidden md:inline-flex"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <MenuIcon />
+        </button>
 
-          <div>
-            <div className="theme-chip">Workspace</div>
-            <h1 className="mt-3 font-['Sora'] text-2xl font-bold tracking-tight text-[color:var(--text-main)] sm:text-[30px]">
-              {current.title}
-            </h1>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-[color:var(--text-soft)]">
-              {current.subtitle}
-            </p>
-          </div>
+        <div className="min-w-0 shrink-0">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{current.section}</div>
+          <h1 className="truncate text-base font-semibold tracking-tight text-[color:var(--text-main)] sm:text-lg">{current.title}</h1>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="surface-medium flex min-w-[220px] items-center gap-3 rounded-full px-4 py-3 text-sm text-[color:var(--text-muted)]">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <circle cx="11" cy="11" r="6" />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-            <span>Search paths, skills, and pages</span>
-          </div>
+        <GlobalSearch className="mx-auto hidden w-full max-w-[560px] md:block" />
 
-          <div className="flex items-center gap-3">
-            <div className="surface-medium hidden rounded-full px-4 py-3 text-right sm:block">
-              <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">Signed in</div>
-              <div className="mt-1 text-sm font-semibold text-[color:var(--text-main)]">{user?.name || 'Learner'}</div>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[color:var(--bg-dark)] text-sm font-bold text-[color:var(--text-on-dark)] shadow-[0_12px_24px_rgba(17,21,26,0.16)]">
-              {user?.name?.charAt(0).toUpperCase() || 'U'}
-            </div>
+        <div className="ml-auto flex items-center gap-2">
+          <GlobalSearch className="w-[min(54vw,320px)] md:hidden" />
+          <div className="hidden text-right sm:block">
+            <div className="text-xs font-semibold text-[color:var(--text-main)]">{user?.name || 'Learner'}</div>
+            <div className="max-w-[150px] truncate text-[11px] text-[color:var(--text-muted)]">{user?.email}</div>
+          </div>
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[color:var(--bg-dark)] text-xs font-bold text-[color:var(--text-on-dark)] shadow-[0_10px_24px_rgba(15,23,42,0.16)]">
+            {user?.name?.charAt(0).toUpperCase() || 'U'}
           </div>
         </div>
       </div>
