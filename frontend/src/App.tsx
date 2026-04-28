@@ -8,13 +8,14 @@ import CareerSelectPage from './pages/CareerSelectPage';
 import RoadmapPage from './pages/RoadmapPage';
 import SkillInputPage from './pages/SkillInputPage';
 import DashboardPage from './pages/DashboardPage';
+import SearchResultsPage from './pages/SearchResultsPage';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 
-const SIDEBAR_EXPANDED_WIDTH = '296px';
-const SIDEBAR_COLLAPSED_WIDTH = '92px';
+const SIDEBAR_EXPANDED_WIDTH = '244px';
+const SIDEBAR_COLLAPSED_WIDTH = '76px';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -40,7 +41,7 @@ export default function App() {
 
   if (loading) return <LoadingSpinner />;
 
-  const workspaceRoutes = ['/workspace', '/career-paths', '/roadmaps', '/roadmap', '/skills', '/dashboard'];
+  const workspaceRoutes = ['/workspace', '/career-paths', '/roadmaps', '/roadmap', '/skills', '/dashboard', '/search'];
   const showSidebar = workspaceRoutes.some(route =>
     location.pathname === route || location.pathname.startsWith(`${route}/`)
   );
@@ -52,7 +53,7 @@ export default function App() {
         className={
           showSidebar
             ? `min-h-screen transition-[padding] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                sidebarCollapsed ? 'md:pl-[92px]' : 'md:pl-[296px]'
+                sidebarCollapsed ? 'md:pl-[76px]' : 'md:pl-[244px]'
               }`
             : 'min-h-screen'
         }
@@ -68,7 +69,7 @@ export default function App() {
         {showSidebar ? (
           <div className="dashboard-frame min-h-screen">
             <Navbar collapsed={sidebarCollapsed} onToggleSidebar={() => setSidebarCollapsed(current => !current)} />
-            <div className="dashboard-canvas min-h-[calc(100vh-76px)] overflow-hidden">
+            <div className="dashboard-canvas min-h-[calc(100vh-58px)] overflow-hidden">
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={user ? <Navigate to="/workspace" replace /> : <AuthPage />} />
@@ -78,6 +79,7 @@ export default function App() {
                 <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
                 <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
                 <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+                <Route path="/search" element={<PrivateRoute><SearchResultsPage /></PrivateRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
@@ -92,6 +94,7 @@ export default function App() {
             <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
             <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
             <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+            <Route path="/search" element={<PrivateRoute><SearchResultsPage /></PrivateRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         )}
