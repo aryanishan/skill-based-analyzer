@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Space Grotesk', 'Segoe UI', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Satoshi', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
       },
       colors: {
         primary: {
