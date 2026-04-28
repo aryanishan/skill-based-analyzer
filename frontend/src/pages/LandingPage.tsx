@@ -306,7 +306,7 @@ export default function LandingPage() {
             <Reveal delay={120}>
               <div className="relative">
                 <div className="marketing-card relative overflow-hidden rounded-[36px] p-5 sm:p-6">
-                  <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(31,76,240,0.12),transparent)]" />
+                  <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(255,77,77,0.12),transparent)]" />
                   <div className="relative z-10">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>

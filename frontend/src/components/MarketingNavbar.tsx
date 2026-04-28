@@ -38,7 +38,7 @@ export default function MarketingNavbar() {
         }`}
       >
         <Link to="/" className="flex items-center gap-3">
-          <LogoBadge label="CL" className="h-11 w-11 rounded-[16px] bg-[color:var(--brand-strong)] text-[10px] text-white shadow-[0_18px_40px_rgba(31,76,240,0.28)]" />
+          <LogoBadge label="CL" className="h-11 w-11 rounded-[16px] bg-[color:var(--brand-strong)] text-[10px] text-white shadow-[0_18px_40px_rgba(255,77,77,0.28)]" />
           <div>
             <div className="font-['Sora'] text-base font-semibold tracking-tight text-[color:var(--text-main)]">CareerLab</div>
             <div className="text-[11px] uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Readiness Intelligence</div>

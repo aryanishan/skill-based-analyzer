@@ -10,7 +10,7 @@ const PROFICIENCY_CYCLE: Array<KnownSkill['proficiency'] | null> = [null, 'basic
 
 const STATUS_META: Record<NonNullable<KnownSkill['proficiency']> | 'not_started', { label: string; className: string; dot: string }> = {
   not_started: { label: 'Queued', className: 'border-slate-200 bg-slate-100 text-slate-600', dot: 'bg-slate-400' },
-  basic: { label: 'Basic', className: 'border-blue-200 bg-blue-50 text-blue-700', dot: 'bg-blue-500' },
+  basic: { label: 'Basic', className: 'border-gray-200 bg-gray-50 text-gray-700', dot: 'bg-gray-500' },
   intermediate: { label: 'Intermediate', className: 'border-emerald-200 bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500' },
   advanced: { label: 'Advanced', className: 'border-amber-200 bg-amber-50 text-amber-700', dot: 'bg-amber-500' },
 };

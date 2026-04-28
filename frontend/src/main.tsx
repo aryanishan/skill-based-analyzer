@@ -24,8 +24,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 fontSize: '14px',
                 boxShadow: '0 18px 38px rgba(15, 23, 42, 0.14)',
               },
-              success: { iconTheme: { primary: '#0f766e', secondary: '#fff' } },
-              error: { iconTheme: { primary: '#dc2626', secondary: '#fff' } },
+              success: { iconTheme: { primary: '#22C55E', secondary: '#fff' } },
+              error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } },
             }}
           />
         </AuthProvider>

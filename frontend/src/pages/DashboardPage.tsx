@@ -35,8 +35,8 @@ type SavedAssessment = {
 };
 
 const CATEGORY_COLORS = {
-  Foundation: '#2563eb',
-  Core: '#0f9f75',
+  Foundation: '#ff4d4d',
+  Core: '#22c55e',
   Advanced: '#f59e0b',
 };
 
@@ -219,13 +219,13 @@ export default function DashboardPage() {
                 <AreaChart data={progressTrend} margin={{ left: -20, right: 6, top: 8, bottom: 0 }}>
                   <defs>
                     <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.22} />
-                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0.02} />
+                      <stop offset="5%" stopColor="#ff4d4d" stopOpacity={0.24} />
+                      <stop offset="95%" stopColor="#ff4d4d" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,108,118,0.14)" />
-                  <XAxis dataKey="name" tick={{ fill: '#718096', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#718096', fontSize: 11 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip
                     contentStyle={{
                       background: 'var(--bg-panel-strong)',
@@ -235,7 +235,7 @@ export default function DashboardPage() {
                     }}
                     formatter={(value: number) => [`${value}%`, 'Readiness']}
                   />
-                  <Area type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={2.5} fill="url(#trendFill)" />
+                  <Area type="monotone" dataKey="score" stroke="#ff4d4d" strokeWidth={2.5} fill="url(#trendFill)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -264,8 +264,8 @@ export default function DashboardPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={categoryData} margin={{ left: -20, right: 6, top: 8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,108,118,0.14)" />
-                  <XAxis dataKey="name" tick={{ fill: '#718096', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#718096', fontSize: 11 }} axisLine={false} tickLine={false} domain={[0, 100]} />
+                  <XAxis dataKey="name" tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 11 }} axisLine={false} tickLine={false} domain={[0, 100]} />
                   <Tooltip
                     contentStyle={{
                       background: 'var(--bg-panel-strong)',

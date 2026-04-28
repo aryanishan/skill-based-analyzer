@@ -37,16 +37,16 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-3rem)] max-w-7xl overflow-hidden rounded-[36px] border border-[color:var(--border-soft)] bg-[color:var(--bg-panel-strong)] shadow-[0_30px_90px_rgba(15,18,20,0.12)] lg:grid-cols-[1.08fr_0.92fr]">
-        <section className="relative flex flex-col justify-between bg-[linear-gradient(180deg,#22272d_0%,#171b20_100%)] px-6 py-8 text-white sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+        <section className="relative flex flex-col justify-between bg-[linear-gradient(180deg,#111827_0%,#0f172a_100%)] px-6 py-8 text-white sm:px-10 sm:py-10 lg:px-12 lg:py-12">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute left-10 top-8 h-44 w-44 rounded-full bg-[#f3c94a]/12 blur-3xl" />
+            <div className="absolute left-10 top-8 h-44 w-44 rounded-full bg-[#ff4d4d]/14 blur-3xl" />
             <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-white/8 blur-3xl" />
-            <div className="absolute bottom-10 right-10 h-44 w-44 rounded-full bg-[#f18a57]/14 blur-3xl" />
+            <div className="absolute bottom-10 right-10 h-44 w-44 rounded-full bg-[#ff8a65]/14 blur-3xl" />
           </div>
 
           <div className="relative z-10">
             <Link to="/" className="flex items-center gap-3">
-              <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-white text-[10px] tracking-[0.22em] text-[#15191d]" />
+              <LogoBadge label="CL" className="h-12 w-12 rounded-[18px] bg-white text-[10px] tracking-[0.22em] text-[#111827]" />
               <div>
                 <div className="text-sm font-semibold">CareerLab</div>
                 <div className="text-xs uppercase tracking-[0.18em] text-white/55">Readiness Intelligence</div>
@@ -54,7 +54,7 @@ export default function AuthPage() {
             </Link>
 
             <div className="mt-14 max-w-lg">
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9cc3ff]">Premium product access</div>
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#ffb3b3]">Premium product access</div>
               <h1 className="mt-4 font-['Sora'] text-4xl font-bold leading-tight sm:text-5xl">Open a workspace built for confident career decisions.</h1>
               <p className="mt-5 text-base leading-8 text-white/74">
                 Sign in to explore curated role tracks, run readiness analysis, and manage roadmap progress inside a calmer, more professional interface.
@@ -64,7 +64,7 @@ export default function AuthPage() {
             <div className="mt-10 space-y-4">
               {detailPoints.map(point => (
                 <div key={point} className="flex items-start gap-3 rounded-[24px] border border-white/10 bg-white/6 px-4 py-4 backdrop-blur-sm">
-                  <div className="mt-1 h-2.5 w-2.5 rounded-full bg-[#f3c94a]" />
+                  <div className="mt-1 h-2.5 w-2.5 rounded-full bg-[#ff4d4d]" />
                   <p className="text-sm leading-7 text-white/82">{point}</p>
                 </div>
               ))}
@@ -98,7 +98,7 @@ export default function AuthPage() {
                   type="button"
                   onClick={() => setMode(item)}
                   className={`rounded-full px-4 py-3 text-sm font-semibold transition-all ${
-                    mode === item ? 'bg-[color:var(--bg-dark)] text-[color:var(--text-on-dark)] shadow-[0_10px_24px_rgba(15,23,42,0.16)]' : 'text-[color:var(--text-muted)]'
+                    mode === item ? 'bg-[color:var(--brand-strong)] text-white shadow-[0_10px_24px_rgba(255,77,77,0.2)]' : 'text-[color:var(--text-muted)]'
                   }`}
                 >
                   {item === 'login' ? 'Login' : 'Sign Up'}
@@ -112,7 +112,7 @@ export default function AuthPage() {
                   <label className="mb-2 block text-sm font-medium text-[color:var(--text-main)]">Full Name</label>
                   <input
                     type="text"
-                    className="w-full rounded-[22px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3 text-sm text-[color:var(--text-main)] outline-none transition focus:border-[#f3c94a]/50 focus:ring-4 focus:ring-[#f3c94a]/12"
+                    className="w-full rounded-[22px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3 text-sm text-[color:var(--text-main)] outline-none transition focus:border-[color:var(--brand-strong)] focus:ring-4 focus:ring-[#ff4d4d]/12"
                     placeholder="Aryan Ishan"
                     value={form.name}
                     onChange={e => setForm(current => ({ ...current, name: e.target.value }))}
@@ -125,7 +125,7 @@ export default function AuthPage() {
                 <label className="mb-2 block text-sm font-medium text-[color:var(--text-main)]">Email</label>
                 <input
                   type="email"
-                  className="w-full rounded-[22px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3 text-sm text-[color:var(--text-main)] outline-none transition focus:border-[#f3c94a]/50 focus:ring-4 focus:ring-[#f3c94a]/12"
+                  className="w-full rounded-[22px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3 text-sm text-[color:var(--text-main)] outline-none transition focus:border-[color:var(--brand-strong)] focus:ring-4 focus:ring-[#ff4d4d]/12"
                   placeholder="you@example.com"
                   value={form.email}
                   onChange={e => setForm(current => ({ ...current, email: e.target.value }))}
@@ -140,7 +140,7 @@ export default function AuthPage() {
                 </div>
                 <input
                   type="password"
-                  className="w-full rounded-[22px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3 text-sm text-[color:var(--text-main)] outline-none transition focus:border-[#f3c94a]/50 focus:ring-4 focus:ring-[#f3c94a]/12"
+                  className="w-full rounded-[22px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3 text-sm text-[color:var(--text-main)] outline-none transition focus:border-[color:var(--brand-strong)] focus:ring-4 focus:ring-[#ff4d4d]/12"
                   placeholder={mode === 'login' ? 'Enter your password' : 'Create your password'}
                   value={form.password}
                   onChange={e => setForm(current => ({ ...current, password: e.target.value }))}
