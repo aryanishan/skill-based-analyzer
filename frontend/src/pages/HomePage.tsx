@@ -3,37 +3,36 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getCareerPaths } from '../api';
 import LogoBadge from '../components/LogoBadge';
-import { CareerPath } from '../types';
+import { useAuth } from '../context/AuthContext';
+import { CareerPath, Skill } from '../types';
+import { DASHBOARD_HISTORY_KEY, loadRecentSearches } from '../utils/search';
 
-const focusCards = [
-  {
-    title: 'Career discovery',
-    text: 'Browse domains and role tracks without guessing which direction to take first.',
-    metric: '4 domains',
-    accent: 'bg-[#7da8ff]',
-  },
-  {
-    title: 'Skill gap mapping',
-    text: 'Mark what you know and surface the missing pieces in the path.',
-    metric: '3 levels',
-    accent: 'bg-[#10b981]',
-  },
-  {
-    title: 'Readiness tracking',
-    text: 'Keep your latest assessments together and monitor improvement over time.',
-    metric: '12 saved runs',
-    accent: 'bg-[#f59e0b]',
-  },
-];
+type SavedAssessment = {
+  careerPathId: string;
+  careerPathName: string;
+  domain: string;
+  score: number;
+  knownCount: number;
+  totalSkills: number;
+  estimatedWeeks: number;
+  missingSkillsCount: number;
+  createdAt: string;
+};
 
-const workflow = [
-  { step: '01', title: 'Pick a path', text: 'Choose a role from curated career tracks.' },
-  { step: '02', title: 'Mark known skills', text: 'Record what is basic, intermediate, or advanced.' },
-  { step: '03', title: 'Review readiness', text: 'See score, gaps, recommendations, and estimated time.' },
-];
+function loadAssessments(): SavedAssessment[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(DASHBOARD_HISTORY_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [paths, setPaths] = useState<CareerPath[]>([]);
+  const [history, setHistory] = useState<SavedAssessment[]>(() => loadAssessments());
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => loadRecentSearches());
 
   useEffect(() => {
     const load = async () => {
@@ -46,154 +45,224 @@ export default function HomePage() {
     };
 
     void load();
+    setHistory(loadAssessments());
+    setRecentSearches(loadRecentSearches());
   }, []);
 
-  const stats = useMemo(
-    () => ({
-      careerPaths: paths.length || 10,
-      domains: new Set(paths.map(path => path.domain)).size || 4,
-      skillsTracked: paths.reduce((sum, path) => sum + (path.roadmap?.length || 0), 0) || 100,
-      avgTimeline: paths.length
-        ? `${Math.round(paths.reduce((sum, path) => sum + (path.estimatedMonths || 0), 0) / paths.length)} mo`
-        : '6 mo',
-    }),
-    [paths]
-  );
+  const stats = useMemo(() => {
+    const skills = paths.reduce((sum, path) => sum + (path.roadmap?.length || 0), 0);
+    const domains = new Set(paths.map(path => path.domain)).size;
+    const latestScore = history[0]?.score || 0;
+    const averageTimeline = paths.length
+      ? Math.round(paths.reduce((sum, path) => sum + (path.estimatedMonths || 0), 0) / paths.length)
+      : 0;
 
-  const featuredPaths = paths.slice(0, 3);
+    return [
+      { label: 'Career paths', value: paths.length || 0, delta: `${domains || 0} domains` },
+      { label: 'Skills indexed', value: skills || 0, delta: 'Mapped to roadmaps' },
+      { label: 'Latest readiness', value: `${latestScore}%`, delta: history[0]?.careerPathName || 'No run yet' },
+      { label: 'Avg timeline', value: averageTimeline ? `${averageTimeline} mo` : '0 mo', delta: 'Across catalog' },
+    ];
+  }, [paths, history]);
+
+  const featuredPaths = useMemo(() => {
+    const scored = paths.map(path => ({
+      path,
+      coverage: history.find(item => item.careerPathId === path._id)?.score,
+    }));
+
+    return scored.slice(0, 6);
+  }, [paths, history]);
+
+  const recommendedSkills = useMemo(() => {
+    const latestPath = paths.find(path => path._id === history[0]?.careerPathId) || paths[0];
+    const skills = latestPath?.roadmap || [];
+    return skills
+      .filter((skill: Skill) => skill.importanceLevel !== 'optional')
+      .sort((a: Skill, b: Skill) => b.weight - a.weight)
+      .slice(0, 5);
+  }, [paths, history]);
+
+  const activity = history.slice(0, 5);
 
   return (
-    <div className="section-shell space-y-5">
-      <section className="card radial-panel overflow-hidden">
-        <div className="grid gap-5">
-          <div className="theme-chip">Workspace Overview</div>
-          <h1 className="mt-4 max-w-2xl font-['Sora'] text-3xl font-bold leading-[1.05] tracking-tight text-[color:var(--text-main)] sm:text-4xl xl:text-5xl">
-            Keep discovery, readiness, and execution inside one serious workspace.
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-[color:var(--text-soft)] sm:text-base">
-            Review role coverage, launch a new assessment, and follow learning priorities without bouncing between
-            disconnected tools or low-context scorecards.
-          </p>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {[
-              { label: 'Career paths', value: stats.careerPaths, tone: 'bg-[#dbe7ff]' },
-              { label: 'Domains', value: stats.domains, tone: 'bg-[#d9f8ea]' },
-              { label: 'Tracked skills', value: stats.skillsTracked, tone: 'bg-[#ffe7c2]' },
-              { label: 'Avg timeline', value: stats.avgTimeline, tone: 'bg-[#edf2fb]' },
-            ].map(item => (
-              <div key={item.label} className="mini-stat rounded-[24px] p-4">
-                <LogoBadge label={item.label.slice(0, 2)} className={`h-9 w-9 text-[8px] ${item.tone}`} />
-                <div className="mt-4 text-2xl font-bold text-[color:var(--text-main)]">{item.value}</div>
-                <div className="mt-1 text-sm text-[color:var(--text-muted)]">{item.label}</div>
-              </div>
-            ))}
+    <div className="section-shell space-y-4">
+      <section className="dashboard-card">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0">
+            <div className="eyebrow">Workspace</div>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[color:var(--text-main)]">
+              Good to see you, {user?.name?.split(' ')[0] || 'Learner'}
+            </h1>
+            <p className="mt-1 max-w-2xl text-sm text-[color:var(--text-muted)]">
+              Career discovery, skill signals, and readiness history in one compact operating view.
+            </p>
           </div>
-
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             <Link to="/career-paths" className="btn-primary">
-              Analyze Career Paths
+              New analysis
             </Link>
             <Link to="/dashboard" className="btn-secondary">
-              Review Analytics
+              View analytics
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <div className="card">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Flow</div>
-              <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">How the platform works</div>
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map(item => (
+          <div key={item.label} className="kpi-card">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-muted)]">{item.label}</div>
+              <span className="status-dot bg-[color:var(--brand-strong)]" />
             </div>
-            <LogoBadge label="WF" className="h-10 w-10 text-[9px] bg-[#dbe7ff]" />
+            <div className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--text-main)]">{item.value}</div>
+            <div className="mt-1 truncate text-xs text-[color:var(--text-muted)]">{item.delta}</div>
+          </div>
+        ))}
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.6fr)]">
+        <div className="dashboard-card overflow-hidden !p-0">
+          <div className="flex items-center justify-between border-b border-[color:var(--border-soft)] px-4 py-3">
+            <div>
+              <div className="eyebrow">Path Library</div>
+              <div className="mt-1 text-base font-semibold text-[color:var(--text-main)]">Priority tracks</div>
+            </div>
+            <Link to="/career-paths" className="text-sm font-semibold text-[color:var(--brand-strong)]">
+              Open library
+            </Link>
           </div>
 
-          <div className="mt-5 grid gap-3">
-            {workflow.map(item => (
-              <div key={item.step} className="surface-soft rounded-[22px] px-4 py-4">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--text-muted)]">
-                  Step {item.step}
+          <div className="divide-y divide-[color:var(--border-soft)]">
+            {(featuredPaths.length ? featuredPaths : []).map(({ path, coverage }) => (
+              <Link
+                key={path._id}
+                to={`/skills/${path._id}`}
+                state={{ careerPath: path }}
+                className="grid gap-3 px-4 py-3 transition hover:bg-[color:var(--surface-muted)] md:grid-cols-[minmax(0,1fr)_150px_110px]"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <LogoBadge label={path.icon || path.name.slice(0, 2)} className="h-9 w-9 rounded-md text-[8px]" />
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-semibold text-[color:var(--text-main)]">{path.name}</div>
+                    <div className="truncate text-xs text-[color:var(--text-muted)]">{path.domain} / {path.subdomain || 'General'}</div>
+                  </div>
                 </div>
-                <div className="mt-2 text-base font-semibold text-[color:var(--text-main)]">{item.title}</div>
-                <p className="mt-1 text-sm leading-6 text-[color:var(--text-soft)]">{item.text}</p>
-              </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {path.tags.slice(0, 2).map(tag => (
+                    <span key={tag} className="rounded-md border border-[color:var(--border-soft)] px-2 py-1 text-[11px] text-[color:var(--text-muted)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <div className="text-sm font-semibold text-[color:var(--text-main)]">{coverage ? `${coverage}% ready` : `${path.estimatedMonths || 0} mo`}</div>
+              </Link>
             ))}
           </div>
         </div>
 
-        <div className="grid gap-5">
-          <div className="card">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Included</div>
-                <div className="mt-2 text-2xl font-semibold text-[color:var(--text-main)]">Core features</div>
-              </div>
-              <LogoBadge label="UI" className="h-10 w-10 text-[9px] bg-[#d9f8ea]" />
+        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-1">
+          <div className="dashboard-card">
+            <div className="eyebrow">Recommended Skills</div>
+            <div className="mt-3 space-y-2">
+              {recommendedSkills.length ? (
+                recommendedSkills.map(skill => (
+                  <div key={skill._id} className="activity-item">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
+                        <div className="text-xs text-[color:var(--text-muted)]">{skill.category} / {skill.domain}</div>
+                      </div>
+                      <span className="rounded-md bg-[color:var(--brand-soft)] px-2 py-1 text-[11px] font-semibold text-[color:var(--brand-strong)]">
+                        {skill.weight}/10
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-sm text-[color:var(--text-muted)]">Recommendations appear after the library loads.</div>
+              )}
             </div>
+          </div>
 
-            <div className="mt-5 grid gap-3">
-              {focusCards.map(card => (
-                <div key={card.title} className="surface-soft rounded-[22px] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-lg font-semibold text-[color:var(--text-main)]">{card.title}</div>
-                    <span className={`h-3 w-3 rounded-full ${card.accent}`} />
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-[color:var(--text-soft)]">{card.text}</p>
-                  <div className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-muted)]">
-                    {card.metric}
-                  </div>
-                </div>
-              ))}
+          <div className="dashboard-card">
+            <div className="eyebrow">Recent Searches</div>
+            <div className="mt-3 space-y-2">
+              {recentSearches.length ? (
+                recentSearches.slice(0, 5).map(search => (
+                  <Link key={search} to={`/search?q=${encodeURIComponent(search)}`} className="activity-item flex items-center justify-between gap-3">
+                    <span className="truncate text-sm font-medium text-[color:var(--text-main)]">{search}</span>
+                    <span className="text-xs text-[color:var(--text-muted)]">Open</span>
+                  </Link>
+                ))
+              ) : (
+                <div className="text-sm text-[color:var(--text-muted)]">Your recent search trail will appear here.</div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="card">
-        <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Featured tracks</div>
-        <div className="mt-4 grid gap-3">
-          {(
-            featuredPaths.length
-              ? featuredPaths
-              : [
-                  {
-                    _id: 'a',
-                    name: 'Frontend Developer',
-                    domain: 'Software/IT',
-                    tags: ['React', 'UI'],
-                    description: '',
-                    icon: 'FE',
-                  } as CareerPath,
-                ]
-          ).map(path => (
-            <div
-              key={path._id}
-              className="surface-soft flex items-center justify-between gap-4 rounded-[22px] px-4 py-4"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <LogoBadge
-                  label={path.icon || path.name.slice(0, 2)}
-                  className="h-11 w-11 text-[9px] bg-[#edf2fb]"
-                />
-                <div className="min-w-0">
-                  <div className="truncate text-base font-semibold text-[color:var(--text-main)]">{path.name}</div>
-                  <div className="text-sm text-[color:var(--text-muted)]">{path.domain}</div>
-                </div>
-              </div>
-              <Link to="/career-paths" className="text-sm font-semibold text-[color:var(--text-main)]">
-                Open
-              </Link>
+      <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="dashboard-card">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="eyebrow">Activity Feed</div>
+              <div className="mt-1 text-base font-semibold text-[color:var(--text-main)]">Assessment history</div>
             </div>
-          ))}
+            <Link to="/dashboard" className="text-sm font-semibold text-[color:var(--brand-strong)]">
+              Analytics
+            </Link>
+          </div>
+
+          <div className="mt-3 grid gap-2">
+            {activity.length ? (
+              activity.map(item => (
+                <div key={`${item.careerPathId}-${item.createdAt}`} className="table-row grid gap-3 md:grid-cols-[minmax(0,1fr)_100px_120px_110px]">
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-semibold text-[color:var(--text-main)]">{item.careerPathName}</div>
+                    <div className="text-xs text-[color:var(--text-muted)]">{item.domain} / {new Date(item.createdAt).toLocaleDateString()}</div>
+                  </div>
+                  <div className="text-sm font-semibold text-[color:var(--text-main)]">{item.score}%</div>
+                  <div className="text-sm text-[color:var(--text-muted)]">{item.knownCount}/{item.totalSkills} skills</div>
+                  <div className="text-sm text-[color:var(--text-muted)]">{item.estimatedWeeks} weeks</div>
+                </div>
+              ))
+            ) : (
+              <div className="rounded-lg border border-dashed border-[color:var(--border-soft)] px-4 py-8 text-center text-sm text-[color:var(--text-muted)]">
+                No assessments yet. Start with a career path to populate this feed.
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="dashboard-card bg-[color:var(--bg-dark)] text-white">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">Workspace Users</div>
+          <div className="mt-3 flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.06] px-3 py-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-xs font-bold text-[#0f172a]">
+              {user?.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold">{user?.name || 'Learner'}</div>
+              <div className="truncate text-xs text-white/50">{user?.email}</div>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="rounded-lg border border-white/10 bg-white/[0.06] px-3 py-3">
+              <div className="text-2xl font-semibold">{history.length}</div>
+              <div className="text-[11px] uppercase tracking-[0.16em] text-white/45">Runs</div>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-white/[0.06] px-3 py-3">
+              <div className="text-2xl font-semibold">{history[0]?.score || 0}%</div>
+              <div className="text-[11px] uppercase tracking-[0.16em] text-white/45">Latest</div>
+            </div>
+          </div>
+          <Link to="/career-paths" className="btn-primary mt-4 w-full bg-white text-[#0f172a] hover:bg-white">
+            Start readiness run
+          </Link>
         </div>
       </section>
-
-      <footer className="surface-soft rounded-[28px] px-5 py-4 text-center text-sm text-[color:var(--text-muted)]">
-        {`Copyright © ${new Date().getFullYear()} CareerLab. All rights reserved.`}
-      </footer>
     </div>
   );
 }
