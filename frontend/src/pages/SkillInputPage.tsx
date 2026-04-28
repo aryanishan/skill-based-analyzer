@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { getCareerPath } from '../api';
 import LogoBadge from '../components/LogoBadge';
@@ -7,6 +7,7 @@ import { CareerPath, KnownSkill, Skill } from '../types';
 import { getPathProgress, savePathProgress } from '../utils/pathProgress';
 
 const PROFICIENCY_CYCLE: Array<KnownSkill['proficiency'] | null> = [null, 'basic', 'intermediate', 'advanced'];
+
 const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
   basic: 'Basic',
   intermediate: 'Intermediate',
@@ -14,45 +15,26 @@ const PROFICIENCY_LABEL: Record<KnownSkill['proficiency'], string> = {
 };
 
 const PROFICIENCY_STYLE: Record<KnownSkill['proficiency'], string> = {
-  basic: 'border-[#94a383]/35 bg-[#94a383]/16 text-[#43503b]',
-  intermediate: 'border-[#f3c94a]/35 bg-[#f3c94a]/18 text-[#7c5d10]',
-  advanced: 'border-[#f18a57]/35 bg-[#f18a57]/16 text-[#87472d]',
+  basic: 'border-blue-200 bg-blue-50 text-blue-700',
+  intermediate: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  advanced: 'border-amber-200 bg-amber-50 text-amber-700',
 };
 
-const PROFICIENCY_ACCENT: Record<KnownSkill['proficiency'], string> = {
-  basic: 'bg-[#94a383]',
-  intermediate: 'bg-[#f3c94a]',
-  advanced: 'bg-[#f18a57]',
-};
-
-const CATEGORY_STYLE: Record<'Foundation' | 'Core' | 'Advanced', { pill: string; panel: string; icon: string }> = {
-  Foundation: {
-    pill: 'bg-[#eef2ea] text-[#43503b] border border-[#94a383]/20',
-    panel: 'bg-[#eef2ea]',
-    icon: 'FD',
-  },
-  Core: {
-    pill: 'bg-[#fff6db] text-[#6c5310] border border-[#f3c94a]/20',
-    panel: 'bg-[#fff6db]',
-    icon: 'CR',
-  },
-  Advanced: {
-    pill: 'bg-[#fff1ea] text-[#87472d] border border-[#f18a57]/20',
-    panel: 'bg-[#fff1ea]',
-    icon: 'AD',
-  },
-};
+const CATEGORY_OPTIONS = ['All', 'Foundation', 'Core', 'Advanced'] as const;
 
 export default function SkillInputPage() {
   const { pathId } = useParams<{ pathId: string }>();
+  const [params] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const [careerPath, setCareerPath] = useState<CareerPath | null>((location.state as any)?.careerPath || null);
   const [loading, setLoading] = useState(!careerPath);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [knownSkills, setKnownSkills] = useState<Map<string, KnownSkill['proficiency']>>(new Map());
-  const [filter, setFilter] = useState<string>('All');
-  const [tooltip, setTooltip] = useState<Skill | null>(null);
+  const [filter, setFilter] = useState<(typeof CATEGORY_OPTIONS)[number]>('All');
+  const [hoveredSkill, setHoveredSkill] = useState<Skill | null>(null);
+
+  const highlightedSkillId = params.get('skill');
 
   useEffect(() => {
     if (pathId) void fetchPath(pathId);
@@ -99,13 +81,22 @@ export default function SkillInputPage() {
   const selectedCount = knownSkills.size;
   const totalCount = skills.length;
   const completionPct = totalCount ? Math.round((selectedCount / totalCount) * 100) : 0;
+  const advancedCount = Array.from(knownSkills.values()).filter(value => value === 'advanced').length;
 
-  const skillsByCategory = useMemo(() => (['Foundation', 'Core', 'Advanced'] as const).reduce((acc, category) => {
-    const list = skills.filter(skill => skill.category === category);
-    if (filter !== 'All' && filter !== category) return acc;
-    if (list.length) acc[category] = list;
-    return acc;
-  }, {} as Record<'Foundation' | 'Core' | 'Advanced', Skill[]>), [skills, filter]);
+  const filteredSkills = useMemo(
+    () => (filter === 'All' ? skills : skills.filter(skill => skill.category === filter)),
+    [skills, filter]
+  );
+
+  const categoryStats = useMemo(
+    () =>
+      (['Foundation', 'Core', 'Advanced'] as const).map(category => {
+        const list = skills.filter(skill => skill.category === category);
+        const selected = list.filter(skill => knownSkills.has(skill._id)).length;
+        return { category, selected, total: list.length, pct: list.length ? Math.round((selected / list.length) * 100) : 0 };
+      }),
+    [skills, knownSkills]
+  );
 
   const handleAnalyze = () => {
     if (knownSkills.size === 0) {
@@ -125,151 +116,172 @@ export default function SkillInputPage() {
   if (loading) {
     return (
       <div className="section-shell">
-        <div className="card flex min-h-[60vh] items-center justify-center gap-4">
-          <LogoBadge label="LD" className="h-10 w-10 text-[10px] bg-[#f4e6bf]" />
-          <div className="text-[color:var(--text-soft)]">Loading career path details...</div>
+        <div className="dashboard-card flex min-h-[55vh] items-center justify-center gap-3">
+          <LogoBadge label="LD" className="h-9 w-9 text-[9px]" />
+          <div className="text-sm text-[color:var(--text-soft)]">Loading path details...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="section-shell space-y-5">
-      <section className="card radial-panel overflow-hidden">
-        <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-4">
-            <button onClick={() => navigate('/career-paths')} className="text-sm font-medium text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]">
-              {'<-'} Back to Career Paths
-            </button>
-            <div className="flex items-start gap-4">
-              <LogoBadge label={careerPath?.icon || 'CR'} className="h-16 w-16 rounded-[22px] bg-[color:var(--bg-dark)] text-sm text-[color:var(--text-on-dark)]" />
-              <div>
-                <div className="theme-chip">Skill Input</div>
-                <h1 className="mt-3 font-['Sora'] text-4xl font-bold tracking-tight text-[color:var(--text-main)]">{careerPath?.name}</h1>
-                <p className="mt-3 max-w-2xl text-base leading-8 text-[color:var(--text-soft)]">{careerPath?.description}</p>
-              </div>
+    <div className="section-shell space-y-4">
+      <section className="dashboard-card">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <LogoBadge label={careerPath?.icon || 'CR'} className="h-10 w-10 rounded-md text-[9px]" />
+            <div className="min-w-0">
+              <button
+                type="button"
+                onClick={() => navigate('/career-paths')}
+                className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-muted)] transition hover:text-[color:var(--text-main)]"
+              >
+                Career Catalog
+              </button>
+              <h1 className="mt-1 truncate text-2xl font-semibold tracking-tight text-[color:var(--text-main)]">{careerPath?.name}</h1>
+              <p className="mt-1 max-w-2xl truncate text-sm text-[color:var(--text-muted)]">{careerPath?.description}</p>
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="soft-dark-card rounded-[30px] p-5 text-white">
-              <div className="text-sm uppercase tracking-[0.22em] text-white/55">Selection progress</div>
-              <div className="mt-4 text-4xl font-bold">{selectedCount}<span className="text-xl text-white/55">/{totalCount}</span></div>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-[#f3c94a]" style={{ width: `${completionPct}%` }} />
-              </div>
-              <p className="mt-4 text-sm leading-6 text-white/72">Cycle each skill through basic, intermediate, advanced, then back to empty.</p>
-            </div>
-            <div className="card">
-              <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Click guide</div>
-              <div className="mt-4 space-y-3 text-sm text-[color:var(--text-soft)]">
-                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">1 click: basic</div>
-                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">2 clicks: intermediate</div>
-                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">3 clicks: advanced</div>
-                <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-white/45 px-4 py-3">4 clicks: clear selection</div>
-              </div>
-            </div>
-          </div>
+          <button type="button" onClick={handleAnalyze} className="btn-primary">
+            Analyze readiness ({selectedCount})
+          </button>
         </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[1fr_320px]">
-        <div className="space-y-5">
-          <div className="card flex flex-wrap gap-2">
-            {['All', 'Foundation', 'Core', 'Advanced'].map(item => (
-              <button
-                key={item}
-                onClick={() => setFilter(item)}
-                className={`rounded-full px-4 py-2.5 text-sm font-semibold transition ${
-                  filter === item
-                    ? 'bg-[color:var(--bg-dark)] text-[color:var(--text-on-dark)]'
-                    : 'border border-[color:var(--border-soft)] bg-white/50 text-[color:var(--text-soft)]'
-                }`}
-              >
-                {item}
-              </button>
-            ))}
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        {[
+          { label: 'Selected', value: `${selectedCount}/${totalCount}`, detail: `${completionPct}% coverage` },
+          { label: 'Advanced', value: advancedCount, detail: 'High confidence' },
+          { label: 'Critical', value: skills.filter(skill => skill.importanceLevel === 'critical').length, detail: 'Role-weighted' },
+          { label: 'Duration', value: `${careerPath?.estimatedMonths || 0} mo`, detail: 'Catalog estimate' },
+          { label: 'Domain', value: careerPath?.domain || 'General', detail: careerPath?.subdomain || 'Path' },
+        ].map(item => (
+          <div key={item.label} className="kpi-card">
+            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-muted)]">{item.label}</div>
+            <div className="mt-2 truncate text-2xl font-semibold text-[color:var(--text-main)]">{item.value}</div>
+            <div className="mt-1 truncate text-xs text-[color:var(--text-muted)]">{item.detail}</div>
+          </div>
+        ))}
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="dashboard-card overflow-hidden !p-0">
+          <div className="flex flex-col gap-3 border-b border-[color:var(--border-soft)] px-4 py-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="eyebrow">Skills</div>
+              <div className="mt-1 text-base font-semibold text-[color:var(--text-main)]">{filteredSkills.length} visible skills</div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {CATEGORY_OPTIONS.map(item => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setFilter(item)}
+                  className={`segmented-button ${filter === item ? 'segmented-button-active' : ''}`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {Object.entries(skillsByCategory).map(([category, categorySkills]) => {
-            const style = CATEGORY_STYLE[category as keyof typeof CATEGORY_STYLE];
+          <div className="overflow-x-auto">
+            <div className="min-w-[760px]">
+              <div className="grid grid-cols-[minmax(0,1fr)_120px_120px_150px] gap-3 border-b border-[color:var(--border-soft)] px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--text-muted)]">
+                <div>Skill</div>
+                <div>Importance</div>
+                <div>Category</div>
+                <div>Proficiency</div>
+              </div>
 
-            return (
-              <section key={category} className="card space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <LogoBadge label={style.icon} className={`h-11 w-11 text-[10px] ${style.panel}`} />
-                    <div>
-                      <h2 className="text-2xl font-semibold text-[color:var(--text-main)]">{category}</h2>
-                      <p className="text-sm text-[color:var(--text-muted)]">{categorySkills.filter(skill => knownSkills.has(skill._id)).length} of {categorySkills.length} selected</p>
-                    </div>
-                  </div>
-                  <span className={`badge rounded-full ${style.pill}`}>{category} layer</span>
-                </div>
+              <div className="divide-y divide-[color:var(--border-soft)]">
+                {filteredSkills.map(skill => {
+                  const proficiency = knownSkills.get(skill._id);
+                  const highlighted = highlightedSkillId === skill._id;
 
-                <div className="flex flex-wrap gap-3">
-                  {categorySkills.map(skill => {
-                    const proficiency = knownSkills.get(skill._id);
-
-                    return (
-                      <div key={skill._id} className="relative">
-                        <button
-                          onMouseEnter={() => setTooltip(skill)}
-                          onMouseLeave={() => setTooltip(null)}
-                          onClick={() => toggleSkill(skill._id)}
-                          className={`tag-skill border-[color:var(--border-soft)] bg-white/55 text-[color:var(--text-soft)] hover:border-[color:var(--border-strong)] ${proficiency ? PROFICIENCY_STYLE[proficiency] : ''}`}
-                          title={proficiency ? `${skill.name} - ${PROFICIENCY_LABEL[proficiency]}` : skill.name}
-                        >
-                          <span className={`text-[10px] uppercase tracking-[0.16em] ${proficiency ? 'text-current/80' : 'text-[color:var(--text-muted)]'}`}>
-                            {skill.importanceLevel.slice(0, 3)}
+                  return (
+                    <button
+                      key={skill._id}
+                      type="button"
+                      onMouseEnter={() => setHoveredSkill(skill)}
+                      onMouseLeave={() => setHoveredSkill(null)}
+                      onClick={() => toggleSkill(skill._id)}
+                      className={`grid w-full grid-cols-[minmax(0,1fr)_120px_120px_150px] gap-3 px-4 py-3 text-left transition hover:bg-[color:var(--surface-muted)] ${
+                        highlighted ? 'bg-[color:var(--brand-soft)]' : ''
+                      }`}
+                    >
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
+                        <div className="mt-1 truncate text-xs text-[color:var(--text-muted)]">
+                          {skill.tooltip?.whyItMatters || skill.type}
+                        </div>
+                      </div>
+                      <div className="text-sm capitalize text-[color:var(--text-muted)]">{skill.importanceLevel}</div>
+                      <div className="text-sm text-[color:var(--text-muted)]">{skill.category}</div>
+                      <div>
+                        {proficiency ? (
+                          <span className={`inline-flex rounded-md border px-2 py-1 text-xs font-semibold ${PROFICIENCY_STYLE[proficiency]}`}>
+                            {PROFICIENCY_LABEL[proficiency]}
                           </span>
-                          <span>{skill.name}</span>
-                          {proficiency && <span className={`h-2.5 w-2.5 rounded-full ${PROFICIENCY_ACCENT[proficiency]}`} aria-hidden="true" />}
-                        </button>
-
-                        {tooltip?._id === skill._id && skill.tooltip && (
-                          <div className="absolute bottom-full left-0 z-20 mb-3 w-72 rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--bg-panel-strong)] p-4 shadow-2xl">
-                            <div className="text-sm font-semibold text-[color:var(--text-main)]">{skill.name}</div>
-                            {skill.tooltip.whyItMatters && (
-                              <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
-                                <span className="font-semibold text-[#6c5310]">Why:</span> {skill.tooltip.whyItMatters}
-                              </p>
-                            )}
-                            {skill.tooltip.whereUsed && (
-                              <p className="mt-2 text-xs leading-6 text-[color:var(--text-soft)]">
-                                <span className="font-semibold text-[#87472d]">Used in:</span> {skill.tooltip.whereUsed}
-                              </p>
-                            )}
-                          </div>
+                        ) : (
+                          <span className="inline-flex rounded-md border border-[color:var(--border-soft)] px-2 py-1 text-xs font-semibold text-[color:var(--text-muted)]">
+                            Unmarked
+                          </span>
                         )}
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
-            );
-          })}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
 
         <aside className="space-y-4">
-          <div className="card">
-            <div className="text-sm uppercase tracking-[0.22em] text-[color:var(--text-muted)]">Proficiency key</div>
-            <div className="mt-4 space-y-3">
+          <div className="dashboard-card">
+            <div className="eyebrow">Readiness Input</div>
+            <div className="mt-3 h-2 rounded-full bg-[color:var(--surface-muted)]">
+              <div className="h-full rounded-full bg-[color:var(--brand-strong)]" style={{ width: `${completionPct}%` }} />
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2">
               {Object.entries(PROFICIENCY_LABEL).map(([key, label]) => (
-                <div key={key} className={`rounded-[22px] border px-4 py-3 text-sm font-medium ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
+                <div key={key} className={`rounded-md border px-2 py-2 text-center text-xs font-semibold ${PROFICIENCY_STYLE[key as KnownSkill['proficiency']]}`}>
                   {label}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="soft-dark-card rounded-[30px] p-5 text-white">
-            <div className="text-sm uppercase tracking-[0.22em] text-white/55">Ready for scoring</div>
-            <div className="mt-3 text-2xl font-semibold">Analyze your path</div>
-            <p className="mt-3 text-sm leading-7 text-white/72">Once your selections feel right, move to the dashboard to generate a readiness score and recommendations.</p>
-            <button onClick={handleAnalyze} className="btn-primary mt-5 w-full bg-[#fff9ef] text-[#15191d] hover:bg-white">
-              Analyze Readiness ({selectedCount})
-            </button>
+          <div className="dashboard-card">
+            <div className="eyebrow">Category Coverage</div>
+            <div className="mt-3 space-y-3">
+              {categoryStats.map(item => (
+                <div key={item.category}>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-[color:var(--text-main)]">{item.category}</span>
+                    <span className="text-[color:var(--text-muted)]">{item.selected}/{item.total}</span>
+                  </div>
+                  <div className="mt-2 h-2 rounded-full bg-[color:var(--surface-muted)]">
+                    <div className="h-full rounded-full bg-[color:var(--brand-accent)]" style={{ width: `${item.pct}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="dashboard-card min-h-[142px]">
+            <div className="eyebrow">Skill Detail</div>
+            {hoveredSkill ? (
+              <div className="mt-3">
+                <div className="text-sm font-semibold text-[color:var(--text-main)]">{hoveredSkill.name}</div>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--text-muted)]">
+                  {hoveredSkill.tooltip?.whereUsed || hoveredSkill.tooltip?.whyItMatters || hoveredSkill.domain}
+                </p>
+              </div>
+            ) : (
+              <div className="mt-3 text-sm text-[color:var(--text-muted)]">Skill context appears here.</div>
+            )}
           </div>
         </aside>
       </section>
