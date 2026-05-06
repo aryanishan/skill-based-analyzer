@@ -152,10 +152,10 @@ function SectionHeading({
   return (
     <div className={align === 'center' ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
       <div className="theme-chip">{eyebrow}</div>
-      <h2 className="mt-5 text-balance font-['Sora'] text-3xl font-semibold tracking-tight text-[color:var(--text-main)] sm:text-4xl">
+      <h2 className="mt-5 text-balance font-['Sora'] text-2xl font-semibold leading-tight tracking-tight text-[color:var(--text-main)] sm:text-3xl lg:text-[2.35rem]">
         {title}
       </h2>
-      <p className="mt-4 text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">{description}</p>
+      <p className="mt-4 text-base leading-7 text-[color:var(--text-soft)]">{description}</p>
     </div>
   );
 }
@@ -179,8 +179,8 @@ function FaqItem({
         className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-6"
         aria-expanded={open}
       >
-        <span className="text-base font-semibold text-[color:var(--text-main)] sm:text-lg">{question}</span>
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-[color:var(--surface-muted)] text-[color:var(--text-main)]">
+        <span className="text-base font-semibold text-[color:var(--text-main)]">{question}</span>
+        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-[color:var(--surface-muted)] text-[color:var(--text-main)]">
           <svg
             viewBox="0 0 24 24"
             className={`h-4 w-4 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}
@@ -242,20 +242,20 @@ export default function LandingPage() {
   const primaryCta = user ? '/workspace' : '/auth';
 
   return (
-    <div className="min-h-screen">
+    <div className="landing-page min-h-screen">
       <MarketingNavbar />
 
       <main>
-        <section className="relative overflow-hidden px-4 pb-16 pt-6 sm:px-6 lg:px-8 lg:pb-24 lg:pt-8">
-          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
-            <Reveal className="relative pt-4">
-              <div className="hero-panel relative overflow-hidden rounded-[36px] p-6 sm:p-8 lg:p-10">
+        <section className="relative overflow-hidden px-4 pb-16 pt-4 sm:px-6 lg:px-8 lg:pb-24 lg:pt-6">
+          <div className="mx-auto grid max-w-7xl items-stretch gap-8 lg:grid-cols-[1.02fr_0.98fr]">
+            <Reveal className="relative h-full">
+              <div className="hero-panel relative h-full overflow-hidden rounded-[28px] p-6 sm:p-8 lg:p-10">
                 <div className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)]" />
                 <div className="theme-chip">Career readiness intelligence</div>
-                <h1 className="mt-6 max-w-3xl text-balance font-['Sora'] text-4xl font-semibold leading-[1.02] tracking-tight text-[color:var(--text-main)] sm:text-5xl lg:text-6xl">
+                <h1 className="mt-6 max-w-3xl text-balance font-['Sora'] text-4xl font-semibold leading-[1.08] tracking-tight text-[color:var(--text-main)] sm:text-5xl lg:text-[3.45rem] xl:text-[3.75rem]">
                   Turn role ambiguity into a product-grade readiness plan.
                 </h1>
-                <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--text-soft)] sm:text-lg">
+                <p className="mt-6 max-w-2xl text-base leading-7 text-[color:var(--text-soft)] sm:text-[1.05rem]">
                   CareerLab helps learners, coaches, and talent teams map current capability against real career paths,
                   surface the gaps that matter, and move forward with a more confident plan.
                 </p>
@@ -279,12 +279,14 @@ export default function LandingPage() {
                     { label: 'Skills mapped', value: stats.totalSkills, suffix: '+' },
                     { label: 'Avg plan horizon', value: stats.averageMonths, suffix: ' mo' },
                   ].map(item => (
-                    <div key={item.label} className="stat-shell">
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--text-muted)]">{item.label}</div>
+                    <div key={item.label} className="stat-shell flex min-h-[112px] flex-col justify-between">
+                      <div className="text-[11px] font-semibold uppercase leading-5 tracking-[0.16em] text-[color:var(--text-muted)]">
+                        {item.label}
+                      </div>
                       <AnimatedCounter
                         value={item.value}
                         suffix={item.suffix}
-                        className="mt-4 block text-3xl font-semibold tracking-tight text-[color:var(--text-main)]"
+                        className="mt-3 block text-[2rem] font-semibold leading-none tracking-tight text-[color:var(--text-main)]"
                       />
                     </div>
                   ))}
@@ -303,33 +305,33 @@ export default function LandingPage() {
               </div>
             </Reveal>
 
-            <Reveal delay={120}>
-              <div className="relative">
-                <div className="marketing-card relative overflow-hidden rounded-[36px] p-5 sm:p-6">
+            <Reveal className="h-full" delay={120}>
+              <div className="relative h-full">
+                <div className="marketing-card relative flex h-full flex-col overflow-hidden rounded-[28px] p-5 sm:p-6 lg:p-7">
                   <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(255,77,77,0.12),transparent)]" />
-                  <div className="relative z-10">
+                  <div className="relative z-10 flex h-full flex-col">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold uppercase leading-5 tracking-[0.18em] text-[color:var(--text-muted)]">
                           Live product preview
                         </div>
-                        <div className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--text-main)]">
+                        <div className="mt-2 max-w-3xl text-xl font-semibold leading-tight tracking-tight text-[color:var(--text-main)] sm:text-2xl">
                           One workspace for discovery, analysis, and next-step planning
                         </div>
                       </div>
-                      <div className="rounded-full border border-emerald-500/18 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                      <div className="shrink-0 rounded-full border border-emerald-500/18 bg-emerald-500/10 px-4 py-2 text-sm font-medium text-emerald-700 dark:text-emerald-300">
                         Readiness model active
                       </div>
                     </div>
 
-                    <div className="mt-6 grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
-                      <div className="premium-panel p-5">
+                    <div className="mt-6 grid flex-1 gap-4 lg:grid-cols-[0.78fr_1.22fr]">
+                      <div className="premium-panel flex h-full min-w-0 flex-col p-5">
                         <div className="flex items-center justify-between gap-3">
                           <div>
-                            <div className="text-xs uppercase tracking-[0.2em] text-[color:var(--text-muted)]">Readiness summary</div>
-                            <div className="mt-2 text-xl font-semibold text-[color:var(--text-main)]">AI/ML Engineer</div>
+                            <div className="text-[11px] uppercase leading-5 tracking-[0.18em] text-[color:var(--text-muted)]">Readiness summary</div>
+                            <div className="mt-2 text-lg font-semibold leading-snug text-[color:var(--text-main)]">AI/ML Engineer</div>
                           </div>
-                          <div className="rounded-full bg-[color:var(--brand-strong)] px-4 py-2 text-sm font-semibold text-white">
+                          <div className="shrink-0 rounded-full bg-[color:var(--brand-strong)] px-4 py-2 text-sm font-semibold text-white">
                             78%
                           </div>
                         </div>
@@ -342,8 +344,8 @@ export default function LandingPage() {
                           ].map(item => (
                             <div key={item.label}>
                               <div className="flex items-center justify-between gap-3 text-sm">
-                                <span className="text-[color:var(--text-soft)]">{item.label}</span>
-                                <span className="font-semibold text-[color:var(--text-main)]">{item.value}</span>
+                                <span className="min-w-0 leading-5 text-[color:var(--text-soft)]">{item.label}</span>
+                                <span className="shrink-0 font-semibold text-[color:var(--text-main)]">{item.value}</span>
                               </div>
                               <div className="mt-2 h-2.5 rounded-full bg-[color:var(--surface-muted)]">
                                 <div
@@ -355,7 +357,7 @@ export default function LandingPage() {
                           ))}
                         </div>
 
-                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                        <div className="mt-5 grid gap-2">
                           {[
                             'Missing MLOps deployment experience',
                             'Prioritize model monitoring and data pipelines',
@@ -364,7 +366,7 @@ export default function LandingPage() {
                           ].map(item => (
                             <div
                               key={item}
-                              className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3 text-sm text-[color:var(--text-soft)]"
+                              className="flex min-h-[58px] items-center rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[color:var(--text-soft)]"
                             >
                               {item}
                             </div>
@@ -372,9 +374,9 @@ export default function LandingPage() {
                         </div>
                       </div>
 
-                      <div className="space-y-4">
+                      <div className="flex min-w-0 flex-col gap-4">
                         <div className="premium-panel p-5">
-                          <div className="text-xs uppercase tracking-[0.2em] text-[color:var(--text-muted)]">Role pipeline</div>
+                          <div className="text-[11px] uppercase leading-5 tracking-[0.18em] text-[color:var(--text-muted)]">Role pipeline</div>
                           <div className="mt-4 space-y-3">
                             {(featuredPaths.length
                               ? featuredPaths
@@ -386,7 +388,7 @@ export default function LandingPage() {
                             ).map(path => (
                               <div
                                 key={path._id}
-                                className="flex items-center justify-between gap-3 rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3"
+                                className="flex min-h-[76px] items-center justify-between gap-3 rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-4 py-3"
                               >
                                 <div className="flex min-w-0 items-center gap-3">
                                   <LogoBadge
@@ -394,11 +396,11 @@ export default function LandingPage() {
                                     className="h-11 w-11 rounded-[14px] bg-[color:var(--surface-muted)] text-[10px] text-[color:var(--text-main)]"
                                   />
                                   <div className="min-w-0">
-                                    <div className="truncate text-sm font-semibold text-[color:var(--text-main)]">{path.name}</div>
-                                    <div className="text-xs text-[color:var(--text-muted)]">{path.domain}</div>
+                                    <div className="text-sm font-semibold leading-snug text-[color:var(--text-main)]">{path.name}</div>
+                                    <div className="mt-0.5 text-xs text-[color:var(--text-muted)]">{path.domain}</div>
                                   </div>
                                 </div>
-                                <span className="rounded-full border border-[color:var(--border-soft)] px-3 py-1 text-xs font-medium text-[color:var(--text-soft)]">
+                                <span className="shrink-0 rounded-full border border-[color:var(--border-soft)] px-3 py-1 text-xs font-medium text-[color:var(--text-soft)]">
                                   Ready
                                 </span>
                               </div>
@@ -406,22 +408,22 @@ export default function LandingPage() {
                           </div>
                         </div>
 
-                        <div className="premium-dark-panel p-5">
-                          <div className="text-xs uppercase tracking-[0.2em] text-white/58">Executive summary</div>
-                          <div className="mt-3 text-2xl font-semibold text-white">Move from vague ambition to measurable role progression.</div>
+                        <div className="premium-dark-panel flex flex-1 flex-col p-5">
+                          <div className="text-[11px] uppercase leading-5 tracking-[0.18em] text-white/58">Executive summary</div>
+                          <div className="mt-3 text-xl font-semibold leading-tight text-white sm:text-2xl">Move from vague ambition to measurable role progression.</div>
                           <p className="mt-3 text-sm leading-7 text-white/72">
                             The redesign brings together higher-conviction copy, stronger product framing, and a cleaner
                             buying path for both end users and enterprise stakeholders.
                           </p>
-                          <div className="mt-5 grid grid-cols-3 gap-3">
+                          <div className="mt-auto grid grid-cols-3 gap-3 pt-5">
                             {[
                               { label: 'Actions', value: '12' },
                               { label: 'Signals', value: '4' },
                               { label: 'Views', value: '1' },
                             ].map(item => (
-                              <div key={item.label} className="rounded-[20px] border border-white/10 bg-white/6 px-3 py-4 text-center">
-                                <div className="text-2xl font-semibold text-white">{item.value}</div>
-                                <div className="mt-1 text-xs uppercase tracking-[0.16em] text-white/48">{item.label}</div>
+                              <div key={item.label} className="flex min-h-[88px] flex-col justify-center rounded-lg border border-white/10 bg-white/6 px-3 py-4 text-center">
+                                <div className="text-2xl font-semibold leading-none text-white">{item.value}</div>
+                                <div className="mt-2 text-[10px] uppercase leading-4 tracking-[0.12em] text-white/48">{item.label}</div>
                               </div>
                             ))}
                           </div>
@@ -448,13 +450,13 @@ export default function LandingPage() {
             <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {platformPillars.map((item, index) => (
                 <Reveal key={item.title} delay={index * 90}>
-                  <div className="marketing-card h-full p-6">
+                  <div className="marketing-card flex h-full min-w-0 flex-col p-6">
                     <LogoBadge
                       label={item.icon}
                       className="h-12 w-12 rounded-[16px] bg-[color:var(--surface-muted)] text-[10px] text-[color:var(--text-main)]"
                     />
-                    <h3 className="mt-5 text-xl font-semibold tracking-tight text-[color:var(--text-main)]">{item.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-[color:var(--text-soft)]">{item.description}</p>
+                    <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-[color:var(--text-main)]">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-[color:var(--text-soft)]">{item.description}</p>
                   </div>
                 </Reveal>
               ))}
@@ -463,7 +465,7 @@ export default function LandingPage() {
         </section>
 
         <section className="px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="mx-auto grid max-w-7xl items-stretch gap-8 lg:grid-cols-[0.9fr_1.1fr]">
             <Reveal>
               <div className="marketing-card h-full p-6 sm:p-8">
                 <SectionHeading
@@ -474,12 +476,12 @@ export default function LandingPage() {
 
                 <div className="mt-8 space-y-4">
                   {workflow.map(item => (
-                    <div key={item.step} className="rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
-                      <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[color:var(--brand-strong)]">
+                    <div key={item.step} className="rounded-lg border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] p-5">
+                      <div className="text-[11px] font-semibold uppercase leading-5 tracking-[0.18em] text-[color:var(--brand-strong)]">
                         Step {item.step}
                       </div>
-                      <div className="mt-2 text-lg font-semibold text-[color:var(--text-main)]">{item.title}</div>
-                      <p className="mt-2 text-sm leading-7 text-[color:var(--text-soft)]">{item.description}</p>
+                      <div className="mt-2 text-lg font-semibold leading-snug text-[color:var(--text-main)]">{item.title}</div>
+                      <p className="mt-2 text-sm leading-6 text-[color:var(--text-soft)]">{item.description}</p>
                     </div>
                   ))}
                 </div>
@@ -487,13 +489,13 @@ export default function LandingPage() {
             </Reveal>
 
             <Reveal delay={120}>
-              <div className="marketing-card overflow-hidden p-6 sm:p-8">
+              <div className="marketing-card h-full overflow-hidden p-6 sm:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold uppercase leading-5 tracking-[0.18em] text-[color:var(--text-muted)]">
                       Featured tracks
                     </div>
-                    <div className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--text-main)]">
+                    <div className="mt-2 max-w-2xl text-xl font-semibold leading-tight tracking-tight text-[color:var(--text-main)] sm:text-2xl">
                       Premium discovery cards for the first decision that matters
                     </div>
                   </div>
@@ -542,23 +544,23 @@ export default function LandingPage() {
                             },
                           ]
                       ).map(path => (
-                        <div key={path._id} className="premium-panel flex h-full flex-col p-5">
+                        <div key={path._id} className="premium-panel flex h-full min-w-0 flex-col p-5">
                           <div className="flex items-center justify-between gap-3">
                             <LogoBadge
                               label={path.icon || path.name.slice(0, 2)}
                               className="h-12 w-12 rounded-[16px] bg-[color:var(--surface-muted)] text-[10px] text-[color:var(--text-main)]"
                             />
-                            <span className="rounded-full border border-[color:var(--border-soft)] px-3 py-1.5 text-xs font-medium text-[color:var(--text-soft)]">
+                            <span className="max-w-[9rem] rounded-full border border-[color:var(--border-soft)] px-3 py-1.5 text-xs font-medium leading-4 text-[color:var(--text-soft)]">
                               {path.domain}
                             </span>
                           </div>
-                          <h3 className="mt-5 text-xl font-semibold tracking-tight text-[color:var(--text-main)]">{path.name}</h3>
-                          <p className="mt-3 flex-1 text-sm leading-7 text-[color:var(--text-soft)]">{path.description}</p>
+                          <h3 className="mt-5 text-lg font-semibold leading-snug tracking-tight text-[color:var(--text-main)]">{path.name}</h3>
+                          <p className="mt-3 flex-1 text-sm leading-6 text-[color:var(--text-soft)]">{path.description}</p>
                           <div className="mt-5 flex flex-wrap gap-2">
                             {path.tags.slice(0, 3).map(tag => (
                               <span
                                 key={tag}
-                                className="rounded-full border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3 py-1.5 text-xs text-[color:var(--text-muted)]"
+                                className="rounded-full border border-[color:var(--border-soft)] bg-[color:var(--surface-strong)] px-3 py-1.5 text-xs leading-4 text-[color:var(--text-muted)]"
                               >
                                 {tag}
                               </span>
@@ -588,7 +590,7 @@ export default function LandingPage() {
                 <Reveal key={item.name} delay={index * 90}>
                   <div className="marketing-card h-full p-6">
                     <div className="text-4xl leading-none text-[color:var(--brand-strong)]">"</div>
-                    <p className="mt-4 text-base leading-8 text-[color:var(--text-soft)]">{item.quote}</p>
+                    <p className="mt-4 text-base leading-7 text-[color:var(--text-soft)]">{item.quote}</p>
                     <div className="mt-6">
                       <div className="text-base font-semibold text-[color:var(--text-main)]">{item.name}</div>
                       <div className="text-sm text-[color:var(--text-muted)]">{item.role}</div>
@@ -607,8 +609,8 @@ export default function LandingPage() {
                   { label: 'Enterprise posture', value: 'Stronger' },
                 ].map(item => (
                   <div key={item.label} className="premium-panel p-5 text-center">
-                    <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{item.label}</div>
-                    <div className="mt-3 text-3xl font-semibold tracking-tight text-[color:var(--text-main)]">{item.value}</div>
+                    <div className="text-[11px] uppercase leading-5 tracking-[0.16em] text-[color:var(--text-muted)]">{item.label}</div>
+                    <div className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--text-main)] sm:text-3xl">{item.value}</div>
                   </div>
                 ))}
               </div>
@@ -631,24 +633,24 @@ export default function LandingPage() {
               {planCards.map((plan, index) => (
                 <Reveal key={plan.name} delay={index * 90}>
                   <div className={`marketing-card h-full p-6 ${plan.highlight ? 'ring-1 ring-[color:var(--brand-strong)]' : ''}`}>
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-sm font-semibold uppercase tracking-[0.2em] text-[color:var(--text-muted)]">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold uppercase leading-5 tracking-[0.18em] text-[color:var(--text-muted)]">
                           {plan.name}
                         </div>
                         <div className="mt-4 flex items-end gap-1">
-                          <span className="text-4xl font-semibold tracking-tight text-[color:var(--text-main)]">{plan.price}</span>
+                          <span className="text-3xl font-semibold tracking-tight text-[color:var(--text-main)] sm:text-4xl">{plan.price}</span>
                           {plan.cadence && <span className="pb-1 text-sm text-[color:var(--text-muted)]">{plan.cadence}</span>}
                         </div>
                       </div>
                       {plan.highlight && (
-                        <span className="rounded-full bg-[color:var(--brand-soft)] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-strong)]">
+                        <span className="rounded-full bg-[color:var(--brand-soft)] px-3 py-1.5 text-[11px] font-semibold uppercase leading-4 tracking-[0.14em] text-[color:var(--brand-strong)]">
                           Most popular
                         </span>
                       )}
                     </div>
 
-                    <p className="mt-4 text-sm leading-7 text-[color:var(--text-soft)]">{plan.description}</p>
+                    <p className="mt-4 text-sm leading-6 text-[color:var(--text-soft)]">{plan.description}</p>
 
                     <Link to={primaryCta} className={`mt-6 ${plan.highlight ? 'btn-primary' : 'btn-secondary'} w-full justify-center`}>
                       {plan.cta}
@@ -656,8 +658,8 @@ export default function LandingPage() {
 
                     <div className="mt-6 space-y-3">
                       {plan.features.map(item => (
-                        <div key={item} className="flex items-start gap-3 text-sm text-[color:var(--text-soft)]">
-                          <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--brand-soft)] text-[color:var(--brand-strong)]">
+                        <div key={item} className="flex items-start gap-3 text-sm leading-6 text-[color:var(--text-soft)]">
+                          <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--brand-soft)] text-[color:var(--brand-strong)]">
                             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="m5 13 4 4L19 7" />
                             </svg>
@@ -755,7 +757,7 @@ export default function LandingPage() {
                     },
                   ].map(group => (
                     <div key={group.title}>
-                      <div className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--text-muted)]">{group.title}</div>
+                      <div className="text-xs font-semibold uppercase leading-5 tracking-[0.16em] text-[color:var(--text-muted)]">{group.title}</div>
                       <div className="mt-4 space-y-3">
                         {group.links.map(link => (
                           link.href.startsWith('#') ? (
@@ -775,7 +777,7 @@ export default function LandingPage() {
               </div>
 
               <div className="mt-8 flex flex-col gap-3 border-t border-[color:var(--border-soft)] pt-6 text-sm text-[color:var(--text-muted)] sm:flex-row sm:items-center sm:justify-between">
-                <div>Copyright © {new Date().getFullYear()} CareerLab. All rights reserved.</div>
+                <div>Copyright {new Date().getFullYear()} CareerLab. All rights reserved.</div>
                 <div>Designed for confident role discovery, sharper assessment, and cleaner decision-making.</div>
               </div>
             </div>
