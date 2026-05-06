@@ -245,6 +245,21 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
   }
 
+  .landing-page .marketing-card,
+  .landing-page .premium-panel,
+  .landing-page .hero-panel,
+  .landing-page .stat-shell {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .landing-page .marketing-card *,
+  .landing-page .premium-panel *,
+  .landing-page .hero-panel *,
+  .landing-page .stat-shell * {
+    min-width: 0;
+  }
+
   .glass-hover {
     transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
   }
