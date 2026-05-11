@@ -8,8 +8,12 @@ const navItems = [
   { label: 'Workspace', path: '/workspace', icon: 'home' },
   { label: 'Paths', path: '/career-paths', icon: 'grid' },
   { label: 'Roadmaps', path: '/roadmaps', icon: 'tree' },
+  { label: 'Studio', path: '/roadmap-studio', icon: 'plus' },
+  { label: 'Resources', path: '/resources', icon: 'book' },
+  { label: 'Community', path: '/community', icon: 'people' },
   { label: 'Analytics', path: '/dashboard', icon: 'chart' },
   { label: 'Search', path: '/search', icon: 'search' },
+  { label: 'Profile', path: '/profile', icon: 'user' },
 ];
 
 function SidebarIcon({ type }: { type: string }) {
@@ -70,6 +74,44 @@ function SidebarIcon({ type }: { type: string }) {
     );
   }
 
+  if (type === 'plus') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.9">
+        <path d="M12 5v14" />
+        <path d="M5 12h14" />
+      </svg>
+    );
+  }
+
+  if (type === 'book') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.9">
+        <path d="M6 4h10a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4Z" />
+        <path d="M8 18h10" />
+      </svg>
+    );
+  }
+
+  if (type === 'people') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.9">
+        <circle cx="9" cy="9" r="3" />
+        <circle cx="17" cy="10" r="2.5" />
+        <path d="M4 19c.7-3 2.5-4.5 5-4.5s4.3 1.5 5 4.5" />
+        <path d="M14.5 18.5c.5-2 1.7-3.2 3.5-3.2 1.5 0 2.6.8 3.2 2.4" />
+      </svg>
+    );
+  }
+
+  if (type === 'user') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.9">
+        <circle cx="12" cy="8" r="3.5" />
+        <path d="M5 20c1-4 3.3-6 7-6s6 2 7 6" />
+      </svg>
+    );
+  }
+
   if (type === 'theme') {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={common} stroke="currentColor" strokeWidth="1.9">
@@ -110,7 +152,11 @@ export default function Sidebar({ collapsed }: SidebarProps) {
 
   const currentPath = useMemo(() => {
     if (location.pathname.startsWith('/skills')) return '/career-paths';
+    if (location.pathname.startsWith('/roadmap-studio')) return '/roadmap-studio';
     if (location.pathname.startsWith('/roadmap')) return '/roadmaps';
+    if (location.pathname.startsWith('/resources')) return '/resources';
+    if (location.pathname.startsWith('/community')) return '/community';
+    if (location.pathname.startsWith('/profile')) return '/profile';
     if (location.pathname.startsWith('/search')) return '/search';
     return location.pathname;
   }, [location.pathname]);
@@ -173,7 +219,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       <div className="mt-auto space-y-2">
         <div className={`sidebar-profile ${collapsed ? 'justify-center px-0' : ''}`}>
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-xs font-semibold text-[#0f172a]">
-            {user.name.charAt(0).toUpperCase()}
+            {user.name?.charAt(0).toUpperCase()}
           </div>
           <div className={`min-w-0 transition-all duration-500 ${collapsed ? 'max-w-0 opacity-0' : 'max-w-[150px] opacity-100'}`}>
             <div className="truncate text-xs font-semibold text-white">{user.name}</div>
