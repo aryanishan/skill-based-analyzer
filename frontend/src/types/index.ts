@@ -2,8 +2,22 @@
 
 export interface User {
   id: string;
+  _id?: string;
   name: string;
   email: string;
+  username?: string;
+  bio?: string;
+  profileImage?: string;
+  skillsLearning?: Array<{ skillId?: Skill; title?: string; startedAt?: string }>;
+  completedRoadmaps?: Array<{ roadmapId?: CommunityRoadmap; title?: string; completedAt?: string }>;
+  followersCount?: number;
+  followingCount?: number;
+  publicRoadmapCount?: number;
+  privateRoadmapCount?: number;
+  preferences?: {
+    profileVisibility?: 'public' | 'private';
+    learningGoal?: string;
+  };
 }
 
 export interface Skill {
@@ -98,4 +112,110 @@ export interface EvaluationResult {
   categoryProfile: { foundationalPct: number; corePct: number; advancedPct: number };
   recommendations: Recommendation[];
   crossDomainHints: CrossDomainHint[];
+}
+
+export interface RoadmapNode {
+  _id?: string;
+  skill?: string | Skill;
+  title: string;
+  description?: string;
+  prerequisites?: string[];
+  learningResources?: LearningResource[];
+  estimatedCompletionTime?: string;
+  order?: number;
+}
+
+export interface CommunityRoadmap {
+  _id: string;
+  title: string;
+  slug?: string;
+  description?: string;
+  category: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced' | 'Mixed';
+  estimatedDuration?: string;
+  thumbnail?: string;
+  tags: string[];
+  visibility: 'public' | 'private';
+  author?: Pick<User, 'id' | '_id' | 'name' | 'username' | 'profileImage'>;
+  nodes: RoadmapNode[];
+  stats: {
+    likes: number;
+    saves: number;
+    comments: number;
+    forks: number;
+    completions: number;
+    views: number;
+  };
+  liked?: boolean;
+  saved?: boolean;
+  isOwner?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface LearningResource {
+  _id: string;
+  skill?: Skill;
+  skillSlug?: string;
+  title: string;
+  type: 'youtube' | 'documentation' | 'article' | 'course' | 'github' | 'practice';
+  thumbnail?: string;
+  creatorName?: string;
+  duration?: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced' | 'mixed';
+  tags: string[];
+  sourceUrl: string;
+  updateDate?: string;
+  averageRating: number;
+  ratingCount: number;
+  reviewCount: number;
+  completionCount: number;
+  helpfulVotes: number;
+  notHelpfulVotes: number;
+  bookmarkCount: number;
+  viewCount: number;
+  rankingScore: number;
+  badges?: string[];
+}
+
+export interface ResourceReview {
+  _id: string;
+  user: Pick<User, 'id' | '_id' | 'name' | 'username' | 'profileImage'>;
+  resource: string | LearningResource;
+  rating: number;
+  review?: string;
+  completed?: boolean;
+  helpfulVotes?: string[];
+  createdAt?: string;
+}
+
+export interface ActivityItem {
+  _id: string;
+  user: Pick<User, 'id' | '_id' | 'name' | 'username' | 'profileImage'>;
+  type: 'completed_roadmap' | 'created_roadmap' | 'liked_resource' | 'started_skill' | 'followed_user' | 'reviewed_resource';
+  entityType: 'roadmap' | 'resource' | 'skill' | 'user';
+  entity?: string;
+  metadata?: Record<string, any>;
+  visibility: 'public' | 'private';
+  createdAt: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+
+export interface SkillHub {
+  skill: Skill;
+  roadmaps: CommunityRoadmap[];
+  resources: LearningResource[];
+  relatedSkills: Skill[];
+  projects: string[];
+  interviewQuestions: string[];
+  estimatedLearningTime: string;
 }
