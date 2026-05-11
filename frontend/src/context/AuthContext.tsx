@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   setAuth: (token: string, user: User) => void;
+  refreshUser: () => Promise<void>;
   logout: () => void;
   loading: boolean;
 }
@@ -17,13 +18,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
+  const normalizeUser = (raw: any): User => ({
+    ...raw,
+    id: raw.id || raw._id,
+    name: raw.name,
+    email: raw.email,
+  });
+
+  const refreshUser = async () => {
+    const res = await getMe();
+    setUser(normalizeUser(res.data));
+  };
+
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
         try {
-          const res = await getMe();
-          setUser({ id: res.data._id, name: res.data.name, email: res.data.email });
+          await refreshUser();
         } catch {
           localStorage.removeItem('token');
           setToken(null);
@@ -37,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setAuth = (newToken: string, newUser: User) => {
     localStorage.setItem('token', newToken);
     setToken(newToken);
-    setUser(newUser);
+    setUser(normalizeUser(newUser));
   };
 
   const logout = () => {
@@ -47,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, setAuth, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, setAuth, refreshUser, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
