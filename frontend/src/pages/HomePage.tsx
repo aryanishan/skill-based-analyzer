@@ -102,6 +102,12 @@ export default function HomePage() {
             <Link to="/career-paths" className="btn-primary">
               New analysis
             </Link>
+            <Link to="/roadmap-studio" className="btn-secondary">
+              Roadmap studio
+            </Link>
+            <Link to="/resources" className="btn-secondary">
+              Resources
+            </Link>
             <Link to="/dashboard" className="btn-secondary">
               View analytics
             </Link>
