@@ -1,4 +1,4 @@
-import { CareerPath, Skill, User } from '../types';
+import { CareerPath, CommunityRoadmap, LearningResource, Skill, User } from '../types';
 
 export type SearchItemType = 'user' | 'skill' | 'career_path' | 'roadmap' | 'domain' | 'course';
 
@@ -46,10 +46,14 @@ export function buildSearchIndex({
   paths,
   skills,
   user,
+  roadmaps = [],
+  resources = [],
 }: {
   paths: CareerPath[];
   skills: Skill[];
   user: User | null;
+  roadmaps?: CommunityRoadmap[];
+  resources?: LearningResource[];
 }): SearchItem[] {
   const items: SearchItem[] = [];
   const pathForSkill = new Map<string, CareerPath>();
@@ -137,9 +141,36 @@ export function buildSearchIndex({
     });
   });
 
+  roadmaps.forEach(roadmap => {
+    items.push({
+      id: `community-roadmap-${roadmap._id}`,
+      type: 'roadmap',
+      title: roadmap.title,
+      subtitle: `${roadmap.category} / ${roadmap.difficulty}`,
+      description: roadmap.description,
+      href: `/roadmap-studio/${roadmap._id}`,
+      keywords: [roadmap.title, roadmap.category, roadmap.difficulty, ...(roadmap.tags || []), 'community roadmap', 'learning path'],
+      meta: `${roadmap.nodes?.length || 0} nodes`,
+    });
+  });
+
+  resources.forEach(resource => {
+    items.push({
+      id: `resource-${resource._id}`,
+      type: 'course',
+      title: resource.title,
+      subtitle: `${resource.type} / ${resource.difficulty}`,
+      description: resource.creatorName || resource.skillSlug,
+      href: `/resources?resource=${resource._id}`,
+      keywords: [resource.title, resource.creatorName || '', resource.type, resource.difficulty, resource.skillSlug || '', ...(resource.tags || [])],
+      meta: resource.averageRating ? `${resource.averageRating.toFixed(1)} rating` : 'Resource',
+    });
+  });
+
   skills.forEach(skill => {
     const relatedPath = pathForSkill.get(skill._id);
-    const href = relatedPath ? `/skills/${relatedPath._id}?skill=${encodeURIComponent(skill._id)}` : '/career-paths';
+    const skillSlug = skill.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const href = relatedPath ? `/skills/${relatedPath._id}?skill=${encodeURIComponent(skill._id)}` : `/skills/${skillSlug}`;
 
     items.push({
       id: `skill-${skill._id}`,
@@ -167,7 +198,7 @@ export function buildSearchIndex({
       title: `${skill.name} course`,
       subtitle: `${skill.category} module / ${skill.domain}`,
       description: skill.tooltip?.whereUsed || `Guided learning module for ${skill.name}`,
-      href,
+      href: `/skills/${skillSlug}`,
       keywords: [
         skill.name,
         skill.domain,
