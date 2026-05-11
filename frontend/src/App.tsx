@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import AuthPage from './pages/AuthPage';
-import HomePage from './pages/HomePage';
-import LandingPage from './pages/LandingPage';
-import CareerSelectPage from './pages/CareerSelectPage';
-import RoadmapPage from './pages/RoadmapPage';
-import SkillInputPage from './pages/SkillInputPage';
-import DashboardPage from './pages/DashboardPage';
-import SearchResultsPage from './pages/SearchResultsPage';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
-import { useLocation } from 'react-router-dom';
+
+const AuthPage = React.lazy(() => import('./pages/AuthPage'));
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const LandingPage = React.lazy(() => import('./pages/LandingPage'));
+const CareerSelectPage = React.lazy(() => import('./pages/CareerSelectPage'));
+const RoadmapPage = React.lazy(() => import('./pages/RoadmapPage'));
+const SkillRoutePage = React.lazy(() => import('./pages/SkillRoutePage'));
+const DashboardPage = React.lazy(() => import('./pages/DashboardPage'));
+const SearchResultsPage = React.lazy(() => import('./pages/SearchResultsPage'));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const RoadmapStudioPage = React.lazy(() => import('./pages/RoadmapStudioPage'));
+const RoadmapStudioDetailPage = React.lazy(() => import('./pages/RoadmapStudioDetailPage'));
+const ResourceHubPage = React.lazy(() => import('./pages/ResourceHubPage'));
+const CommunityPage = React.lazy(() => import('./pages/CommunityPage'));
 
 const SIDEBAR_EXPANDED_WIDTH = '244px';
 const SIDEBAR_COLLAPSED_WIDTH = '76px';
@@ -41,9 +46,32 @@ export default function App() {
 
   if (loading) return <LoadingSpinner />;
 
-  const workspaceRoutes = ['/workspace', '/career-paths', '/roadmaps', '/roadmap', '/skills', '/dashboard', '/search'];
+  const workspaceRoutes = ['/workspace', '/career-paths', '/roadmaps', '/roadmap', '/skills', '/dashboard', '/search', '/profile', '/roadmap-studio', '/resources', '/community'];
   const showSidebar = workspaceRoutes.some(route =>
     location.pathname === route || location.pathname.startsWith(`${route}/`)
+  );
+
+  const routeTree = (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={user ? <Navigate to="/workspace" replace /> : <AuthPage />} />
+        <Route path="/workspace" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+        <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
+        <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
+        <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
+        <Route path="/roadmap-studio" element={<PrivateRoute><RoadmapStudioPage /></PrivateRoute>} />
+        <Route path="/roadmap-studio/:roadmapId" element={<PrivateRoute><RoadmapStudioDetailPage /></PrivateRoute>} />
+        <Route path="/resources" element={<PrivateRoute><ResourceHubPage /></PrivateRoute>} />
+        <Route path="/community" element={<PrivateRoute><CommunityPage /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/profile/:username" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/skills/:pathId" element={<PrivateRoute><SkillRoutePage /></PrivateRoute>} />
+        <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+        <Route path="/search" element={<PrivateRoute><SearchResultsPage /></PrivateRoute>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 
   return (
@@ -70,33 +98,11 @@ export default function App() {
           <div className="dashboard-frame min-h-screen">
             <Navbar collapsed={sidebarCollapsed} onToggleSidebar={() => setSidebarCollapsed(current => !current)} />
             <div className="dashboard-canvas min-h-[calc(100vh-58px)] overflow-hidden">
-              <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/auth" element={user ? <Navigate to="/workspace" replace /> : <AuthPage />} />
-                <Route path="/workspace" element={<PrivateRoute><HomePage /></PrivateRoute>} />
-                <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
-                <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
-                <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
-                <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
-                <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-                <Route path="/search" element={<PrivateRoute><SearchResultsPage /></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
+              {routeTree}
             </div>
           </div>
         ) : (
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/auth" element={user ? <Navigate to="/workspace" replace /> : <AuthPage />} />
-            <Route path="/workspace" element={<PrivateRoute><HomePage /></PrivateRoute>} />
-            <Route path="/career-paths" element={<PrivateRoute><CareerSelectPage /></PrivateRoute>} />
-            <Route path="/roadmaps" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
-            <Route path="/roadmap/:pathId" element={<PrivateRoute><RoadmapPage /></PrivateRoute>} />
-            <Route path="/skills/:pathId" element={<PrivateRoute><SkillInputPage /></PrivateRoute>} />
-            <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-            <Route path="/search" element={<PrivateRoute><SearchResultsPage /></PrivateRoute>} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          routeTree
         )}
       </main>
     </div>
